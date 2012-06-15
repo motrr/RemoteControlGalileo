@@ -1,0 +1,24 @@
+# Build folders #
+
+gcc/
+clang/
+
+
+# XCode build folder #
+
+xcode*/Debug
+xcode*/legit.build
+xcode*/src/*/legit.build/
+
+
+# XCode files we don't want to track #
+
+*.xcuserstate
+project.xcworkspace/
+xcuserdata/
+
+# Emacs temp files #
+*~
+
+# Linux build directory #
+build
