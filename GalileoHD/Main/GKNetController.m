@@ -75,7 +75,7 @@ typedef struct {
 
 - (void) dealloc
 {
-    NSLog(@"WifiModule exiting");
+    NSLog(@"GKNetController exiting");
 }
 
 

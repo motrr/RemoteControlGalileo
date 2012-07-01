@@ -262,13 +262,13 @@ GLfloat originCentredSquareVertices[8] = {
     CVReturn err;
     
     //  Create a new video input texture cache
-    err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void*)oglContext, NULL, &inputTextureCache);
+    err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge CVEAGLContext)((__bridge void*)oglContext), NULL, &inputTextureCache);
     if (err) {
         NSLog(@"Error creating input texture cache with CVReturn error %u", err);
         return false;
     }
     //  Create a new video output texture cache
-    err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void*)oglContext, NULL, &outputTextureCache);
+    err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge CVEAGLContext)((__bridge void*)oglContext), NULL, &outputTextureCache);
     if (err) {
         NSLog(@"Error creating output texture cache with CVReturn error %u", err);
         return false;

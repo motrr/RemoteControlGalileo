@@ -92,8 +92,9 @@
     // Pop video view controller from navigation stack
     [self.navigationController popViewControllerAnimated:YES];
     
-    // Nil out Galileo so it can be released
+    // Nil out Galileo and net controller so they can be released
     galileo = nil;
+    netController = nil;
     
     // Restart session manager
     [manager setupSession];

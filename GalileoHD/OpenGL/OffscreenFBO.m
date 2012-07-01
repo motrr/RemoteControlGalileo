@@ -11,6 +11,8 @@
     self = [super init];
     if (self != nil) {
         
+        NSLog(@"Creating OffscreenFBO");
+        
         // Create and bind the offscreen framebuffer
         glGenFramebuffers(1, &frameBuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
@@ -38,6 +40,11 @@
     
     // Draw the output video texture
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+- (void) dealloc
+{
+    NSLog(@"OffscreenFBO exiting");
 }
 
 

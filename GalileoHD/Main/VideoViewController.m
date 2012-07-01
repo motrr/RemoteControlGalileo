@@ -44,6 +44,7 @@
     [self.view.layer setMagnificationFilter:kCAFilterTrilinear];
     [self.view setBackgroundColor:[UIColor blackColor]];
     
+    /*
     // Add button for recording video
     recordButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     recordButton.frame = CGRectMake(0,0,200,50);
@@ -56,6 +57,7 @@
     [self.view addSubview:recordButton];
     [recordButton addTarget:self action:@selector(recordButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     isRecording = NO;
+     */
     
 }
 

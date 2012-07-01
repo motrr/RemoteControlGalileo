@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		301FE3B1159FBC6F00062C9F /* GalileoControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 301FE3B0159FBC6F00062C9F /* GalileoControl.framework */; };
 		302362D9158A8FEE00B2DF09 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 302362D8158A8FEE00B2DF09 /* UIKit.framework */; };
 		302362DB158A8FEE00B2DF09 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 302362DA158A8FEE00B2DF09 /* Foundation.framework */; };
 		302362DD158A8FEE00B2DF09 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 302362DC158A8FEE00B2DF09 /* CoreGraphics.framework */; };
@@ -27,7 +28,6 @@
 		309AAC70158AE9F7007015A9 /* VideoProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC69158AE9F7007015A9 /* VideoProcessor.m */; };
 		309AAC71158AE9F7007015A9 /* VideoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC6B158AE9F7007015A9 /* VideoRecorder.m */; };
 		309AAC72158AE9F7007015A9 /* VideoTransmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC6D158AE9F7007015A9 /* VideoTransmitter.m */; };
-		309AAC75158AEEE3007015A9 /* GalileoControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309AAC74158AEEE3007015A9 /* GalileoControl.framework */; };
 		309AAC7C158AF094007015A9 /* TouchBeganRecogniser.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC79158AF094007015A9 /* TouchBeganRecogniser.m */; };
 		309AAC7D158AF094007015A9 /* OffscreenFBO.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC7B158AF094007015A9 /* OffscreenFBO.m */; };
 		309AAC7F158AF9A9007015A9 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309AAC7E158AF9A9007015A9 /* CoreMedia.framework */; };
@@ -43,6 +43,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		301FE3B0159FBC6F00062C9F /* GalileoControl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GalileoControl.framework; path = "../Library/Developer/Xcode/DerivedData/GalileoControl-aupxpuxvuvnvoadkuuatbqdzowyw/Build/Products/Release-iphoneos/GalileoControl.framework"; sourceTree = "<group>"; };
 		302362D4158A8FEE00B2DF09 /* GalileoHD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GalileoHD.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		302362D8158A8FEE00B2DF09 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		302362DA158A8FEE00B2DF09 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -83,7 +84,6 @@
 		309AAC6B158AE9F7007015A9 /* VideoRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRecorder.m; sourceTree = "<group>"; };
 		309AAC6C158AE9F7007015A9 /* VideoTransmitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoTransmitter.h; sourceTree = "<group>"; };
 		309AAC6D158AE9F7007015A9 /* VideoTransmitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoTransmitter.m; sourceTree = "<group>"; };
-		309AAC74158AEEE3007015A9 /* GalileoControl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GalileoControl.framework; path = "../Library/Developer/Xcode/DerivedData/Build/Products/Release-iphoneos/GalileoControl.framework"; sourceTree = "<group>"; };
 		309AAC76158AEF9B007015A9 /* JPEGFragmentation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JPEGFragmentation.h; sourceTree = "<group>"; };
 		309AAC77158AF093007015A9 /* GKCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GKCommon.h; path = Initialisation/GKCommon.h; sourceTree = "<group>"; };
 		309AAC78158AF093007015A9 /* TouchBeganRecogniser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TouchBeganRecogniser.h; path = Main/TouchBeganRecogniser.h; sourceTree = "<group>"; };
@@ -118,7 +118,7 @@
 				302362DD158A8FEE00B2DF09 /* CoreGraphics.framework in Frameworks */,
 				302362D9158A8FEE00B2DF09 /* UIKit.framework in Frameworks */,
 				302362DB158A8FEE00B2DF09 /* Foundation.framework in Frameworks */,
-				309AAC75158AEEE3007015A9 /* GalileoControl.framework in Frameworks */,
+				301FE3B1159FBC6F00062C9F /* GalileoControl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,9 +129,9 @@
 			isa = PBXGroup;
 			children = (
 				302362DE158A8FEE00B2DF09 /* Initialisation */,
+				30236306158A946300B2DF09 /* Main */,
 				309AAC65158AE9F7007015A9 /* AV Capture */,
 				309AAC61158AE960007015A9 /* OpenGL */,
-				30236306158A946300B2DF09 /* Main */,
 				302362DF158A8FEE00B2DF09 /* Supporting Files */,
 				302362D7158A8FEE00B2DF09 /* Frameworks */,
 				302362D5158A8FEE00B2DF09 /* Products */,
@@ -149,6 +149,7 @@
 		302362D7158A8FEE00B2DF09 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				301FE3B0159FBC6F00062C9F /* GalileoControl.framework */,
 				309AAC8C158AFA2F007015A9 /* GameKit.framework */,
 				309AAC8A158AFA18007015A9 /* CoreVideo.framework */,
 				309AAC88158AFA04007015A9 /* GLKit.framework */,
@@ -157,7 +158,6 @@
 				309AAC82158AF9CE007015A9 /* AssetsLibrary.framework */,
 				309AAC80158AF9C4007015A9 /* AVFoundation.framework */,
 				309AAC7E158AF9A9007015A9 /* CoreMedia.framework */,
-				309AAC74158AEEE3007015A9 /* GalileoControl.framework */,
 				302362D8158A8FEE00B2DF09 /* UIKit.framework */,
 				302362DA158A8FEE00B2DF09 /* Foundation.framework */,
 				302362DC158A8FEE00B2DF09 /* CoreGraphics.framework */,
@@ -403,6 +403,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Library/Developer/Xcode/DerivedData/Build/Products/Release-iphoneos\"",
+					"\"$(SRCROOT)/../Library/Developer/Xcode/DerivedData/GalileoControl-aupxpuxvuvnvoadkuuatbqdzowyw/Build/Products/Release-iphoneos\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GalileoHD/GalileoHD-Prefix.pch";
@@ -419,6 +420,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Library/Developer/Xcode/DerivedData/Build/Products/Release-iphoneos\"",
+					"\"$(SRCROOT)/../Library/Developer/Xcode/DerivedData/GalileoControl-aupxpuxvuvnvoadkuuatbqdzowyw/Build/Products/Release-iphoneos\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GalileoHD/GalileoHD-Prefix.pch";
