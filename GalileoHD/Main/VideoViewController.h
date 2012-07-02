@@ -6,6 +6,8 @@
 #import <UIKit/UIKit.h>
 #import "GalileoCommon.h"
 
+@class VideoDecoder;
+
 @interface VideoViewController : UIViewController <OrientationUpdateResponderDelegate>
 {
     // BSD sockets
@@ -14,6 +16,9 @@
     
     // AV reception
     NSData* imageData;
+    
+    // Video decoder object
+    VideoDecoder* videoDecoder;
     
     // Keep track of local and remote orientation
     UIDeviceOrientation currentLocalOrientation;

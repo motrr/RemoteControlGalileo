@@ -4,6 +4,7 @@
 
 #import "VideoViewController.h"
 #import  <QuartzCore/CALayer.h>
+#import "VideoDecoder.h"
 #import "VideoView.h"
 
 #import <sys/socket.h>
@@ -24,6 +25,8 @@
 - (id) init
 {
     if (self = [super init]) {
+        
+        videoDecoder = [[VideoDecoder alloc] init];
         
         port = AV_UDP_PORT;
         isLocked = NO;
@@ -224,17 +227,8 @@
             }
             else {
                 
-                // Create pixel buffer from image data bytes
-                CVPixelBufferRef pixelBuffer = NULL;
-                unsigned int width = 64;
-                unsigned int height = 48;
-                CVPixelBufferCreateWithBytes(NULL,
-                                             width, height,
-                                             kCVPixelFormatType_32BGRA,
-                                             buffer,
-                                             width*4, 
-                                             NULL, 0, NULL,
-                                             &pixelBuffer);
+                // Decode data buffer into pixel buffer
+                CVPixelBufferRef pixelBuffer = [videoDecoder decodeFrameData:buffer];
                 
                 // Render the pixel buffer using OpenGL
                 [self.view performSelectorOnMainThread:@selector(renderPixelBuffer:) withObject:(__bridge id)(pixelBuffer) waitUntilDone:YES];

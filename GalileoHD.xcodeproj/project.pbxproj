@@ -42,6 +42,7 @@
 		309AAC95158AFE75007015A9 /* passThrough.vert in Resources */ = {isa = PBXBuildFile; fileRef = 309AAC93158AFE75007015A9 /* passThrough.vert */; };
 		30DC070615A0013000D74E9F /* OnscreenFBO.m in Sources */ = {isa = PBXBuildFile; fileRef = 30DC070515A0013000D74E9F /* OnscreenFBO.m */; };
 		30DC070915A0038600D74E9F /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 30DC070815A0038600D74E9F /* VideoView.m */; };
+		30E162B915A266E4009ED65A /* VideoDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 30E162B815A266E4009ED65A /* VideoDecoder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -106,6 +107,8 @@
 		30DC070515A0013000D74E9F /* OnscreenFBO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnscreenFBO.m; sourceTree = "<group>"; };
 		30DC070715A0038600D74E9F /* VideoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoView.h; path = Main/VideoView.h; sourceTree = "<group>"; };
 		30DC070815A0038600D74E9F /* VideoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoView.m; path = Main/VideoView.m; sourceTree = "<group>"; };
+		30E162B715A266E4009ED65A /* VideoDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoDecoder.h; path = Main/VideoDecoder.h; sourceTree = "<group>"; };
+		30E162B815A266E4009ED65A /* VideoDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoDecoder.m; path = Main/VideoDecoder.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -209,6 +212,8 @@
 				30236308158A94C400B2DF09 /* Galileo.m */,
 				309AAC4E158AD560007015A9 /* VideoViewController.h */,
 				309AAC4F158AD560007015A9 /* VideoViewController.m */,
+				30E162B715A266E4009ED65A /* VideoDecoder.h */,
+				30E162B815A266E4009ED65A /* VideoDecoder.m */,
 				30DC070715A0038600D74E9F /* VideoView.h */,
 				30DC070815A0038600D74E9F /* VideoView.m */,
 				309AAC49158AD4BB007015A9 /* UserInputHandler.h */,
@@ -343,6 +348,7 @@
 				30DC070615A0013000D74E9F /* OnscreenFBO.m in Sources */,
 				30DC070915A0038600D74E9F /* VideoView.m in Sources */,
 				3069D8A515A16F4C0038DAAF /* VideoEncoder.m in Sources */,
+				30E162B915A266E4009ED65A /* VideoDecoder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
