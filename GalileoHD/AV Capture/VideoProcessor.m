@@ -7,30 +7,8 @@
 #import "OffscreenFBO.h"
 
 #define JPEG_QUALITY_FACTOR     0.9
-#define OUTPUT_WIDTH    480
-#define OUTPUT_HEIGHT   320
-
-// Shader attributes
-enum {
-    ATTRIB_VERTEX,
-    ATTRIB_TEXTUREPOSITON,
-    NUM_ATTRIBUTES
-};
-
-GLfloat unitSquareVertices[8] = {
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    0.0f, 1.0f,
-    1.0f, 1.0f
-};
-
-GLfloat originCentredSquareVertices[8] = {
-    -1.0f, -1.0f,
-    1.0f, -1.0f,
-    -1.0f, 1.0f,
-    1.0f, 1.0f
-};
-
+#define OUTPUT_WIDTH    128
+#define OUTPUT_HEIGHT   96
 
 @implementation VideoProcessor
 
@@ -86,6 +64,8 @@ GLfloat originCentredSquareVertices[8] = {
         
     }
 
+    // This isn't the only OpenGL ES context
+    [EAGLContext setCurrentContext:oglContext];
     
     // Large amount of setup is done on the first call to render, when the pixel buffer dimensions are available
     if (isFirstRenderCall) {
@@ -96,8 +76,8 @@ GLfloat originCentredSquareVertices[8] = {
         NSLog(@"Input pixel buffer dimensions %zu x %zu", inputPixelBufferWidth, inputPixelBufferHeight);
         
         // We set the output dimensions at a nice iPhone/iPad friendly aspect ratio
-        outputPixelBufferWidth = 256;
-        outputPixelBufferHeight = 192;
+        outputPixelBufferWidth = OUTPUT_WIDTH;
+        outputPixelBufferHeight = OUTPUT_HEIGHT;
         
         // These calls use the pixel buffer dimensions
         [self createPixelBuffer:&outputPixelBuffer width:outputPixelBufferWidth height:outputPixelBufferHeight];
@@ -145,8 +125,25 @@ GLfloat originCentredSquareVertices[8] = {
     // Delegate processing of output pixel buffer
     CVPixelBufferLockBaseAddress(outputPixelBuffer, 0);
     //
-    NSData *compressedImageData = [self dataFromPixelBuffer:outputPixelBuffer];
-    [videoTransmitter sendFrame:compressedImageData];
+    size_t extraColumnsOnLeft;
+    size_t extraColumnsOnRight;
+    size_t extraRowsOnTop;
+    size_t extraRowsOnBottom;
+    
+    CVPixelBufferGetExtendedPixels(outputPixelBuffer, &extraColumnsOnLeft, &extraColumnsOnRight, &extraRowsOnTop, &extraRowsOnBottom);
+    NSLog(@"Width: %zu, Height: %zu, Bytes per row: %zu, xLeft:%zu, xRight: %zu, xTop: %zu, xBottom: %zu.",
+          CVPixelBufferGetWidth(outputPixelBuffer),
+          CVPixelBufferGetHeight(outputPixelBuffer),
+          CVPixelBufferGetBytesPerRow(outputPixelBuffer),
+          extraColumnsOnLeft,
+          extraColumnsOnRight,
+          extraRowsOnTop,
+          extraRowsOnBottom
+          );
+    
+    //NSData *compressedImageData = [self dataFromPixelBuffer:outputPixelBuffer];
+    NSData *rawImageData = [self rawDataFromPixelBuffer:outputPixelBuffer];
+    [videoTransmitter sendFrame:rawImageData];
     //
     CVPixelBufferUnlockBaseAddress(outputPixelBuffer, 0);
     
@@ -202,8 +199,19 @@ GLfloat originCentredSquareVertices[8] = {
     
 }
 
+- (NSData*) rawDataFromPixelBuffer: (CVPixelBufferRef) pixelBuffer
+{
+    
+    // Create a UIImage from the frame
+    char* base_address = CVPixelBufferGetBaseAddress(pixelBuffer);
+    unsigned int num_bytes = CVPixelBufferGetDataSize(pixelBuffer);
+    
+    NSData *rawData = [NSData dataWithBytes:base_address length:num_bytes];
+    return rawData;
+}
 
-#pragma mark 
+
+#pragma mark
 #pragma mark Primary initialisation helper methods
 
 - (Boolean) createContext

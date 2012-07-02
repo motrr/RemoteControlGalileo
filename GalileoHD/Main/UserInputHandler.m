@@ -3,7 +3,6 @@
 //
 
 #import "UserInputHandler.h"
-#import "TouchBeganRecogniser.h"
 #include <Accelerate/Accelerate.h>
 
 #include <GLKit/GLKMath.h>
@@ -25,10 +24,6 @@
         [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(localOrientationDidChange:) name: UIDeviceOrientationDidChangeNotification object: nil];
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
                 
-        // Add gesture recogniser for when touch first begins
-        TouchBeganRecogniser* touchBeganRecogniser = [[TouchBeganRecogniser alloc]  initWithTarget:self action:@selector(handleTouchBegan:)];
-        //[self.viewForGestureInput addGestureRecognizer:touchBeganRecogniser];
-        
         // Add touch handler for when finger is panned across the view
         UIPanGestureRecognizer* touchPanRecogniser = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleTouchPan:)];
         [touchPanRecogniser setMaximumNumberOfTouches:1];

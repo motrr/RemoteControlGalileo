@@ -16,6 +16,19 @@ LGT
 #define LogInfo printf
 #define LogError printf
 
+GLfloat unitSquareVertices[8] = {
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    0.0f, 1.0f,
+    1.0f, 1.0f
+};
+
+GLfloat originCentredSquareVertices[8] = {
+    -1.0f, -1.0f,
+    1.0f, -1.0f,
+    -1.0f, 1.0f,
+    1.0f, 1.0f
+};
 
 /* Compile a shader from the provided source(s) */
 GLint glueCompileShader(GLenum target, GLsizei count, const GLchar **sources, GLuint *shader)

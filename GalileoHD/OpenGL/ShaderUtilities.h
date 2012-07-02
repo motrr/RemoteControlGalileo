@@ -13,6 +13,17 @@ LGT
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 
+// Shader attributes
+enum {
+    ATTRIB_VERTEX,
+    ATTRIB_TEXTUREPOSITON,
+    NUM_ATTRIBUTES
+};
+
+GLfloat unitSquareVertices[8];
+
+GLfloat originCentredSquareVertices[8];
+
 GLint glueCompileShader(GLenum target, GLsizei count, const GLchar **sources, GLuint *shader);
 GLint glueLinkProgram(GLuint program);
 GLint glueValidateProgram(GLuint program);

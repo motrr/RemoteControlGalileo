@@ -28,7 +28,6 @@
 		309AAC70158AE9F7007015A9 /* VideoProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC69158AE9F7007015A9 /* VideoProcessor.m */; };
 		309AAC71158AE9F7007015A9 /* VideoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC6B158AE9F7007015A9 /* VideoRecorder.m */; };
 		309AAC72158AE9F7007015A9 /* VideoTransmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC6D158AE9F7007015A9 /* VideoTransmitter.m */; };
-		309AAC7C158AF094007015A9 /* TouchBeganRecogniser.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC79158AF094007015A9 /* TouchBeganRecogniser.m */; };
 		309AAC7D158AF094007015A9 /* OffscreenFBO.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC7B158AF094007015A9 /* OffscreenFBO.m */; };
 		309AAC7F158AF9A9007015A9 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309AAC7E158AF9A9007015A9 /* CoreMedia.framework */; };
 		309AAC81158AF9C4007015A9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309AAC80158AF9C4007015A9 /* AVFoundation.framework */; };
@@ -40,6 +39,8 @@
 		309AAC91158AFD87007015A9 /* IpAddress.c in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC90158AFD87007015A9 /* IpAddress.c */; };
 		309AAC94158AFE75007015A9 /* passThrough.frag in Resources */ = {isa = PBXBuildFile; fileRef = 309AAC92158AFE75007015A9 /* passThrough.frag */; };
 		309AAC95158AFE75007015A9 /* passThrough.vert in Resources */ = {isa = PBXBuildFile; fileRef = 309AAC93158AFE75007015A9 /* passThrough.vert */; };
+		30DC070615A0013000D74E9F /* OnscreenFBO.m in Sources */ = {isa = PBXBuildFile; fileRef = 30DC070515A0013000D74E9F /* OnscreenFBO.m */; };
+		30DC070915A0038600D74E9F /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 30DC070815A0038600D74E9F /* VideoView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,8 +87,6 @@
 		309AAC6D158AE9F7007015A9 /* VideoTransmitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoTransmitter.m; sourceTree = "<group>"; };
 		309AAC76158AEF9B007015A9 /* JPEGFragmentation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JPEGFragmentation.h; sourceTree = "<group>"; };
 		309AAC77158AF093007015A9 /* GKCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GKCommon.h; path = Initialisation/GKCommon.h; sourceTree = "<group>"; };
-		309AAC78158AF093007015A9 /* TouchBeganRecogniser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TouchBeganRecogniser.h; path = Main/TouchBeganRecogniser.h; sourceTree = "<group>"; };
-		309AAC79158AF094007015A9 /* TouchBeganRecogniser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TouchBeganRecogniser.m; path = Main/TouchBeganRecogniser.m; sourceTree = "<group>"; };
 		309AAC7A158AF094007015A9 /* OffscreenFBO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OffscreenFBO.h; sourceTree = "<group>"; };
 		309AAC7B158AF094007015A9 /* OffscreenFBO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OffscreenFBO.m; sourceTree = "<group>"; };
 		309AAC7E158AF9A9007015A9 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -101,6 +100,10 @@
 		309AAC90158AFD87007015A9 /* IpAddress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = IpAddress.c; path = Main/IpAddress.c; sourceTree = "<group>"; };
 		309AAC92158AFE75007015A9 /* passThrough.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = passThrough.frag; sourceTree = "<group>"; };
 		309AAC93158AFE75007015A9 /* passThrough.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = passThrough.vert; sourceTree = "<group>"; };
+		30DC070415A0013000D74E9F /* OnscreenFBO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnscreenFBO.h; sourceTree = "<group>"; };
+		30DC070515A0013000D74E9F /* OnscreenFBO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnscreenFBO.m; sourceTree = "<group>"; };
+		30DC070715A0038600D74E9F /* VideoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoView.h; path = Main/VideoView.h; sourceTree = "<group>"; };
+		30DC070815A0038600D74E9F /* VideoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoView.m; path = Main/VideoView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,8 +207,8 @@
 				30236308158A94C400B2DF09 /* Galileo.m */,
 				309AAC4E158AD560007015A9 /* VideoViewController.h */,
 				309AAC4F158AD560007015A9 /* VideoViewController.m */,
-				309AAC78158AF093007015A9 /* TouchBeganRecogniser.h */,
-				309AAC79158AF094007015A9 /* TouchBeganRecogniser.m */,
+				30DC070715A0038600D74E9F /* VideoView.h */,
+				30DC070815A0038600D74E9F /* VideoView.m */,
 				309AAC49158AD4BB007015A9 /* UserInputHandler.h */,
 				309AAC4A158AD4BB007015A9 /* UserInputHandler.m */,
 				309AAC51158AE2E8007015A9 /* DockConnectorController.h */,
@@ -222,10 +225,12 @@
 		309AAC61158AE960007015A9 /* OpenGL */ = {
 			isa = PBXGroup;
 			children = (
-				309AAC62158AE960007015A9 /* ShaderUtilities.c */,
-				309AAC63158AE960007015A9 /* ShaderUtilities.h */,
+				30DC070415A0013000D74E9F /* OnscreenFBO.h */,
+				30DC070515A0013000D74E9F /* OnscreenFBO.m */,
 				309AAC7A158AF094007015A9 /* OffscreenFBO.h */,
 				309AAC7B158AF094007015A9 /* OffscreenFBO.m */,
+				309AAC62158AE960007015A9 /* ShaderUtilities.c */,
+				309AAC63158AE960007015A9 /* ShaderUtilities.h */,
 				309AAC92158AFE75007015A9 /* passThrough.frag */,
 				309AAC93158AFE75007015A9 /* passThrough.vert */,
 			);
@@ -330,9 +335,10 @@
 				309AAC70158AE9F7007015A9 /* VideoProcessor.m in Sources */,
 				309AAC71158AE9F7007015A9 /* VideoRecorder.m in Sources */,
 				309AAC72158AE9F7007015A9 /* VideoTransmitter.m in Sources */,
-				309AAC7C158AF094007015A9 /* TouchBeganRecogniser.m in Sources */,
 				309AAC7D158AF094007015A9 /* OffscreenFBO.m in Sources */,
 				309AAC91158AFD87007015A9 /* IpAddress.c in Sources */,
+				30DC070615A0013000D74E9F /* OnscreenFBO.m in Sources */,
+				30DC070915A0038600D74E9F /* VideoView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

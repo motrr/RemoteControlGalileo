@@ -4,12 +4,14 @@
 
 #import "VideoViewController.h"
 #import  <QuartzCore/CALayer.h>
+#import "VideoView.h"
 
 #import <sys/socket.h>
 #import <netinet/in.h>
 
 
 #define ROTATION_ANIMATION_DURATION 0.5
+#define SHOW_RECORD_BUTTON  NO
 
 @implementation VideoViewController
 
@@ -35,29 +37,36 @@
     
 }
 
+- (void) dealloc
+{
+    NSLog(@"VideoViewController exiting");
+    //free(frame); look into this!?!?!
+}
+
 - (void) loadView
 {
     // Create the view which will show the received video
     self.wantsFullScreenLayout = YES;
-    self.view = [[UIImageView alloc]
+    self.view = [[VideoView alloc]
                  initWithFrame:[UIScreen mainScreen].applicationFrame];
-    [self.view.layer setMagnificationFilter:kCAFilterTrilinear];
+    //[self.view.layer setMagnificationFilter:kCAFilterTrilinear];
     [self.view setBackgroundColor:[UIColor blackColor]];
     
-    /*
-    // Add button for recording video
-    recordButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    recordButton.frame = CGRectMake(0,0,200,50);
-    recordButton.transform = CGAffineTransformMakeRotation(-M_PI/2);
-    recordButton.center = self.view.center;
-    recordButton.frame = CGRectApplyAffineTransform(recordButton.frame, CGAffineTransformMakeTranslation(110, 0));
-    
-    [recordButton setTitle:@"Start recording" forState:UIControlStateNormal];
-    [recordButton setTitleColor: [UIColor blackColor] forState: UIControlStateNormal];
-    [self.view addSubview:recordButton];
-    [recordButton addTarget:self action:@selector(recordButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    isRecording = NO;
-     */
+    if (SHOW_RECORD_BUTTON) {
+        
+        // Add button for recording video
+        recordButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        recordButton.frame = CGRectMake(0,0,200,50);
+        recordButton.transform = CGAffineTransformMakeRotation(-M_PI/2);
+        recordButton.center = self.view.center;
+        recordButton.frame = CGRectApplyAffineTransform(recordButton.frame, CGAffineTransformMakeTranslation(110, 0));
+        [recordButton setTitle:@"Start recording" forState:UIControlStateNormal];
+        [recordButton setTitleColor: [UIColor blackColor] forState: UIControlStateNormal];
+        [self.view addSubview:recordButton];
+        [recordButton addTarget:self action:@selector(recordButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        isRecording = NO;
+        
+    }
     
 }
 
@@ -222,45 +231,42 @@
             else {
                 
                 incoming_header = (JPEGFragmentHeaderStruct*) buffer;
-                //NSLog(@"frame num %u", incoming_header->frame_number);
                 
                 // Ignore old fragments
                 if (current_header->frame_number <= incoming_header->frame_number) {
-                    
-                    //NSLog(@"Fragment arrived");
-                    
+
                     // If the fragment is from a later frame, display current frame then copy in new header and start bytes
                     if (current_header->frame_number < incoming_header->frame_number) {
                         
-                        // Display
-                        //NSLog(@"Recieved frame %u", current_header->frame_number);
-                        /*
-                         printf("\n");
-                         for (int j = sizeof(JPEGFragmentHeaderStruct); j<current_header->total_length+sizeof(JPEGFragmentHeaderStruct); j++) {
-                         printf( "%c", frame[j] );
-                         }
-                         printf("\n");
-                         */
+                        // Create pixel buffer from image data bytes
+                        CVPixelBufferRef pixelBuffer = NULL;
+                        unsigned int width = 128;
+                        unsigned int height = 96;
+                        CVPixelBufferCreateWithBytes(NULL,
+                                                     width, height,
+                                                     kCVPixelFormatType_32BGRA,
+                                                     (frame+sizeof(JPEGFragmentHeaderStruct)),
+                                                     width*4, 
+                                                     NULL, 0, NULL,
+                                                     &pixelBuffer);
                         
-                        // Decompress image and display on the view controller's view
-                        imageData = [NSData dataWithBytes:(frame+sizeof(JPEGFragmentHeaderStruct)) length:current_header->total_length];
-                        [self.view performSelectorOnMainThread:@selector(setImage:) withObject:[UIImage imageWithData:imageData] waitUntilDone:YES];
-                        
+                        // Render the pixel buffer using OpenGL
+                        [self.view performSelectorOnMainThread:@selector(renderPixelBuffer:) withObject:(__bridge id)(pixelBuffer) waitUntilDone:YES];
                         
                         // Copy new header and start bytes
                         memcpy(frame, buffer, sizeof(JPEGFragmentHeaderStruct) + JPEG_HEADER_LENGTH);
                         
                     }
-                    
+                        
                     // Insert new fragment into frame at the correct position
                     unsigned int off = incoming_header->fragment_offset;
                     memcpy((frame+off), (buffer+((sizeof(JPEGFragmentHeaderStruct)+JPEG_HEADER_LENGTH))), incoming_header->fragment_length);
-                    
-                    
+                        
                     
                 }
                 
                 else NSLog(@"Warning - old fragment arrived");
+                
             } 
             
         }
