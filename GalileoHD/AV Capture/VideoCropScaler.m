@@ -2,7 +2,7 @@
 //  Copyright (c) 2012 Swift Navigation. All rights reserved.
 //
 
-#import "VideoProcessor.h"
+#import "VideoCropScaler.h"
 #import "VideoTransmitter.h"
 #import "OffscreenFBO.h"
 
@@ -10,7 +10,7 @@
 #define OUTPUT_WIDTH    128
 #define OUTPUT_HEIGHT   96
 
-@implementation VideoProcessor
+@implementation VideoCropScaler
 
 @synthesize cameraOrientation;
 @synthesize zoomFactor;

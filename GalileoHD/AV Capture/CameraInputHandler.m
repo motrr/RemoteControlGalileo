@@ -3,7 +3,7 @@
 //
 
 #import "CameraInputHandler.h"
-#import "VideoProcessor.h"
+#import "VideoCropScaler.h"
 #import "VideoTransmitter.h"
 #import "VideoRecorder.h"
 
@@ -23,7 +23,7 @@
         video_quality = AVCaptureSessionPresetHigh; 
         
         videoTransmitter = [[VideoTransmitter alloc] init];
-        videoProcessor = [[VideoProcessor alloc] initWithTransmitter:videoTransmitter];
+        videoProcessor = [[VideoCropScaler alloc] initWithTransmitter:videoTransmitter];
         videoRecorder = [[VideoRecorder alloc] init];
     
     }

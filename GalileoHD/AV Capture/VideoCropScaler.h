@@ -18,7 +18,7 @@
 @class VideoTransmitter;
 @class OffscreenFBO;
 
-@interface VideoProcessor : NSObject
+@interface VideoCropScaler : NSObject
 {
     // Transmitter to whom we send out frames
     VideoTransmitter* videoTransmitter;
@@ -71,7 +71,7 @@
 
 
 // Class extension hides private methods
-@interface VideoProcessor (private)
+@interface VideoCropScaler (private)
 
 // Primary initialisation
 - (Boolean) createContext;

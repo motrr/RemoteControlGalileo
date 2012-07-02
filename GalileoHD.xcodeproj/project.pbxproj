@@ -19,13 +19,14 @@
 		302362FF158A933300B2DF09 /* GKSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 302362FC158A933300B2DF09 /* GKSessionManager.m */; };
 		30236309158A94C400B2DF09 /* Galileo.m in Sources */ = {isa = PBXBuildFile; fileRef = 30236308158A94C400B2DF09 /* Galileo.m */; };
 		3023630C158A957D00B2DF09 /* GKNetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3023630B158A957D00B2DF09 /* GKNetController.m */; };
+		3069D8A515A16F4C0038DAAF /* VideoEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 3069D8A415A16F4C0038DAAF /* VideoEncoder.m */; };
 		309AAC4C158AD4BB007015A9 /* UserInputHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC4A158AD4BB007015A9 /* UserInputHandler.m */; };
 		309AAC50158AD560007015A9 /* VideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC4F158AD560007015A9 /* VideoViewController.m */; };
 		309AAC54158AE2E8007015A9 /* DockConnectorController.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC52158AE2E8007015A9 /* DockConnectorController.m */; };
 		309AAC55158AE2E8007015A9 /* UIDevice+ModelDetection.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC53158AE2E8007015A9 /* UIDevice+ModelDetection.m */; };
 		309AAC64158AE960007015A9 /* ShaderUtilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC62158AE960007015A9 /* ShaderUtilities.c */; };
 		309AAC6F158AE9F7007015A9 /* CameraInputHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC67158AE9F7007015A9 /* CameraInputHandler.m */; };
-		309AAC70158AE9F7007015A9 /* VideoProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC69158AE9F7007015A9 /* VideoProcessor.m */; };
+		309AAC70158AE9F7007015A9 /* VideoCropScaler.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC69158AE9F7007015A9 /* VideoCropScaler.m */; };
 		309AAC71158AE9F7007015A9 /* VideoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC6B158AE9F7007015A9 /* VideoRecorder.m */; };
 		309AAC72158AE9F7007015A9 /* VideoTransmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC6D158AE9F7007015A9 /* VideoTransmitter.m */; };
 		309AAC7D158AF094007015A9 /* OffscreenFBO.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC7B158AF094007015A9 /* OffscreenFBO.m */; };
@@ -67,6 +68,8 @@
 		3023630A158A957D00B2DF09 /* GKNetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GKNetController.h; path = Main/GKNetController.h; sourceTree = "<group>"; };
 		3023630B158A957D00B2DF09 /* GKNetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GKNetController.m; path = Main/GKNetController.m; sourceTree = "<group>"; };
 		3023630D158A9EEF00B2DF09 /* IpAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IpAddress.h; path = Main/IpAddress.h; sourceTree = "<group>"; };
+		3069D8A315A16F4C0038DAAF /* VideoEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoEncoder.h; sourceTree = "<group>"; };
+		3069D8A415A16F4C0038DAAF /* VideoEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoEncoder.m; sourceTree = "<group>"; };
 		309AAC49158AD4BB007015A9 /* UserInputHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserInputHandler.h; path = Main/UserInputHandler.h; sourceTree = "<group>"; };
 		309AAC4A158AD4BB007015A9 /* UserInputHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserInputHandler.m; path = Main/UserInputHandler.m; sourceTree = "<group>"; };
 		309AAC4E158AD560007015A9 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoViewController.h; path = Main/VideoViewController.h; sourceTree = "<group>"; };
@@ -79,8 +82,8 @@
 		309AAC63158AE960007015A9 /* ShaderUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderUtilities.h; sourceTree = "<group>"; };
 		309AAC66158AE9F7007015A9 /* CameraInputHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraInputHandler.h; sourceTree = "<group>"; };
 		309AAC67158AE9F7007015A9 /* CameraInputHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraInputHandler.m; sourceTree = "<group>"; };
-		309AAC68158AE9F7007015A9 /* VideoProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoProcessor.h; sourceTree = "<group>"; };
-		309AAC69158AE9F7007015A9 /* VideoProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoProcessor.m; sourceTree = "<group>"; };
+		309AAC68158AE9F7007015A9 /* VideoCropScaler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCropScaler.h; sourceTree = "<group>"; };
+		309AAC69158AE9F7007015A9 /* VideoCropScaler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoCropScaler.m; sourceTree = "<group>"; };
 		309AAC6A158AE9F7007015A9 /* VideoRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRecorder.h; sourceTree = "<group>"; };
 		309AAC6B158AE9F7007015A9 /* VideoRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRecorder.m; sourceTree = "<group>"; };
 		309AAC6C158AE9F7007015A9 /* VideoTransmitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoTransmitter.h; sourceTree = "<group>"; };
@@ -243,8 +246,10 @@
 			children = (
 				309AAC66158AE9F7007015A9 /* CameraInputHandler.h */,
 				309AAC67158AE9F7007015A9 /* CameraInputHandler.m */,
-				309AAC68158AE9F7007015A9 /* VideoProcessor.h */,
-				309AAC69158AE9F7007015A9 /* VideoProcessor.m */,
+				309AAC68158AE9F7007015A9 /* VideoCropScaler.h */,
+				309AAC69158AE9F7007015A9 /* VideoCropScaler.m */,
+				3069D8A315A16F4C0038DAAF /* VideoEncoder.h */,
+				3069D8A415A16F4C0038DAAF /* VideoEncoder.m */,
 				309AAC6A158AE9F7007015A9 /* VideoRecorder.h */,
 				309AAC6B158AE9F7007015A9 /* VideoRecorder.m */,
 				309AAC6C158AE9F7007015A9 /* VideoTransmitter.h */,
@@ -332,13 +337,14 @@
 				309AAC55158AE2E8007015A9 /* UIDevice+ModelDetection.m in Sources */,
 				309AAC64158AE960007015A9 /* ShaderUtilities.c in Sources */,
 				309AAC6F158AE9F7007015A9 /* CameraInputHandler.m in Sources */,
-				309AAC70158AE9F7007015A9 /* VideoProcessor.m in Sources */,
+				309AAC70158AE9F7007015A9 /* VideoCropScaler.m in Sources */,
 				309AAC71158AE9F7007015A9 /* VideoRecorder.m in Sources */,
 				309AAC72158AE9F7007015A9 /* VideoTransmitter.m in Sources */,
 				309AAC7D158AF094007015A9 /* OffscreenFBO.m in Sources */,
 				309AAC91158AFD87007015A9 /* IpAddress.c in Sources */,
 				30DC070615A0013000D74E9F /* OnscreenFBO.m in Sources */,
 				30DC070915A0038600D74E9F /* VideoView.m in Sources */,
+				3069D8A515A16F4C0038DAAF /* VideoEncoder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

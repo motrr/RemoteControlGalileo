@@ -12,7 +12,7 @@
 #import <CoreVideo/CoreVideo.h>
 #import <CoreMedia/CoreMedia.h>
 
-@class VideoProcessor;
+@class VideoCropScaler;
 @class VideoTransmitter;
 @class VideoRecorder;
 
@@ -22,7 +22,7 @@
     Boolean hasBeganCapture;
     
     // Objects for cropping, scaling, compressing and sending frames
-    __strong VideoProcessor* videoProcessor;
+    __strong VideoCropScaler* videoProcessor;
     __strong VideoTransmitter* videoTransmitter;
     
     // Object for recording frames to storage
