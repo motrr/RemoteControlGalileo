@@ -10,6 +10,14 @@
 
 @implementation VideoEncoder
 
-
+- (NSData*) frameDataFromPixelBuffer: (CVPixelBufferRef) pixelBuffer
+{
+    // Create NSData from the frame
+    char* base_address = CVPixelBufferGetBaseAddress(pixelBuffer);
+    unsigned int num_bytes = CVPixelBufferGetDataSize(pixelBuffer);
+    
+    NSData *rawData = [NSData dataWithBytes:base_address length:num_bytes];
+    return rawData;
+}
 
 @end

@@ -15,14 +15,18 @@
 #define FRONT_FACING_CAMERA 0
 #define REAR_FACING_CAMERA  1
 
+@class VideoEncoder;
 @class VideoTransmitter;
 @class OffscreenFBO;
 
 @interface VideoCropScaler : NSObject
 {
+    // Encoder used to encode frame prior to sending
+    VideoEncoder* videoEncoder;
+    
     // Transmitter to whom we send out frames
     VideoTransmitter* videoTransmitter;
-    
+        
     // Incoming and outgoing pixel buffer
     CVPixelBufferRef inputPixelBuffer;
     CVPixelBufferRef outputPixelBuffer;

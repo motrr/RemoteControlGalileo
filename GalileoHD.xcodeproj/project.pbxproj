@@ -88,7 +88,6 @@
 		309AAC6B158AE9F7007015A9 /* VideoRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRecorder.m; sourceTree = "<group>"; };
 		309AAC6C158AE9F7007015A9 /* VideoTransmitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoTransmitter.h; sourceTree = "<group>"; };
 		309AAC6D158AE9F7007015A9 /* VideoTransmitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoTransmitter.m; sourceTree = "<group>"; };
-		309AAC76158AEF9B007015A9 /* JPEGFragmentation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JPEGFragmentation.h; sourceTree = "<group>"; };
 		309AAC77158AF093007015A9 /* GKCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GKCommon.h; path = Initialisation/GKCommon.h; sourceTree = "<group>"; };
 		309AAC7A158AF094007015A9 /* OffscreenFBO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OffscreenFBO.h; sourceTree = "<group>"; };
 		309AAC7B158AF094007015A9 /* OffscreenFBO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OffscreenFBO.m; sourceTree = "<group>"; };
@@ -254,7 +253,6 @@
 				309AAC6B158AE9F7007015A9 /* VideoRecorder.m */,
 				309AAC6C158AE9F7007015A9 /* VideoTransmitter.h */,
 				309AAC6D158AE9F7007015A9 /* VideoTransmitter.m */,
-				309AAC76158AEF9B007015A9 /* JPEGFragmentation.h */,
 			);
 			name = "AV Capture";
 			path = "GalileoHD/AV Capture";

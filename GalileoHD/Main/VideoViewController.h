@@ -5,7 +5,6 @@
 
 #import <UIKit/UIKit.h>
 #import "GalileoCommon.h"
-#import "JPEGFragmentation.h"
 
 @interface VideoViewController : UIViewController <OrientationUpdateResponderDelegate>
 {
@@ -19,11 +18,6 @@
     // Keep track of local and remote orientation
     UIDeviceOrientation currentLocalOrientation;
     UIDeviceOrientation currentRemoteOrientation;
-    
-    // Current JPEG frame being constructed
-    char * frame;
-    JPEGFragmentHeaderStruct * current_header;
-    JPEGFragmentHeaderStruct * incoming_header;
     
     // Lock when busy
     BOOL isLocked;

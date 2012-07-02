@@ -25,10 +25,6 @@
 {
     if (self = [super init]) {
         
-        frame = calloc(AV_UDP_BUFFER_LEN, sizeof(char));
-        current_header = (JPEGFragmentHeaderStruct*) frame;
-        current_header->frame_number = 0;
-        current_header->total_length = 0;
         port = AV_UDP_PORT;
         isLocked = NO;
         
@@ -40,7 +36,6 @@
 - (void) dealloc
 {
     NSLog(@"VideoViewController exiting");
-    //free(frame); look into this!?!?!
 }
 
 - (void) loadView
@@ -110,7 +105,6 @@
 {
     NSLog(@"VideoViewController exiting");
     close(videoRxSocket);
-    free(frame);
 }
 
 
@@ -230,42 +224,20 @@
             }
             else {
                 
-                incoming_header = (JPEGFragmentHeaderStruct*) buffer;
+                // Create pixel buffer from image data bytes
+                CVPixelBufferRef pixelBuffer = NULL;
+                unsigned int width = 64;
+                unsigned int height = 48;
+                CVPixelBufferCreateWithBytes(NULL,
+                                             width, height,
+                                             kCVPixelFormatType_32BGRA,
+                                             buffer,
+                                             width*4, 
+                                             NULL, 0, NULL,
+                                             &pixelBuffer);
                 
-                // Ignore old fragments
-                if (current_header->frame_number <= incoming_header->frame_number) {
-
-                    // If the fragment is from a later frame, display current frame then copy in new header and start bytes
-                    if (current_header->frame_number < incoming_header->frame_number) {
-                        
-                        // Create pixel buffer from image data bytes
-                        CVPixelBufferRef pixelBuffer = NULL;
-                        unsigned int width = 128;
-                        unsigned int height = 96;
-                        CVPixelBufferCreateWithBytes(NULL,
-                                                     width, height,
-                                                     kCVPixelFormatType_32BGRA,
-                                                     (frame+sizeof(JPEGFragmentHeaderStruct)),
-                                                     width*4, 
-                                                     NULL, 0, NULL,
-                                                     &pixelBuffer);
-                        
-                        // Render the pixel buffer using OpenGL
-                        [self.view performSelectorOnMainThread:@selector(renderPixelBuffer:) withObject:(__bridge id)(pixelBuffer) waitUntilDone:YES];
-                        
-                        // Copy new header and start bytes
-                        memcpy(frame, buffer, sizeof(JPEGFragmentHeaderStruct) + JPEG_HEADER_LENGTH);
-                        
-                    }
-                        
-                    // Insert new fragment into frame at the correct position
-                    unsigned int off = incoming_header->fragment_offset;
-                    memcpy((frame+off), (buffer+((sizeof(JPEGFragmentHeaderStruct)+JPEG_HEADER_LENGTH))), incoming_header->fragment_length);
-                        
-                    
-                }
-                
-                else NSLog(@"Warning - old fragment arrived");
+                // Render the pixel buffer using OpenGL
+                [self.view performSelectorOnMainThread:@selector(renderPixelBuffer:) withObject:(__bridge id)(pixelBuffer) waitUntilDone:YES];
                 
             } 
             
@@ -276,6 +248,14 @@
     
 }
 
+void pixelBufferReleaseCallback(void *releaseRefCon, const void *baseAddress)
+{
+    // Alias to the entire buffer, including the JPEG framgment header
+    char* old_frame = (char*)baseAddress;
+    
+    // Deallocate
+    free(old_frame);
+}
 
 
 @end

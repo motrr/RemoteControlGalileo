@@ -19,12 +19,6 @@
     char buf[AV_UDP_BUFFER_LEN];
     struct sockaddr_in si_other;
     int videoTxSocket;
-    
-    char * fragment;
-    char * jpeg_start;
-    
-    unsigned int frame_sequence_number;
-    
 }
 
 // Open socket, send frames, then close socket

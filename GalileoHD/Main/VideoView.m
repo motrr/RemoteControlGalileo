@@ -72,6 +72,9 @@
     CVOpenGLESTextureCacheFlush(inputTextureCache, 0);
     CFRelease(inputTexture);
     
+    // Cleanup pixel buffer
+    CVPixelBufferRelease(inputPixelBuffer);
+    
 }
 
 

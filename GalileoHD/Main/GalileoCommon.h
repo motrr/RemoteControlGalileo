@@ -9,7 +9,7 @@
 #define AV_UDP_PORT 1234
 
 // Size of UDP buffers for transmiting audio/video
-#define AV_UDP_BUFFER_LEN 40000
+#define AV_UDP_BUFFER_LEN 15000
 
 // Forward declarations
 @protocol NetworkControllerDelegate;
