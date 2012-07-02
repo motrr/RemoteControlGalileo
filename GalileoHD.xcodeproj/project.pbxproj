@@ -412,6 +412,7 @@
 		302362ED158A8FEE00B2DF09 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Library/Developer/Xcode/DerivedData/Build/Products/Release-iphoneos\"",
@@ -419,8 +420,10 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GalileoHD/GalileoHD-Prefix.pch";
+				HEADER_SEARCH_PATHS = libvpx/include;
 				INFOPLIST_FILE = "GalileoHD/GalileoHD-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = libvpx/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -429,6 +432,7 @@
 		302362EE158A8FEE00B2DF09 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Library/Developer/Xcode/DerivedData/Build/Products/Release-iphoneos\"",
@@ -436,8 +440,10 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GalileoHD/GalileoHD-Prefix.pch";
+				HEADER_SEARCH_PATHS = libvpx/include;
 				INFOPLIST_FILE = "GalileoHD/GalileoHD-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = libvpx/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
