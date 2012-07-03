@@ -63,7 +63,7 @@
     glEnableVertexAttribArray(ATTRIB_TEXTUREPOSITON);
     glEnableVertexAttribArray(ATTRIB_TEXTUREPOSITON);
     
-    // Render the (cropped) video frame to the screen
+    // Render the full video frame to the screen
     glUseProgram(passThroughProgram);
     [onscreenFrameBuffer render]; // will set viewport itself
     

@@ -159,7 +159,7 @@
     
 	// Set the video output to store frame in BGRA (supposed to be well supported for Core Graphics)
 	NSString* key = (NSString*)kCVPixelBufferPixelFormatTypeKey; 
-	NSNumber* value = [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]; 
+	NSNumber* value = [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA];
 	NSDictionary* videoSettings = [NSDictionary dictionaryWithObject:value forKey:key]; 
 	[captureOutput setVideoSettings:videoSettings];
     

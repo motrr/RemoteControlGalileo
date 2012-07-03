@@ -428,6 +428,7 @@
 				INFOPLIST_FILE = "GalileoHD/GalileoHD-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = libvpx/lib;
+				OTHER_LDFLAGS = "-lvpx";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -448,6 +449,7 @@
 				INFOPLIST_FILE = "GalileoHD/GalileoHD-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = libvpx/lib;
+				OTHER_LDFLAGS = "-lvpx";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

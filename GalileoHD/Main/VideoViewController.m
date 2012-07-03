@@ -10,7 +10,6 @@
 #import <sys/socket.h>
 #import <netinet/in.h>
 
-
 #define ROTATION_ANIMATION_DURATION 0.5
 #define SHOW_RECORD_BUTTON  NO
 

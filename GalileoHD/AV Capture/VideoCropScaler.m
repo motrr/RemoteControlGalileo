@@ -8,8 +8,9 @@
 #import "OffscreenFBO.h"
 
 #define JPEG_QUALITY_FACTOR     0.9
-#define OUTPUT_WIDTH    64
-#define OUTPUT_HEIGHT   48
+
+#define OUTPUT_WIDTH    GLOBAL_WIDTH
+#define OUTPUT_HEIGHT   GLOBAL_HEIGHT
 
 @implementation VideoCropScaler
 
@@ -38,6 +39,7 @@
         zoomFactor = 1.0;
         
         videoEncoder = [[VideoEncoder alloc] init];
+        videoDecoder = [[VideoDecoder alloc] init];
         videoTransmitter = initVideoTransmitter;
         
         if (![self createContext]) NSLog(@"Problem setting up context");
@@ -119,16 +121,12 @@
     CVOpenGLESTextureCacheFlush(inputTextureCache, 0);
     CFRelease(inputTexture);
     
-    // Delegate processing of output pixel buffer
-    CVPixelBufferLockBaseAddress(outputPixelBuffer, 0);
-    //
+    // Encode then decode image
     NSData *imageData = [videoEncoder frameDataFromPixelBuffer:outputPixelBuffer];
     [videoTransmitter sendFrame:imageData];
-    //
-    CVPixelBufferUnlockBaseAddress(outputPixelBuffer, 0);
     
     // Cleanup other textures (but do not release)
-    glBindTexture(CVOpenGLESTextureGetTarget(outputTexture), 0); // unbind   
+    glBindTexture(CVOpenGLESTextureGetTarget(outputTexture), 0); // unbind
     CVOpenGLESTextureCacheFlush(outputTextureCache, 0);
     
     // Release the input pixel buffer
@@ -270,8 +268,8 @@
     textureSamplingRect.origin.y += (oldSize.height - newSize.height) / 2;
     textureSamplingRect.size = newSize;
 
-    textureVertices[0] = CGRectGetMinX(textureSamplingRect);
-    textureVertices[1] = CGRectGetMinY(textureSamplingRect);
+    textureVertices[0] = CGRectGetMaxX(textureSamplingRect);
+    textureVertices[1] = CGRectGetMaxY(textureSamplingRect);
     //
     textureVertices[2] = CGRectGetMaxX(textureSamplingRect);
     textureVertices[3] = CGRectGetMinY(textureSamplingRect);
@@ -279,8 +277,8 @@
     textureVertices[4] = CGRectGetMinX(textureSamplingRect);
     textureVertices[5] = CGRectGetMaxY(textureSamplingRect);
     //
-    textureVertices[6] = CGRectGetMaxX(textureSamplingRect);
-    textureVertices[7] = CGRectGetMaxY(textureSamplingRect);
+    textureVertices[6] = CGRectGetMinX(textureSamplingRect);
+    textureVertices[7] = CGRectGetMinY(textureSamplingRect);
 }
 
 - (CGRect)textureSamplingRectForCroppingTextureWithAspectRatio:(CGSize)textureAspectRatio toAspectRatio:(CGSize)croppingAspectRatio

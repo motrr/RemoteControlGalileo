@@ -12,6 +12,8 @@
 #import <OpenGLES/EAGLDrawable.h>
 #import <OpenGLES/ES2/glext.h>
 
+#import "VideoDecoder.h"
+
 #define FRONT_FACING_CAMERA 0
 #define REAR_FACING_CAMERA  1
 
@@ -23,6 +25,7 @@
 {
     // Encoder used to encode frame prior to sending
     VideoEncoder* videoEncoder;
+    VideoDecoder* videoDecoder;
     
     // Transmitter to whom we send out frames
     VideoTransmitter* videoTransmitter;
