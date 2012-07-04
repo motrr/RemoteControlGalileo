@@ -192,7 +192,7 @@
             else {
                 
                 // Decode data buffer into pixel buffer
-                NSData* data = [NSData dataWithBytes:buffer length:data_len];
+                NSData* data = [NSData dataWithBytesNoCopy:buffer length:data_len freeWhenDone:NO];
                 CVPixelBufferRef pixelBuffer = [videoDecoder decodeFrameData:data];
                 
                 // Render the pixel buffer using OpenGL

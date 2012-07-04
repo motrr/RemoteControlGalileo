@@ -55,44 +55,13 @@ unsigned char * output[1024*1024];
 
 static vpx_codec_err_t  decoder_res;
 
-void decode_frame(unsigned char* frame, int frame_sz, char* ret) {
-    
-    vpx_codec_iter_t  iter = NULL;
-    decoder_frame_cnt++;
-    
-    /* Decode the frame */
-    if(vpx_codec_decode(&decoder_codec, frame, frame_sz, NULL, 0))
-        decoder_die_codec(&decoder_codec, "Failed to decode frame");
-    
-    /* Write decoded data to buffer */
-    vpx_image_t * img = vpx_codec_get_frame(&decoder_codec, &iter);
-    
-    unsigned int plane, y;
-    
-    for(plane=0; plane < 3; plane++) {
-        
-        unsigned char *buf =img->planes[plane];
-        //
-        for(y=0; y < (plane ? (img->d_h + 1) >> 1 : img->d_h); y++) {
-            
-            memcpy(ret, buf, (plane ? (img->d_w + 1) >> 1 : img->d_w));
-            ret += (plane ? (img->d_w + 1) >> 1 : img->d_w);
-            buf += img->stride[plane];
-            
-        }
-        
-    }
-    
-}
-
-
 @implementation VideoDecoder
 
 - (id) init
 {
     if (self = [super init]) {
         
-        luma = (unsigned char*) calloc(VIDEO_WIDTH*VIDEO_HEIGHT*4, 1);
+        //luma = (unsigned char*) calloc(VIDEO_WIDTH*VIDEO_HEIGHT*4, 1);
         
         (void)decoder_res;
         
@@ -116,25 +85,42 @@ void decode_frame(unsigned char* frame, int frame_sz, char* ret) {
 
 - (CVPixelBufferRef) decodeFrameData: (NSData*) data
 {
-    // Seperate data into frame and frame header
-    unsigned char * frame = (unsigned char *) [data bytes];
+    vpx_codec_iter_t  iter = NULL;
+    decoder_frame_cnt++;
     
-    // Decode frame, luma component only
-    decode_frame(frame, [data length], (char*)luma);
+    /* Decode the frame */
+    if(vpx_codec_decode(&decoder_codec, [data bytes], [data length], NULL, 0))
+        decoder_die_codec(&decoder_codec, "Failed to decode frame");
     
-    // Convert to RGB (still greyscale
-    char* bgra_frame = malloc(VIDEO_WIDTH*VIDEO_HEIGHT*4);
-    for (unsigned int i=0; i<VIDEO_WIDTH*VIDEO_HEIGHT; i++) {
-        bgra_frame[4*i] = luma[i];
-        bgra_frame[4*i+1] = luma[i];
-        bgra_frame[4*i+2] = luma[i];
-        bgra_frame[4*i+3] = 0xFF;
+    /* Write decoded data to buffer */
+    vpx_image_t * img = vpx_codec_get_frame(&decoder_codec, &iter);
+    
+    // Grab the luma component
+    luma = img->planes[0];
+    unsigned int stride = img->stride[0];
+    
+    unsigned int width = VIDEO_WIDTH;
+    unsigned int height = VIDEO_HEIGHT;
+    
+    // Convert to RGB pixelbuffer (still greyscale
+    char* bgra_frame = malloc(width*height*4);
+    for (unsigned int i=0; i<height; i++) {
+        for (unsigned int j=0; j<width; j++) {
+            
+            unsigned int src_idx = (i*stride) + j;
+            unsigned int dst_idx = (i*width) + j;
+            
+            bgra_frame[4*dst_idx] = luma[src_idx];
+            bgra_frame[4*dst_idx+1] = luma[src_idx];
+            bgra_frame[4*dst_idx+2] = luma[src_idx];
+            bgra_frame[4*dst_idx+3] = 0xFF;
+            
+        }
     }
     
     // Create pixel buffer from image data bytes
     CVPixelBufferRef pixelBuffer = NULL;
-    unsigned int width = VIDEO_WIDTH;
-    unsigned int height = VIDEO_HEIGHT;
+
     CVPixelBufferCreateWithBytes(NULL,
                                  width, height,
                                  kCVPixelFormatType_32BGRA,
