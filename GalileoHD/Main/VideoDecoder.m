@@ -110,7 +110,7 @@ static vpx_codec_err_t  decoder_res;
             unsigned int src_idx = (i*stride) + j;
             unsigned int dst_idx = (i*width) + j;
             
-            bgra_frame[4*dst_idx] = luma[src_idx];
+            bgra_frame[4*dst_idx+0] = luma[src_idx];
             bgra_frame[4*dst_idx+1] = luma[src_idx];
             bgra_frame[4*dst_idx+2] = luma[src_idx];
             bgra_frame[4*dst_idx+3] = 0xFF;
@@ -126,10 +126,19 @@ static vpx_codec_err_t  decoder_res;
                                  kCVPixelFormatType_32BGRA,
                                  bgra_frame,
                                  width*4,
-                                 NULL, 0, NULL,
+                                 pixelBufferReleaseCallback, 0, NULL,
                                  &pixelBuffer);
-        
+    
     return pixelBuffer;
+}
+
+void pixelBufferReleaseCallback(void *releaseRefCon, const void *baseAddress)
+{
+    // Alias to the entire buffer, including the JPEG framgment header
+    char* old_frame = (char*)baseAddress;
+    
+    // Deallocate
+    free(old_frame);
 }
 
 

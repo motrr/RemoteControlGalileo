@@ -207,14 +207,5 @@
     
 }
 
-void pixelBufferReleaseCallback(void *releaseRefCon, const void *baseAddress)
-{
-    // Alias to the entire buffer, including the JPEG framgment header
-    char* old_frame = (char*)baseAddress;
-    
-    // Deallocate
-    free(old_frame);
-}
-
 
 @end
