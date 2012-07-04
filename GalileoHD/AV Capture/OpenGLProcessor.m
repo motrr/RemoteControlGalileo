@@ -4,7 +4,7 @@
 
 #import "OpenGLProcessor.h"
 #import "Vp8Encoder.h"
-#import "RtpPacketSender.h"
+#import "PacketSender.h"
 #import "OffscreenFBO.h"
 
 #define JPEG_QUALITY_FACTOR     0.9

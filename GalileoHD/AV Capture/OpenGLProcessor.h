@@ -16,7 +16,7 @@
 #define REAR_FACING_CAMERA  1
 
 @class Vp8Encoder;
-@class RtpPacketSender;
+@class PacketSender;
 @class OffscreenFBO;
 
 // After frames are processed by the GPU we pass the result to a delegate

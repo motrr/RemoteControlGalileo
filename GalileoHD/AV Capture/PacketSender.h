@@ -10,7 +10,7 @@
 #import <sys/socket.h>
 #import <netinet/in.h>
 
-@interface RtpPacketSender : NSObject
+@interface PacketSender : NSObject
 {
     // Socket open flag
     BOOL socketHasBeenOpened;

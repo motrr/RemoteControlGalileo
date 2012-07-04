@@ -16,7 +16,7 @@
 
 @class Vp8Encoder;
 @class Vp8RtpPacketiser;
-@class RtpPacketSender;
+@class PacketSender;
 
 @class VideoRecorder;
 
@@ -29,7 +29,7 @@
     OpenGLProcessor* videoProcessor;
     Vp8Encoder* videoEncoder;
     Vp8RtpPacketiser* videoPacketiser;
-    RtpPacketSender* packetSender;
+    PacketSender* packetSender;
     
     
     // Object for recording frames to storage

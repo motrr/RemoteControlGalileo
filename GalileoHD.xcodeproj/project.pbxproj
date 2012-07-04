@@ -29,7 +29,7 @@
 		309AAC64158AE960007015A9 /* ShaderUtilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC62158AE960007015A9 /* ShaderUtilities.c */; };
 		309AAC6F158AE9F7007015A9 /* CameraInputHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC67158AE9F7007015A9 /* CameraInputHandler.m */; };
 		309AAC70158AE9F7007015A9 /* OpenGLProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC69158AE9F7007015A9 /* OpenGLProcessor.m */; };
-		309AAC72158AE9F7007015A9 /* RtpPacketSender.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC6D158AE9F7007015A9 /* RtpPacketSender.m */; };
+		309AAC72158AE9F7007015A9 /* PacketSender.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC6D158AE9F7007015A9 /* PacketSender.m */; };
 		309AAC7D158AF094007015A9 /* OffscreenFBO.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC7B158AF094007015A9 /* OffscreenFBO.m */; };
 		309AAC7F158AF9A9007015A9 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309AAC7E158AF9A9007015A9 /* CoreMedia.framework */; };
 		309AAC81158AF9C4007015A9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309AAC80158AF9C4007015A9 /* AVFoundation.framework */; };
@@ -90,8 +90,8 @@
 		309AAC67158AE9F7007015A9 /* CameraInputHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraInputHandler.m; sourceTree = "<group>"; };
 		309AAC68158AE9F7007015A9 /* OpenGLProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLProcessor.h; sourceTree = "<group>"; };
 		309AAC69158AE9F7007015A9 /* OpenGLProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenGLProcessor.m; sourceTree = "<group>"; };
-		309AAC6C158AE9F7007015A9 /* RtpPacketSender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RtpPacketSender.h; sourceTree = "<group>"; };
-		309AAC6D158AE9F7007015A9 /* RtpPacketSender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RtpPacketSender.m; sourceTree = "<group>"; };
+		309AAC6C158AE9F7007015A9 /* PacketSender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PacketSender.h; sourceTree = "<group>"; };
+		309AAC6D158AE9F7007015A9 /* PacketSender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PacketSender.m; sourceTree = "<group>"; };
 		309AAC77158AF093007015A9 /* GKCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GKCommon.h; path = Initialisation/GKCommon.h; sourceTree = "<group>"; };
 		309AAC7A158AF094007015A9 /* OffscreenFBO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OffscreenFBO.h; sourceTree = "<group>"; };
 		309AAC7B158AF094007015A9 /* OffscreenFBO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OffscreenFBO.m; sourceTree = "<group>"; };
@@ -269,8 +269,8 @@
 				3069D8A415A16F4C0038DAAF /* Vp8Encoder.m */,
 				306FC90115A39B4A00FA5DA7 /* Vp8RtpPacketiser.h */,
 				306FC90215A39B4A00FA5DA7 /* Vp8RtpPacketiser.m */,
-				309AAC6C158AE9F7007015A9 /* RtpPacketSender.h */,
-				309AAC6D158AE9F7007015A9 /* RtpPacketSender.m */,
+				309AAC6C158AE9F7007015A9 /* PacketSender.h */,
+				309AAC6D158AE9F7007015A9 /* PacketSender.m */,
 			);
 			name = "Video Tx";
 			path = "AV Capture";
@@ -354,7 +354,7 @@
 				309AAC64158AE960007015A9 /* ShaderUtilities.c in Sources */,
 				309AAC6F158AE9F7007015A9 /* CameraInputHandler.m in Sources */,
 				309AAC70158AE9F7007015A9 /* OpenGLProcessor.m in Sources */,
-				309AAC72158AE9F7007015A9 /* RtpPacketSender.m in Sources */,
+				309AAC72158AE9F7007015A9 /* PacketSender.m in Sources */,
 				309AAC7D158AF094007015A9 /* OffscreenFBO.m in Sources */,
 				309AAC91158AFD87007015A9 /* IpAddress.c in Sources */,
 				30DC070615A0013000D74E9F /* OnscreenFBO.m in Sources */,

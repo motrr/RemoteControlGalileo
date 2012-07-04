@@ -2,10 +2,10 @@
 //  Copyright (c) 2012 Swift Navigation. All rights reserved.
 //
 
-#import "RtpPacketSender.h"
+#import "PacketSender.h"
 
 
-@implementation RtpPacketSender
+@implementation PacketSender
 
 - (id) init
 {

@@ -6,7 +6,7 @@
 
 #import "Vp8Encoder.h"
 #import "Vp8RtpPacketiser.h"
-#import "RtpPacketSender.h"
+#import "PacketSender.h"
 
 
 #define CAPTURE_FRAMES_PER_SECOND   15
@@ -30,7 +30,7 @@
         // The remainder of the video streaming pipeline objects
         videoEncoder = [[Vp8Encoder alloc] init];
         videoPacketiser = [[Vp8RtpPacketiser alloc] init];
-        packetSender = [[RtpPacketSender alloc] init];
+        packetSender = [[PacketSender alloc] init];
 
     
     }

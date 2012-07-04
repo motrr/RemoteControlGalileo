@@ -79,48 +79,6 @@ static int read_frame(FILE *f, vpx_image_t *img) {
     return res;
 }
 
-static void write_ivf_file_header(FILE *outfile,
-                                  const vpx_codec_enc_cfg_t *cfg,
-                                  int frame_cnt) {
-    char header[32];
-    
-    if(cfg->g_pass != VPX_RC_ONE_PASS && cfg->g_pass != VPX_RC_LAST_PASS)
-        return;
-    header[0] = 'D';
-    header[1] = 'K';
-    header[2] = 'I';
-    header[3] = 'F';
-    mem_put_le16(header+4,  0);                   /* version */
-    mem_put_le16(header+6,  32);                  /* headersize */
-    mem_put_le32(header+8,  fourcc);              /* headersize */
-    mem_put_le16(header+12, cfg->g_w);            /* width */
-    mem_put_le16(header+14, cfg->g_h);            /* height */
-    mem_put_le32(header+16, cfg->g_timebase.den); /* rate */
-    mem_put_le32(header+20, cfg->g_timebase.num); /* scale */
-    mem_put_le32(header+24, frame_cnt);           /* length */
-    mem_put_le32(header+28, 0);                   /* unused */
-    
-    if(fwrite(header, 1, 32, outfile));
-}
-
-
-static void write_ivf_frame_header(const vpx_codec_cx_pkt_t *pkt, char* header)
-{
-    //char             header[12];
-    vpx_codec_pts_t  pts;
-    
-    if(pkt->kind != VPX_CODEC_CX_FRAME_PKT)
-        return;
-    
-    pts = pkt->data.frame.pts;
-    mem_put_le32(header, pkt->data.frame.sz);
-    mem_put_le32(header+4, pts&0xFFFFFFFF);
-    mem_put_le32(header+8, pts >> 32);
-    
-    //if(fwrite(header, 1, 12, outfile));
-}
-
-
 @interface Vp8Encoder ()
 {
     vpx_codec_ctx_t      codec;
@@ -204,12 +162,9 @@ static void write_ivf_frame_header(const vpx_codec_cx_pkt_t *pkt, char* header)
     
     // Get access to raw pixel data
     CVPixelBufferLockBaseAddress(pixelBuffer, 0);
-    unsigned char* base_address = (unsigned char*) CVPixelBufferGetBaseAddress(pixelBuffer);// + UNKNOWN_IMG_OFFSET;
+    unsigned char* base_address = (unsigned char*) CVPixelBufferGetBaseAddress(pixelBuffer);
     
     // Alias to planes in source image
-    //unsigned char* y_plane_src = base_address;
-    //unsigned char* uv_planes = base_address + num_luma_pixels;// + 5*img->w; // Not sure why I have to do this but it works
-    
     unsigned char* bgra_planes = base_address;
     
     // Alias to planes in destination image
@@ -228,31 +183,13 @@ static void write_ivf_frame_header(const vpx_codec_cx_pkt_t *pkt, char* header)
         u_plane[i] = 0x00;
     }
     
-    /*
-    // Copy in the Y values
-    memcpy(y_plane_dst, y_plane_src, num_luma_pixels);
-    
-    // Seperate out the V and U components
-    for (unsigned int i = 0; i < num_chroma_pixels; i++) {
-        v_plane[i] = uv_planes[2*i];
-        u_plane[i] = uv_planes[2*i + 1];
-    }
-    */
-    
     // Run through encoder
     const vpx_codec_cx_pkt_t * pkt = [self encode_frame:img];
     
     CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
     
-    // Extract frame header from packet
-    unsigned char frame_hdr[12];
-    write_ivf_frame_header(pkt, (char*)frame_hdr);
-    
-    // Combine header and frame into one byte stream
-    //NSMutableData* frameData = [NSMutableData dataWithBytes:frame_hdr length:12];
-    //[frameData appendBytes:pkt->data.frame.buf length:pkt->data.frame.sz];
-    NSData* frameData = [NSData dataWithBytes:pkt->data.frame.buf length:pkt->data.frame.sz];
-    
+    // Wrap frame in ObjC object and return
+    NSData* frameData = [NSData dataWithBytesNoCopy:pkt->data.frame.buf length:pkt->data.frame.sz freeWhenDone:NO ];
     return frameData;
 }
 
@@ -261,30 +198,17 @@ static void write_ivf_frame_header(const vpx_codec_cx_pkt_t *pkt, char* header)
     vpx_codec_iter_t iter = NULL;
     const vpx_codec_cx_pkt_t *pkt;
     
-    frame_avail = 1;
-    
-    if(vpx_codec_encode(&codec, frame_avail? raw_img : NULL, frame_cnt, 1, flags, VPX_DL_REALTIME))
+    if(vpx_codec_encode(&codec, raw_img, frame_cnt, 1, flags, VPX_DL_REALTIME))
         die_codec(&codec, "Failed to encode frame");
-    got_data = 0;
     
     // Sometimes there might be more than one packet, so if you get errors this is why
     pkt = vpx_codec_get_cx_data(&codec, &iter);
     
-    got_data = 1;
-    switch(pkt->kind) {
-        case VPX_CODEC_CX_FRAME_PKT:
-            
-            // Write header and frame to file
-            //write_ivf_frame_header(outfile, pkt);
-            //fwrite(pkt->data.frame.buf, 1, pkt->data.frame.sz, outfile);
-            
-            break;
-            
-        default:
-            printf("WARNING - Got a different kind of packet, don't know how to handle");
-            break;
+    if (pkt->kind != VPX_CODEC_CX_FRAME_PKT) {
+       printf("WARNING - Got a different kind of packet, don't know how to handle");
     }
     
+    // Print out stream to indicate keyframe placement
     printf(pkt->kind == VPX_CODEC_CX_FRAME_PKT
            && (pkt->data.frame.flags & VPX_FRAME_IS_KEY)? "K":".");
     fflush(stdout);
