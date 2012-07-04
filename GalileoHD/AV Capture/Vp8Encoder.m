@@ -7,6 +7,7 @@
 //
 
 #import "Vp8Encoder.h"
+#import "GalileoCommon.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -152,8 +153,8 @@ static void write_ivf_frame_header(const vpx_codec_cx_pkt_t *pkt, char* header)
 
 - (int) setup_encoder
 {
-    long width = OUTPUT_WIDTH;
-    long height = OUTPUT_HEIGHT;
+    long width = VIDEO_WIDTH;
+    long height = VIDEO_HEIGHT;
     
     // Create image using dimensions
     if(width < 16 || width%2 || height <16 || height%2)

@@ -9,9 +9,6 @@
 
 #define JPEG_QUALITY_FACTOR     0.9
 
-#define OUTPUT_WIDTH    GLOBAL_WIDTH
-#define OUTPUT_HEIGHT   GLOBAL_HEIGHT
-
 @implementation OpenGLProcessor
 
 @synthesize cameraOrientation;
@@ -76,8 +73,8 @@
         NSLog(@"Input pixel buffer dimensions %zu x %zu", inputPixelBufferWidth, inputPixelBufferHeight);
         
         // We set the output dimensions at a nice iPhone/iPad friendly aspect ratio
-        outputPixelBufferWidth = OUTPUT_WIDTH;
-        outputPixelBufferHeight = OUTPUT_HEIGHT;
+        outputPixelBufferWidth = VIDEO_WIDTH;
+        outputPixelBufferHeight = VIDEO_HEIGHT;
         
         // These calls use the pixel buffer dimensions
         [self createPixelBuffer:&outputPixelBuffer width:outputPixelBufferWidth height:outputPixelBufferHeight];

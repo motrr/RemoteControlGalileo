@@ -12,7 +12,3 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
 #endif
-
-
-#define GLOBAL_WIDTH    256
-#define GLOBAL_HEIGHT   192

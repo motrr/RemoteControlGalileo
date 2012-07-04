@@ -8,8 +8,7 @@
 
 #import "VideoDecoder.h"
 
-#define INPUT_WIDTH    GLOBAL_WIDTH
-#define INPUT_HEIGHT   GLOBAL_HEIGHT
+#import "GalileoCommon.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -93,7 +92,7 @@ void decode_frame(unsigned char* frame, int frame_sz, char* ret) {
 {
     if (self = [super init]) {
         
-        luma = (unsigned char*) calloc(INPUT_WIDTH*INPUT_HEIGHT*4, 1);
+        luma = (unsigned char*) calloc(VIDEO_WIDTH*VIDEO_HEIGHT*4, 1);
         
         (void)decoder_res;
         
@@ -124,8 +123,8 @@ void decode_frame(unsigned char* frame, int frame_sz, char* ret) {
     decode_frame(frame, [data length], (char*)luma);
     
     // Convert to RGB (still greyscale
-    char* bgra_frame = malloc(INPUT_WIDTH*INPUT_HEIGHT*4);
-    for (unsigned int i=0; i<INPUT_WIDTH*INPUT_HEIGHT; i++) {
+    char* bgra_frame = malloc(VIDEO_WIDTH*VIDEO_HEIGHT*4);
+    for (unsigned int i=0; i<VIDEO_WIDTH*VIDEO_HEIGHT; i++) {
         bgra_frame[4*i] = luma[i];
         bgra_frame[4*i+1] = luma[i];
         bgra_frame[4*i+2] = luma[i];
@@ -134,8 +133,8 @@ void decode_frame(unsigned char* frame, int frame_sz, char* ret) {
     
     // Create pixel buffer from image data bytes
     CVPixelBufferRef pixelBuffer = NULL;
-    unsigned int width = INPUT_WIDTH;
-    unsigned int height = INPUT_HEIGHT;
+    unsigned int width = VIDEO_WIDTH;
+    unsigned int height = VIDEO_HEIGHT;
     CVPixelBufferCreateWithBytes(NULL,
                                  width, height,
                                  kCVPixelFormatType_32BGRA,

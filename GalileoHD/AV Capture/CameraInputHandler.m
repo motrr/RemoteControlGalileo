@@ -8,8 +8,6 @@
 #import "Vp8RtpPacketiser.h"
 #import "RtpPacketSender.h"
 
-#import "VideoRecorder.h"
-
 
 #define CAPTURE_FRAMES_PER_SECOND   15
 #define FORCE_REAR_CAMERA           YES
@@ -34,8 +32,6 @@
         videoPacketiser = [[Vp8RtpPacketiser alloc] init];
         packetSender = [[RtpPacketSender alloc] init];
 
-        // Also the video recorder class
-        videoRecorder = [[VideoRecorder alloc] init];
     
     }
     return self;
@@ -72,16 +68,6 @@
 - (void) zoomLevelUpdateRecieved:(NSNumber *)scaleFactor
 {
     videoProcessor.zoomFactor = 1.0 / [scaleFactor floatValue];
-}
-
-- (void) startRecording
-{
-    [videoRecorder startRecording];
-}
-
-- (void) stopRecording
-{
-    [videoRecorder stopRecording];
 }
 
 
@@ -137,17 +123,6 @@
     CMTimeShow(conn.videoMaxFrameDuration); //
     NSLog( @"...framerate set");
 }
-/*
-- (void) deprecatedSetFramerateTo: (unsigned int) fps
-              withInput: (AVCaptureDeviceInput*) captureInput 
-              andOutput: (AVCaptureVideoDataOutput*) captureOutput
-{
-    [captureOutput setMinFrameDuration: CMTimeMake(1, fps)];
-    NSLog( @"BEGIN -- frame min duration");
-    CMTimeShow(captureOutput.minFrameDuration);
-    NSLog( @"END -- frame min duration");
-}
-*/
 
 // Begin capturing video through a camera
 - (void)startCapture
@@ -205,9 +180,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     // Update the processor with the latest frame
     [videoProcessor setLatestPixelBuffer:CMSampleBufferGetImageBuffer(sampleBuffer)];
     
-    // Push the frame to the video recorder
-    [videoRecorder recordSampleBuffer:sampleBuffer fromConnection:connection];
-
     // Queue up a call to perform GPU image processing, we will be notified by the result since we are the processor's delegate
     [videoProcessor performSelectorOnMainThread:@selector(processVideoFrame) withObject:nil waitUntilDone:NO];
     

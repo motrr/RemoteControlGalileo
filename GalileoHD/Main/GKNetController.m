@@ -42,11 +42,6 @@ typedef struct {
     float_t scale;
 } GalileoZoomPacket;
 
-// Packet to send Galileo record commands
-typedef struct {
-    BOOL start;
-} GalileoRecordPacket;
-
 
 
 @implementation GKNetController
@@ -164,22 +159,6 @@ typedef struct {
     }
 }
 
-- (void) parseRecordPacket: (NSData*) data
-{
-    GalileoRecordPacket incoming;
-    
-    if ([data length] == sizeof(GalileoRecordPacket)) {
-        
-        NSLog(@"Record packet recieved");
-        
-        [data getBytes:&incoming length:sizeof(GalileoRecordPacket)];
-        
-        if (incoming.start) [videoConfigResponder startRecording];
-        else                [videoConfigResponder stopRecording];
-        
-    }
-}
-
 - (void) parsePingPacket: (NSData*) data
 {
     PingPacket incoming;
@@ -223,8 +202,6 @@ typedef struct {
         case PacketTypeZoom:
             [self parseZoomPacket:data];
             break;
-        case PacketTypeRecord:
-            [self parseRecordPacket:data];
             break;
         case PacketTypePing:
             [self parsePingPacket:data];
@@ -322,16 +299,6 @@ typedef struct {
     [manager sendPacket:packet ofType:PacketTypeZoom reliable:YES];
 }
 
-- (void) sendRecordCommand: (Boolean) startRecording
-{
-    NSLog( @"Going to send Galileo record command");
-    GalileoRecordPacket outgoing;
-    
-    outgoing.start = startRecording;
-    
-    NSData* packet = [[NSData alloc] initWithBytes: &outgoing length:sizeof(GalileoRecordPacket)];
-    [manager sendPacket:packet ofType:PacketTypeRecord reliable:YES];
-}
 
 // Send ping/pong packets for latency guaging
 - (void) sendPing

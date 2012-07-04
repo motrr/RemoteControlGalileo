@@ -11,6 +11,10 @@
 // Size of UDP buffers for transmiting audio/video
 #define AV_UDP_BUFFER_LEN 40000
 
+// Width and height for video as it exists in transit
+#define VIDEO_WIDTH 256
+#define VIDEO_HEIGHT 192
+
 // Forward declarations
 @protocol NetworkControllerDelegate;
 @protocol VideoConfigResponderDelegate;
@@ -49,8 +53,6 @@
                           momentum:(bool)momentum;
 // Send a command to zoom in on the remote Galileo
 - (void) sendZoomFactor: (NSNumber*) scale;
-// Send command to start/stop recording
-- (void) sendRecordCommand: (Boolean) startRecording;
 
 @end
 
@@ -64,8 +66,6 @@
 - (void) ipAddressRecieved: (NSString*) addressString;
 
 - (void) zoomLevelUpdateRecieved: (NSNumber*) scaleFactor;
-- (void) startRecording;
-- (void) stopRecording;
 
 @end
 

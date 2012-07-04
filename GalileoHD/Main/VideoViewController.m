@@ -11,7 +11,6 @@
 #import <netinet/in.h>
 
 #define ROTATION_ANIMATION_DURATION 0.5
-#define SHOW_RECORD_BUTTON  NO
 
 @implementation VideoViewController
 
@@ -49,42 +48,8 @@
     //[self.view.layer setMagnificationFilter:kCAFilterTrilinear];
     [self.view setBackgroundColor:[UIColor blackColor]];
     
-    if (SHOW_RECORD_BUTTON) {
-        
-        // Add button for recording video
-        recordButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        recordButton.frame = CGRectMake(0,0,200,50);
-        recordButton.transform = CGAffineTransformMakeRotation(-M_PI/2);
-        recordButton.center = self.view.center;
-        recordButton.frame = CGRectApplyAffineTransform(recordButton.frame, CGAffineTransformMakeTranslation(110, 0));
-        [recordButton setTitle:@"Start recording" forState:UIControlStateNormal];
-        [recordButton setTitleColor: [UIColor blackColor] forState: UIControlStateNormal];
-        [self.view addSubview:recordButton];
-        [recordButton addTarget:self action:@selector(recordButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-        isRecording = NO;
-        
-    }
-    
 }
 
-- (void) recordButtonPressed
-{
-    if (isRecording) {        
-        
-        [networkControllerDelegate sendRecordCommand:NO];
-        NSLog(@"Recording stopped");
-        [recordButton setTitle:@"Start recording" forState:UIControlStateNormal];
-        
-    }
-    else {
-        [networkControllerDelegate sendRecordCommand:YES];
-        NSLog(@"Recording started");
-        [recordButton setTitle:@"Finish recording" forState:UIControlStateNormal];
-        
-        
-    }
-    isRecording = !isRecording;
-}
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     
@@ -101,7 +66,6 @@
     [NSThread detachNewThreadSelector: @selector(startListeningForVideo)
                              toTarget: self
                            withObject: nil];
-
 }
 
 - (void) viewWillDisappear:(BOOL)animated

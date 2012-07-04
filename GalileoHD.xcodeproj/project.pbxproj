@@ -29,7 +29,6 @@
 		309AAC64158AE960007015A9 /* ShaderUtilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC62158AE960007015A9 /* ShaderUtilities.c */; };
 		309AAC6F158AE9F7007015A9 /* CameraInputHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC67158AE9F7007015A9 /* CameraInputHandler.m */; };
 		309AAC70158AE9F7007015A9 /* OpenGLProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC69158AE9F7007015A9 /* OpenGLProcessor.m */; };
-		309AAC71158AE9F7007015A9 /* VideoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC6B158AE9F7007015A9 /* VideoRecorder.m */; };
 		309AAC72158AE9F7007015A9 /* RtpPacketSender.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC6D158AE9F7007015A9 /* RtpPacketSender.m */; };
 		309AAC7D158AF094007015A9 /* OffscreenFBO.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC7B158AF094007015A9 /* OffscreenFBO.m */; };
 		309AAC7F158AF9A9007015A9 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309AAC7E158AF9A9007015A9 /* CoreMedia.framework */; };
@@ -70,7 +69,7 @@
 		30236308158A94C400B2DF09 /* Galileo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Galileo.m; path = Main/Galileo.m; sourceTree = "<group>"; };
 		3023630A158A957D00B2DF09 /* GKNetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GKNetController.h; path = Main/GKNetController.h; sourceTree = "<group>"; };
 		3023630B158A957D00B2DF09 /* GKNetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GKNetController.m; path = Main/GKNetController.m; sourceTree = "<group>"; };
-		3023630D158A9EEF00B2DF09 /* IpAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IpAddress.h; path = Main/IpAddress.h; sourceTree = "<group>"; };
+		3023630D158A9EEF00B2DF09 /* IpAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IpAddress.h; path = ../Main/IpAddress.h; sourceTree = "<group>"; };
 		3069D8A315A16F4C0038DAAF /* Vp8Encoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vp8Encoder.h; sourceTree = "<group>"; };
 		3069D8A415A16F4C0038DAAF /* Vp8Encoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Vp8Encoder.m; sourceTree = "<group>"; };
 		306FC90115A39B4A00FA5DA7 /* Vp8RtpPacketiser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vp8RtpPacketiser.h; sourceTree = "<group>"; };
@@ -83,16 +82,14 @@
 		309AAC4F158AD560007015A9 /* VideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoViewController.m; path = Main/VideoViewController.m; sourceTree = "<group>"; };
 		309AAC51158AE2E8007015A9 /* DockConnectorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DockConnectorController.h; path = Main/DockConnectorController.h; sourceTree = "<group>"; };
 		309AAC52158AE2E8007015A9 /* DockConnectorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DockConnectorController.m; path = Main/DockConnectorController.m; sourceTree = "<group>"; };
-		309AAC53158AE2E8007015A9 /* UIDevice+ModelDetection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIDevice+ModelDetection.m"; path = "Main/UIDevice+ModelDetection.m"; sourceTree = "<group>"; };
-		309AAC56158AE331007015A9 /* UIDevice+ModelDetection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UIDevice+ModelDetection.h"; path = "Main/UIDevice+ModelDetection.h"; sourceTree = "<group>"; };
+		309AAC53158AE2E8007015A9 /* UIDevice+ModelDetection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIDevice+ModelDetection.m"; path = "../Main/UIDevice+ModelDetection.m"; sourceTree = "<group>"; };
+		309AAC56158AE331007015A9 /* UIDevice+ModelDetection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UIDevice+ModelDetection.h"; path = "../Main/UIDevice+ModelDetection.h"; sourceTree = "<group>"; };
 		309AAC62158AE960007015A9 /* ShaderUtilities.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ShaderUtilities.c; sourceTree = "<group>"; };
 		309AAC63158AE960007015A9 /* ShaderUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderUtilities.h; sourceTree = "<group>"; };
 		309AAC66158AE9F7007015A9 /* CameraInputHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraInputHandler.h; sourceTree = "<group>"; };
 		309AAC67158AE9F7007015A9 /* CameraInputHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraInputHandler.m; sourceTree = "<group>"; };
 		309AAC68158AE9F7007015A9 /* OpenGLProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLProcessor.h; sourceTree = "<group>"; };
 		309AAC69158AE9F7007015A9 /* OpenGLProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenGLProcessor.m; sourceTree = "<group>"; };
-		309AAC6A158AE9F7007015A9 /* VideoRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRecorder.h; sourceTree = "<group>"; };
-		309AAC6B158AE9F7007015A9 /* VideoRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRecorder.m; sourceTree = "<group>"; };
 		309AAC6C158AE9F7007015A9 /* RtpPacketSender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RtpPacketSender.h; sourceTree = "<group>"; };
 		309AAC6D158AE9F7007015A9 /* RtpPacketSender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RtpPacketSender.m; sourceTree = "<group>"; };
 		309AAC77158AF093007015A9 /* GKCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GKCommon.h; path = Initialisation/GKCommon.h; sourceTree = "<group>"; };
@@ -106,7 +103,7 @@
 		309AAC88158AFA04007015A9 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		309AAC8A158AFA18007015A9 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		309AAC8C158AFA2F007015A9 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
-		309AAC90158AFD87007015A9 /* IpAddress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = IpAddress.c; path = Main/IpAddress.c; sourceTree = "<group>"; };
+		309AAC90158AFD87007015A9 /* IpAddress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = IpAddress.c; path = ../Main/IpAddress.c; sourceTree = "<group>"; };
 		309AAC92158AFE75007015A9 /* passThrough.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = passThrough.frag; sourceTree = "<group>"; };
 		309AAC93158AFE75007015A9 /* passThrough.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = passThrough.vert; sourceTree = "<group>"; };
 		30DC070415A0013000D74E9F /* OnscreenFBO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnscreenFBO.h; sourceTree = "<group>"; };
@@ -144,8 +141,7 @@
 			children = (
 				302362DE158A8FEE00B2DF09 /* Initialisation */,
 				30236306158A946300B2DF09 /* Main */,
-				309AAC65158AE9F7007015A9 /* AV Capture */,
-				309AAC61158AE960007015A9 /* OpenGL */,
+				309AAC61158AE960007015A9 /* Utilities */,
 				302362DF158A8FEE00B2DF09 /* Supporting Files */,
 				302362D7158A8FEE00B2DF09 /* Frameworks */,
 				302362D5158A8FEE00B2DF09 /* Products */,
@@ -216,6 +212,20 @@
 				30236304158A945C00B2DF09 /* GalileoCommon.h */,
 				30236307158A94C400B2DF09 /* Galileo.h */,
 				30236308158A94C400B2DF09 /* Galileo.m */,
+				309AAC65158AE9F7007015A9 /* Video Tx */,
+				306FC90815A3DFA600FA5DA7 /* Video Rx */,
+				309AAC49158AD4BB007015A9 /* UserInputHandler.h */,
+				309AAC4A158AD4BB007015A9 /* UserInputHandler.m */,
+				309AAC51158AE2E8007015A9 /* DockConnectorController.h */,
+				309AAC52158AE2E8007015A9 /* DockConnectorController.m */,
+			);
+			name = Main;
+			path = GalileoHD;
+			sourceTree = "<group>";
+		};
+		306FC90815A3DFA600FA5DA7 /* Video Rx */ = {
+			isa = PBXGroup;
+			children = (
 				309AAC4E158AD560007015A9 /* VideoViewController.h */,
 				309AAC4F158AD560007015A9 /* VideoViewController.m */,
 				306FC90515A39B6E00FA5DA7 /* VideoDepacketiser.h */,
@@ -224,20 +234,11 @@
 				30E162B815A266E4009ED65A /* VideoDecoder.m */,
 				30DC070715A0038600D74E9F /* VideoView.h */,
 				30DC070815A0038600D74E9F /* VideoView.m */,
-				309AAC49158AD4BB007015A9 /* UserInputHandler.h */,
-				309AAC4A158AD4BB007015A9 /* UserInputHandler.m */,
-				309AAC51158AE2E8007015A9 /* DockConnectorController.h */,
-				309AAC52158AE2E8007015A9 /* DockConnectorController.m */,
-				3023630D158A9EEF00B2DF09 /* IpAddress.h */,
-				309AAC90158AFD87007015A9 /* IpAddress.c */,
-				309AAC56158AE331007015A9 /* UIDevice+ModelDetection.h */,
-				309AAC53158AE2E8007015A9 /* UIDevice+ModelDetection.m */,
 			);
-			name = Main;
-			path = GalileoHD;
+			name = "Video Rx";
 			sourceTree = "<group>";
 		};
-		309AAC61158AE960007015A9 /* OpenGL */ = {
+		309AAC61158AE960007015A9 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
 				30DC070415A0013000D74E9F /* OnscreenFBO.h */,
@@ -246,14 +247,18 @@
 				309AAC7B158AF094007015A9 /* OffscreenFBO.m */,
 				309AAC62158AE960007015A9 /* ShaderUtilities.c */,
 				309AAC63158AE960007015A9 /* ShaderUtilities.h */,
+				3023630D158A9EEF00B2DF09 /* IpAddress.h */,
+				309AAC90158AFD87007015A9 /* IpAddress.c */,
+				309AAC56158AE331007015A9 /* UIDevice+ModelDetection.h */,
+				309AAC53158AE2E8007015A9 /* UIDevice+ModelDetection.m */,
 				309AAC92158AFE75007015A9 /* passThrough.frag */,
 				309AAC93158AFE75007015A9 /* passThrough.vert */,
 			);
-			name = OpenGL;
+			name = Utilities;
 			path = GalileoHD/OpenGL;
 			sourceTree = "<group>";
 		};
-		309AAC65158AE9F7007015A9 /* AV Capture */ = {
+		309AAC65158AE9F7007015A9 /* Video Tx */ = {
 			isa = PBXGroup;
 			children = (
 				309AAC66158AE9F7007015A9 /* CameraInputHandler.h */,
@@ -266,11 +271,9 @@
 				306FC90215A39B4A00FA5DA7 /* Vp8RtpPacketiser.m */,
 				309AAC6C158AE9F7007015A9 /* RtpPacketSender.h */,
 				309AAC6D158AE9F7007015A9 /* RtpPacketSender.m */,
-				309AAC6A158AE9F7007015A9 /* VideoRecorder.h */,
-				309AAC6B158AE9F7007015A9 /* VideoRecorder.m */,
 			);
-			name = "AV Capture";
-			path = "GalileoHD/AV Capture";
+			name = "Video Tx";
+			path = "AV Capture";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -351,7 +354,6 @@
 				309AAC64158AE960007015A9 /* ShaderUtilities.c in Sources */,
 				309AAC6F158AE9F7007015A9 /* CameraInputHandler.m in Sources */,
 				309AAC70158AE9F7007015A9 /* OpenGLProcessor.m in Sources */,
-				309AAC71158AE9F7007015A9 /* VideoRecorder.m in Sources */,
 				309AAC72158AE9F7007015A9 /* RtpPacketSender.m in Sources */,
 				309AAC7D158AF094007015A9 /* OffscreenFBO.m in Sources */,
 				309AAC91158AFD87007015A9 /* IpAddress.c in Sources */,
