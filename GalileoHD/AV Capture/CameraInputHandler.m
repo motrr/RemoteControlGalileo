@@ -3,8 +3,11 @@
 //
 
 #import "CameraInputHandler.h"
-#import "VideoCropScaler.h"
-#import "VideoTransmitter.h"
+
+#import "Vp8Encoder.h"
+#import "Vp8RtpPacketiser.h"
+#import "RtpPacketSender.h"
+
 #import "VideoRecorder.h"
 
 
@@ -20,10 +23,18 @@
         hasBeganCapture = NO;
         
         // Quality vars
-        video_quality = AVCaptureSessionPresetHigh; 
+        video_quality = AVCaptureSessionPresetHigh;
         
-        videoTransmitter = [[VideoTransmitter alloc] init];
-        videoProcessor = [[VideoCropScaler alloc] initWithTransmitter:videoTransmitter];
+        // The video proccessor crops, scales and performs pixel format transforms. The result is passed asynchronously back here, to its delegate
+        videoProcessor = [[OpenGLProcessor alloc] init];
+        videoProcessor.outputDelegate = self;
+        
+        // The remainder of the video streaming pipeline objects
+        videoEncoder = [[Vp8Encoder alloc] init];
+        videoPacketiser = [[Vp8RtpPacketiser alloc] init];
+        packetSender = [[RtpPacketSender alloc] init];
+
+        // Also the video recorder class
         videoRecorder = [[VideoRecorder alloc] init];
     
     }
@@ -51,7 +62,7 @@
     if (hasBeganCapture) return;
     
     // Open a socket using the destination IP address and default port
-    [videoTransmitter openSocketWithIpAddress: addressString port: AV_UDP_PORT];
+    [packetSender openSocketWithIpAddress: addressString port: AV_UDP_PORT];
     
     // Begin video capture and transmission
     [self startCapture];
@@ -185,23 +196,34 @@
 
 
 #pragma mark -
-#pragma mark AVCaptureSession delegate
+#pragma mark AVCaptureSessionDelegate methods
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput 
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
 	   fromConnection:(AVCaptureConnection *)connection 
-{ 
-
+{
     // Update the processor with the latest frame
     [videoProcessor setLatestPixelBuffer:CMSampleBufferGetImageBuffer(sampleBuffer)];
     
     // Push the frame to the video recorder
     [videoRecorder recordSampleBuffer:sampleBuffer fromConnection:connection];
-        
-    // Queue up a call to process the image frame and send over the UDP socket (OpenGL must be done on the main thread)
+
+    // Queue up a call to perform GPU image processing, we will be notified by the result since we are the processor's delegate
     [videoProcessor performSelectorOnMainThread:@selector(processVideoFrame) withObject:nil waitUntilDone:NO];
     
-} 
+}
 
+#pragma mark -
+#pragma mark OpenGLProcessorOutputDelegate methods
+
+- (void) handleOutputFrame:(CVPixelBufferRef)outputPixelBuffer
+{
+    // Encode the frame using VP8
+    NSData* encodedFrame = [videoEncoder frameDataFromPixelBuffer:outputPixelBuffer];
+    
+    // Send the packet
+    [packetSender sendFrame:encodedFrame];
+    
+}
 
 @end

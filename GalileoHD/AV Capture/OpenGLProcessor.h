@@ -12,24 +12,22 @@
 #import <OpenGLES/EAGLDrawable.h>
 #import <OpenGLES/ES2/glext.h>
 
-#import "VideoDecoder.h"
-
 #define FRONT_FACING_CAMERA 0
 #define REAR_FACING_CAMERA  1
 
-@class VideoEncoder;
-@class VideoTransmitter;
+@class Vp8Encoder;
+@class RtpPacketSender;
 @class OffscreenFBO;
 
-@interface VideoCropScaler : NSObject
+// After frames are processed by the GPU we pass the result to a delegate
+@protocol OpenGLProcessorOutputDelegate <NSObject>
+
+- (void) handleOutputFrame: (CVPixelBufferRef) outputPixelBuffer;
+
+@end
+
+@interface OpenGLProcessor : NSObject
 {
-    // Encoder used to encode frame prior to sending
-    VideoEncoder* videoEncoder;
-    VideoDecoder* videoDecoder;
-    
-    // Transmitter to whom we send out frames
-    VideoTransmitter* videoTransmitter;
-        
     // Incoming and outgoing pixel buffer
     CVPixelBufferRef inputPixelBuffer;
     CVPixelBufferRef outputPixelBuffer;
@@ -64,13 +62,14 @@
     
 }
 
+@property (nonatomic, weak) id<OpenGLProcessorOutputDelegate> outputDelegate;
+
 // Each time the proccessor runs it uses the latest pixel buffer, set by an external thread
 @property CVPixelBufferRef latestPixelBuffer;
 
 @property (nonatomic) unsigned int cameraOrientation;
 @property (nonatomic) double zoomFactor;
 
-- (id) initWithTransmitter: (VideoTransmitter*) initVideoTransmitter;
 - (void) processVideoFrame;
 
 
@@ -78,7 +77,7 @@
 
 
 // Class extension hides private methods
-@interface VideoCropScaler (private)
+@interface OpenGLProcessor (private)
 
 // Primary initialisation
 - (Boolean) createContext;

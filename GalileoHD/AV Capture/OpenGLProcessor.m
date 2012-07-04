@@ -2,9 +2,9 @@
 //  Copyright (c) 2012 Swift Navigation. All rights reserved.
 //
 
-#import "VideoCropScaler.h"
-#import "VideoEncoder.h"
-#import "VideoTransmitter.h"
+#import "OpenGLProcessor.h"
+#import "Vp8Encoder.h"
+#import "RtpPacketSender.h"
 #import "OffscreenFBO.h"
 
 #define JPEG_QUALITY_FACTOR     0.9
@@ -12,7 +12,7 @@
 #define OUTPUT_WIDTH    GLOBAL_WIDTH
 #define OUTPUT_HEIGHT   GLOBAL_HEIGHT
 
-@implementation VideoCropScaler
+@implementation OpenGLProcessor
 
 @synthesize cameraOrientation;
 @synthesize zoomFactor;
@@ -32,15 +32,11 @@
 }
 
 
-- (id) initWithTransmitter: (VideoTransmitter*) initVideoTransmitter
+- (id) init
 {
     if (self = [super init]) {
         
         zoomFactor = 1.0;
-        
-        videoEncoder = [[VideoEncoder alloc] init];
-        videoDecoder = [[VideoDecoder alloc] init];
-        videoTransmitter = initVideoTransmitter;
         
         if (![self createContext]) NSLog(@"Problem setting up context");
         passThroughProgram = [self loadShader:@"passThrough"];
@@ -121,9 +117,8 @@
     CVOpenGLESTextureCacheFlush(inputTextureCache, 0);
     CFRelease(inputTexture);
     
-    // Encode then decode image
-    NSData *imageData = [videoEncoder frameDataFromPixelBuffer:outputPixelBuffer];
-    [videoTransmitter sendFrame:imageData];
+    // Process using delegate
+    [self.outputDelegate handleOutputFrame:outputPixelBuffer];
     
     // Cleanup other textures (but do not release)
     glBindTexture(CVOpenGLESTextureGetTarget(outputTexture), 0); // unbind

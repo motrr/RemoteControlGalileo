@@ -2,10 +2,10 @@
 //  Copyright (c) 2012 Swift Navigation. All rights reserved.
 //
 
-#import "VideoTransmitter.h"
+#import "RtpPacketSender.h"
 
 
-@implementation VideoTransmitter
+@implementation RtpPacketSender
 
 - (id) init
 {

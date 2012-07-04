@@ -13,6 +13,6 @@
     unsigned char* luma;
 }
 
-- (CVPixelBufferRef) decodeFrameData: (char*) data;
+- (CVPixelBufferRef) decodeFrameData: (NSData*) data;
 
 @end

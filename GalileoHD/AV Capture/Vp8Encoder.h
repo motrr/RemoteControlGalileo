@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface VideoEncoder : NSObject
+@interface Vp8Encoder : NSObject
 
 - (NSData*) frameDataFromPixelBuffer: (CVPixelBufferRef) pixelBuffer;
 

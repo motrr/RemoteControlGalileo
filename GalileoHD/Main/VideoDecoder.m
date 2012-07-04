@@ -56,9 +56,8 @@ unsigned char * output[1024*1024];
 
 static vpx_codec_err_t  decoder_res;
 
-void decode_frame(unsigned char * frame_hdr, unsigned char* frame, char* ret) {
+void decode_frame(unsigned char* frame, int frame_sz, char* ret) {
     
-    int               frame_sz = mem_get_le32(frame_hdr);
     vpx_codec_iter_t  iter = NULL;
     decoder_frame_cnt++;
     
@@ -76,11 +75,6 @@ void decode_frame(unsigned char * frame_hdr, unsigned char* frame, char* ret) {
         unsigned char *buf =img->planes[plane];
         //
         for(y=0; y < (plane ? (img->d_h + 1) >> 1 : img->d_h); y++) {
-            
-            
-            // Write output to file
-            //fwrite(buf, 1, (plane ? (img->d_w + 1) >> 1 : img->d_w), outfile);
-            //buf += img->stride[plane];
             
             memcpy(ret, buf, (plane ? (img->d_w + 1) >> 1 : img->d_w));
             ret += (plane ? (img->d_w + 1) >> 1 : img->d_w);
@@ -121,14 +115,13 @@ void decode_frame(unsigned char * frame_hdr, unsigned char* frame, char* ret) {
         decoder_die_codec(&decoder_codec, "Failed to destroy codec");
 }
 
-- (CVPixelBufferRef) decodeFrameData: (char*) data
+- (CVPixelBufferRef) decodeFrameData: (NSData*) data
 {
     // Seperate data into frame and frame header
-    unsigned char * frame_hdr = (unsigned char *)data;
-    unsigned char * frame = (unsigned char *)data + 12;
+    unsigned char * frame = (unsigned char *) [data bytes];
     
     // Decode frame, luma component only
-    decode_frame(frame_hdr, frame, (char*)luma);
+    decode_frame(frame, [data length], (char*)luma);
     
     // Convert to RGB (still greyscale
     char* bgra_frame = malloc(INPUT_WIDTH*INPUT_HEIGHT*4);

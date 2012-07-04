@@ -12,18 +12,25 @@
 #import <CoreVideo/CoreVideo.h>
 #import <CoreMedia/CoreMedia.h>
 
-@class VideoCropScaler;
-@class VideoTransmitter;
+#import "OpenGLProcessor.h"
+
+@class Vp8Encoder;
+@class Vp8RtpPacketiser;
+@class RtpPacketSender;
+
 @class VideoRecorder;
 
 
-@interface CameraInputHandler : NSObject <VideoConfigResponderDelegate, AVCaptureVideoDataOutputSampleBufferDelegate>
+@interface CameraInputHandler : NSObject <VideoConfigResponderDelegate, AVCaptureVideoDataOutputSampleBufferDelegate, OpenGLProcessorOutputDelegate>
 {
     Boolean hasBeganCapture;
     
-    // Objects for cropping, scaling, compressing and sending frames
-    __strong VideoCropScaler* videoProcessor;
-    __strong VideoTransmitter* videoTransmitter;
+    // Video pipeline objects
+    OpenGLProcessor* videoProcessor;
+    Vp8Encoder* videoEncoder;
+    Vp8RtpPacketiser* videoPacketiser;
+    RtpPacketSender* packetSender;
+    
     
     // Object for recording frames to storage
     __strong VideoRecorder* videoRecorder;

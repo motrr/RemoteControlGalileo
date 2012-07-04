@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Swift Navigation. All rights reserved.
 //
 
-#import "VideoEncoder.h"
+#import "Vp8Encoder.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -120,7 +120,7 @@ static void write_ivf_frame_header(const vpx_codec_cx_pkt_t *pkt, char* header)
 }
 
 
-@interface VideoEncoder ()
+@interface Vp8Encoder ()
 {
     vpx_codec_ctx_t      codec;
     vpx_codec_enc_cfg_t  cfg;
@@ -135,7 +135,7 @@ static void write_ivf_frame_header(const vpx_codec_cx_pkt_t *pkt, char* header)
 
 @end
 
-@implementation VideoEncoder
+@implementation Vp8Encoder
 
 - (id) init
 {
@@ -248,8 +248,9 @@ static void write_ivf_frame_header(const vpx_codec_cx_pkt_t *pkt, char* header)
     write_ivf_frame_header(pkt, (char*)frame_hdr);
     
     // Combine header and frame into one byte stream
-    NSMutableData* frameData = [NSMutableData dataWithBytes:frame_hdr length:12];
-    [frameData appendBytes:pkt->data.frame.buf length:pkt->data.frame.sz];
+    //NSMutableData* frameData = [NSMutableData dataWithBytes:frame_hdr length:12];
+    //[frameData appendBytes:pkt->data.frame.buf length:pkt->data.frame.sz];
+    NSData* frameData = [NSData dataWithBytes:pkt->data.frame.buf length:pkt->data.frame.sz];
     
     return frameData;
 }

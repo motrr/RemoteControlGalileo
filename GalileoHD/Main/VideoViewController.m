@@ -96,11 +96,12 @@
 {
     // Create socket to listen out for video transmission
     [self openSocket];
-    
+
     // Start listening in the background
     [NSThread detachNewThreadSelector: @selector(startListeningForVideo)
                              toTarget: self
                            withObject: nil];
+
 }
 
 - (void) viewWillDisappear:(BOOL)animated
@@ -227,7 +228,8 @@
             else {
                 
                 // Decode data buffer into pixel buffer
-                CVPixelBufferRef pixelBuffer = [videoDecoder decodeFrameData:buffer];
+                NSData* data = [NSData dataWithBytes:buffer length:data_len];
+                CVPixelBufferRef pixelBuffer = [videoDecoder decodeFrameData:data];
                 
                 // Render the pixel buffer using OpenGL
                 [self.view performSelectorOnMainThread:@selector(renderPixelBuffer:) withObject:(__bridge id)(pixelBuffer) waitUntilDone:YES];
