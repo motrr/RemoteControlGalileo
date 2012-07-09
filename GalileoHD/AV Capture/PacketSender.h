@@ -3,7 +3,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GalileoCommon.h"
+#import "VideoTxRxCommon.h"
 
 // BSD sockets
 #import <arpa/inet.h>
@@ -16,14 +16,14 @@
     BOOL socketHasBeenOpened;
     
     // Sending vars
-    char buf[AV_UDP_BUFFER_LEN];
+    char buf[MAX_PACKET_TOTAL_LENGTH];
     struct sockaddr_in si_other;
     int videoTxSocket;
 }
 
 // Open socket, send frames, then close socket
 - (void) openSocketWithIpAddress: (NSString*) ipAddress port: (u_short) port;
-- (void) sendFrame: (NSData*) data;
+- (void) sendPacket: (NSData*) data;
 - (void) closeSocket;
 
 

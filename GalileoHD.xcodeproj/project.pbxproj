@@ -76,6 +76,7 @@
 		306FC90215A39B4A00FA5DA7 /* Vp8RtpPacketiser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Vp8RtpPacketiser.m; sourceTree = "<group>"; };
 		306FC90515A39B6E00FA5DA7 /* VideoDepacketiser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoDepacketiser.h; path = "AV Capture/VideoDepacketiser.h"; sourceTree = "<group>"; };
 		306FC90615A39B6E00FA5DA7 /* VideoDepacketiser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoDepacketiser.m; path = "AV Capture/VideoDepacketiser.m"; sourceTree = "<group>"; };
+		306FC90D15A4049400FA5DA7 /* VideoTxRxCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VideoTxRxCommon.h; path = "AV Capture/VideoTxRxCommon.h"; sourceTree = "<group>"; };
 		309AAC49158AD4BB007015A9 /* UserInputHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserInputHandler.h; path = Main/UserInputHandler.h; sourceTree = "<group>"; };
 		309AAC4A158AD4BB007015A9 /* UserInputHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserInputHandler.m; path = Main/UserInputHandler.m; sourceTree = "<group>"; };
 		309AAC4E158AD560007015A9 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoViewController.h; path = Main/VideoViewController.h; sourceTree = "<group>"; };
@@ -212,6 +213,7 @@
 				30236304158A945C00B2DF09 /* GalileoCommon.h */,
 				30236307158A94C400B2DF09 /* Galileo.h */,
 				30236308158A94C400B2DF09 /* Galileo.m */,
+				306FC90D15A4049400FA5DA7 /* VideoTxRxCommon.h */,
 				309AAC65158AE9F7007015A9 /* Video Tx */,
 				306FC90815A3DFA600FA5DA7 /* Video Rx */,
 				309AAC49158AD4BB007015A9 /* UserInputHandler.h */,

@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@class PacketSender;
+
 @interface Vp8RtpPacketiser : NSObject
+{
+    PacketSender* packetSender;
+}
+
+- (void) prepareForSendingTo: (NSString*) ipAddress onPort: (unsigned int) port;
+- (void) sendFrame: (NSData*) data;
 
 @end

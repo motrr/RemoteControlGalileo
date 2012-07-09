@@ -8,8 +8,6 @@
 #import "Vp8RtpPacketiser.h"
 #import "PacketSender.h"
 
-
-#define CAPTURE_FRAMES_PER_SECOND   15
 #define FORCE_REAR_CAMERA           YES
 
 @implementation CameraInputHandler
@@ -30,7 +28,7 @@
         // The remainder of the video streaming pipeline objects
         videoEncoder = [[Vp8Encoder alloc] init];
         videoPacketiser = [[Vp8RtpPacketiser alloc] init];
-        packetSender = [[PacketSender alloc] init];
+        //packetSender = [[PacketSender alloc] init];
 
     
     }
@@ -57,8 +55,8 @@
     // Check if socket is already open
     if (hasBeganCapture) return;
     
-    // Open a socket using the destination IP address and default port
-    [packetSender openSocketWithIpAddress: addressString port: AV_UDP_PORT];
+    // Prepare the packetiser for sending
+    [videoPacketiser prepareForSendingTo:addressString onPort:AV_UDP_PORT];
     
     // Begin video capture and transmission
     [self startCapture];
@@ -194,7 +192,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     NSData* encodedFrame = [videoEncoder frameDataFromPixelBuffer:outputPixelBuffer];
     
     // Send the packet
-    [packetSender sendFrame:encodedFrame];
+    [videoPacketiser sendFrame:encodedFrame];
+    //[packetSender sendFrame:encodedFrame];
     
 }
 

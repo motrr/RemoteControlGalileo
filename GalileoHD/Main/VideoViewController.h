@@ -6,19 +6,12 @@
 #import <UIKit/UIKit.h>
 #import "GalileoCommon.h"
 
-@class VideoDecoder;
+@class VideoDepacketiser;
 
 @interface VideoViewController : UIViewController <OrientationUpdateResponderDelegate>
 {
-    // BSD sockets
-    u_short port;
-    unsigned int videoRxSocket;
-    
-    // AV reception
-    NSData* imageData;
-    
-    // Video decoder object
-    VideoDecoder* videoDecoder;
+    // Video depacketiser listens for video packets and displays them on the view
+    VideoDepacketiser* videoDepacketiser;
     
     // Keep track of local and remote orientation
     UIDeviceOrientation currentLocalOrientation;
@@ -34,8 +27,5 @@
 }
 
 @property (nonatomic, weak) id<NetworkControllerDelegate> networkControllerDelegate;
-
-- (void) openSocket;
-- (void) startListeningForVideo;
 
 @end

@@ -8,7 +8,7 @@
 
 #import "VideoDecoder.h"
 
-#import "GalileoCommon.h"
+#import "VideoTxRxCommon.h"
 
 #include <stdio.h>
 #include <stdlib.h>

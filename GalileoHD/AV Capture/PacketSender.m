@@ -46,7 +46,7 @@
     }
     
     // Get or set the send buffer size
-    unsigned int x = AV_UDP_BUFFER_LEN;
+    unsigned int x = MAX_PACKET_TOTAL_LENGTH;
     unsigned int y = sizeof(x);
     NSLog( @"Attempting to set socket send buffer to %u bytes", x);
     setsockopt( videoTxSocket, SOL_SOCKET, SO_SNDBUF, &x,y );
@@ -58,8 +58,8 @@
     
 }
 
-// Send a single video frame
-- (void) sendFrame: (NSData*) data
+// Send a single packet
+- (void) sendPacket:(NSData *)data
 {
     // Send fragment over socket
     if (sendto(videoTxSocket,

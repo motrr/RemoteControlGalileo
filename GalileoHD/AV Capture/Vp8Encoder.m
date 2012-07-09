@@ -7,7 +7,7 @@
 //
 
 #import "Vp8Encoder.h"
-#import "GalileoCommon.h"
+#import "VideoTxRxCommon.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -187,6 +187,9 @@ static int read_frame(FILE *f, vpx_image_t *img) {
     const vpx_codec_cx_pkt_t * pkt = [self encode_frame:img];
     
     CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+    
+    // Ensure frame isn't too big
+    assert(pkt->data.frame.sz <= MAX_FRAME_LENGTH);
     
     // Wrap frame in ObjC object and return
     NSData* frameData = [NSData dataWithBytesNoCopy:pkt->data.frame.buf length:pkt->data.frame.sz freeWhenDone:NO ];

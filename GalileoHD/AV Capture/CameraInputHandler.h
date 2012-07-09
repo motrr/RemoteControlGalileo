@@ -29,8 +29,6 @@
     OpenGLProcessor* videoProcessor;
     Vp8Encoder* videoEncoder;
     Vp8RtpPacketiser* videoPacketiser;
-    PacketSender* packetSender;
-    
     
     // Object for recording frames to storage
     __strong VideoRecorder* videoRecorder;

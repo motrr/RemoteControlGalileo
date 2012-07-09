@@ -5,16 +5,6 @@
 
 #import <Foundation/Foundation.h>
 
-// UDP port used for transmitting audio/video
-#define AV_UDP_PORT 1234
-
-// Size of UDP buffers for transmiting audio/video
-#define AV_UDP_BUFFER_LEN 40000
-
-// Width and height for video as it exists in transit
-#define VIDEO_WIDTH 256
-#define VIDEO_HEIGHT 192
-
 // Forward declarations
 @protocol NetworkControllerDelegate;
 @protocol VideoConfigResponderDelegate;
