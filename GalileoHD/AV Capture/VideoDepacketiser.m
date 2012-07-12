@@ -31,6 +31,7 @@
 {
     if (self = [super init]) {
         port = AV_UDP_PORT;
+        videoDecoder = [[VideoDecoder alloc] init];
     }
     return self;
     
@@ -71,21 +72,27 @@
 }
 
 - (void) startListeningForVideo
-{
-    struct sockaddr_in si_other;
-    unsigned int slen=sizeof(si_other);
-    
-    RtpPacketHeaderStruct packet_header;
-    Vp8PayloadDescriptorStruct payload_descriptor;
+{    
+    RtpPacketHeaderStruct *packet_header;
+    Vp8PayloadDescriptorStruct *payload_descriptor;
+    char* payload;
     
     char a_frame[MAX_FRAME_LENGTH];
     char b_frame[MAX_FRAME_LENGTH];
     char* current_frame = a_frame;
-    char scratch_space[MAX_PACKET_PAYLOAD_LENGTH];
+    char incoming_packet[MAX_PACKET_TOTAL_LENGTH];
+    
     unsigned int current_timestamp = 0;
-    unsigned short incoming_timestamp;
+    unsigned int incoming_timestamp;
+    unsigned int next_sequence_num = 0;
+    unsigned int incoming_sequence_num;
+    
     int amount_read;
+    unsigned int payload_length;
     unsigned int bytes_in_frame_so_far = 0;
+    
+    // We skip displaying any frame which skips over a sequence number
+    Boolean skipThisFrame = NO;
     
     // Begin listening for data (JPEG video frames)
     for (;;) {
@@ -93,73 +100,57 @@
         // Otherwise, recieve and display frame
         @autoreleasepool {
             
-            // First read the packet headers
-            amount_read = recvfrom(videoRxSocket, &packet_header, sizeof(RtpPacketHeaderStruct), 0,(struct sockaddr *) &si_other, &slen);
-            if (amount_read < 0) [self errorReadingFromSocket];
-            amount_read = recvfrom(videoRxSocket, &payload_descriptor, sizeof(Vp8PayloadDescriptorStruct), 0,(struct sockaddr *) &si_other, &slen);
+            // First read the packet
+            amount_read = recv(videoRxSocket, incoming_packet, MAX_PACKET_TOTAL_LENGTH, 0);
             if (amount_read < 0) [self errorReadingFromSocket];
             
-            incoming_timestamp = ntohl(packet_header.timestamp);
+            // Alias to packet header, payload descriptor and payload
+            packet_header = (RtpPacketHeaderStruct*) incoming_packet;
+            payload_descriptor = (Vp8PayloadDescriptorStruct*) (incoming_packet + sizeof(packet_header));
+            payload = incoming_packet + PACKET_PREAMBLE_LENGTH;
+            payload_length = amount_read - sizeof(PACKET_PREAMBLE_LENGTH);
             
-            NSLog(@"Read packet with timestamp %u", incoming_timestamp);
+            incoming_sequence_num = ntohs(packet_header->sequence_num);
+            incoming_timestamp = ntohl(packet_header->timestamp);
+            NSLog(@"Read packet with timestamp %u seq %u", incoming_timestamp, incoming_sequence_num);
             
-            
-            // If packet is old, then discard the payload and move on
-            if (true) { // (incoming_sequence_num < current_sequence_num) {
+            // Completely ignore old packets
+            if (incoming_sequence_num < next_sequence_num) {
                 
-                NSLog(@"Discarding old packet");
-                amount_read = recvfrom(videoRxSocket, scratch_space, MAX_PACKET_PAYLOAD_LENGTH, 0,(struct sockaddr *) &si_other, &slen);
-                if (amount_read < 0) [self errorReadingFromSocket];
-                
+                NSLog(@"Warning saw an old packet");
             }
             else {
                 
-                // If packet is from the current frame:
-                if (incoming_timestamp == current_timestamp) {
-                    
-                    NSLog(@"Reading packet into frame");
-                    
-                    // Read the payload into the frame at the correct position
-                    amount_read = recvfrom(videoRxSocket, current_frame+bytes_in_frame_so_far, MAX_PACKET_PAYLOAD_LENGTH,
-                                           0,(struct sockaddr *) &si_other, &slen);
-                    if (amount_read < 0) [self errorReadingFromSocket];
-                    
-                    // Ensure the next fragment gets written in the correct position
-                    bytes_in_frame_so_far += amount_read;
-                    
+                // Skip displaying any frame in which a sequence number skip occurs
+                if (incoming_sequence_num != next_sequence_num) {
+                    NSLog(@"This frame will be skipped");
+                    skipThisFrame = YES;
                 }
-
-                // If this packet is from a new frame OR its the last packet in the current frame:
-                if ((incoming_timestamp > current_timestamp) || (packet_header.marker == 1)) {
+                
+                // Insert packet into frame
+                if (!skipThisFrame) {
+                    memcpy(current_frame+bytes_in_frame_so_far, payload, payload_length);
+                    bytes_in_frame_so_far += payload_length;
+                }
+                
+                // If mark is set, this is the last packet of the frame
+                if (packet_header->marker) {
                     
-                    // Don't try display partial frames
-                    if (incoming_timestamp == current_timestamp) {
-                        
-                        // Display the current frame
+                    // Display the frame
+                    if (!skipThisFrame) {
                         [self displayFrame:[NSData dataWithBytesNoCopy:current_frame length:bytes_in_frame_so_far freeWhenDone:NO]];
                     }
                     
                     // Advance to the next frame
                     NSLog(@"Advancing to next frame");
                     current_frame = (current_frame == a_frame) ? (b_frame) : (a_frame) ;
-                    current_timestamp = incoming_timestamp;
                     bytes_in_frame_so_far = 0;
-                }
+                    //
+                    next_sequence_num = incoming_sequence_num+1;
+                    skipThisFrame = NO;
+                    
+                } else next_sequence_num++;
                 
-                // If this packet is from a new frame:
-                if (incoming_timestamp > current_timestamp) {
-                    
-                    NSLog(@"Reading NEWER packet into NEW frame");
-                    
-                    // Read the payload into the frame at the correct position
-                    amount_read = recvfrom(videoRxSocket, current_frame+bytes_in_frame_so_far, MAX_PACKET_PAYLOAD_LENGTH,
-                                           0,(struct sockaddr *) &si_other, &slen);
-                    if (amount_read < 0) [self errorReadingFromSocket];
-                    
-                    // Ensure the next fragment gets written in the correct position
-                    bytes_in_frame_so_far += amount_read;
-                    
-                }
             }
             
         }

@@ -172,8 +172,7 @@
 {
     // Create packet sender
     packetSender = [[PacketSender alloc] init];
-    //[packetSender openSocketWithIpAddress:ipAddress port:port];
-    [packetSender openSocketWithIpAddress:@"10.10.13.169" port:port];
+    [packetSender openSocketWithIpAddress:ipAddress port:port];
 }
 
 - (void) sendFrame:(NSData*)data
@@ -192,11 +191,13 @@
 
 - (void) sendFrameInOnePacket: (NSData*) data
 {
+    NSLog(@"One frame packet");
+    
     // Just reuse the first packet buffer
-    char * packet_buffer = first_packet;
+    char * packet = first_packet;
     
     // Copy the packet so we can prepend the header
-    char* packet_payload = packet_buffer + PACKET_PREAMBLE_LENGTH;
+    char* packet_payload = packet + PACKET_PREAMBLE_LENGTH;
     memcpy(packet_payload, [data bytes], [data length]);
     
     // This is the first and last packet in a frame so set state accordingly
@@ -204,8 +205,8 @@
     [self nextPacketIsLastInFrame];
     
     // Insert a packet header and send
-    [self insertPacketHeader:packet_buffer];
-    NSData* testData = [NSData dataWithBytes:packet_buffer length:[data length]+PACKET_PREAMBLE_LENGTH];
+    [self insertPacketHeader:packet];
+    NSData* testData = [NSData dataWithBytesNoCopy:packet length:[data length]+PACKET_PREAMBLE_LENGTH freeWhenDone:NO];
     [packetSender sendPacket:testData];
     
 }

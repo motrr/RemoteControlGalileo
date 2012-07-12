@@ -79,11 +79,11 @@ typedef struct {
 #define PACKET_PREAMBLE_LENGTH (sizeof(RtpPacketHeaderStruct)+sizeof(Vp8PayloadDescriptorStruct))
 
 // The first packets are small since they require copying into memory to prepend the header
-#define FIRST_PACKET_PAYLOAD_LENGTH 100
+#define FIRST_PACKET_PAYLOAD_LENGTH 1000
 #define FIRST_PACKET_TOTAL_LENGTH (PACKET_PREAMBLE_LENGTH+FIRST_PACKET_PAYLOAD_LENGTH)
 
 // Subsequent packets should use the maximum allowed size
-#define MAX_PACKET_PAYLOAD_LENGTH 500
+#define MAX_PACKET_PAYLOAD_LENGTH 1000
 #define MAX_PACKET_TOTAL_LENGTH (PACKET_PREAMBLE_LENGTH+MAX_PACKET_PAYLOAD_LENGTH)
 
 
