@@ -108,11 +108,11 @@
             packet_header = (RtpPacketHeaderStruct*) incoming_packet;
             payload_descriptor = (Vp8PayloadDescriptorStruct*) (incoming_packet + sizeof(packet_header));
             payload = incoming_packet + PACKET_PREAMBLE_LENGTH;
-            payload_length = amount_read - sizeof(PACKET_PREAMBLE_LENGTH);
+            payload_length = amount_read - PACKET_PREAMBLE_LENGTH;
             
             incoming_sequence_num = ntohs(packet_header->sequence_num);
             incoming_timestamp = ntohl(packet_header->timestamp);
-            NSLog(@"Read packet with timestamp %u seq %u", incoming_timestamp, incoming_sequence_num);
+            NSLog(@"Read packet with payload length %u, timestamp %u, seq %u", payload_length, incoming_timestamp, incoming_sequence_num);
             
             // Completely ignore old packets
             if (incoming_sequence_num < next_sequence_num) {

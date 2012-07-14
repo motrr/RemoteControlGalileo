@@ -132,7 +132,7 @@ static int read_frame(FILE *f, vpx_image_t *img) {
     / cfg.g_w / cfg.g_h;
     cfg.g_w = width;
     cfg.g_h = height;
-    cfg.kf_max_dist = 0;
+    //cfg.kf_max_dist = 0;
     
     /* Initialize codec */
     if(vpx_codec_enc_init(&codec, vpx_interface, &cfg, 0))

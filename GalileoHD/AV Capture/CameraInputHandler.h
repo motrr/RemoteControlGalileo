@@ -16,7 +16,6 @@
 
 @class Vp8Encoder;
 @class Vp8RtpPacketiser;
-@class PacketSender;
 
 @class VideoRecorder;
 

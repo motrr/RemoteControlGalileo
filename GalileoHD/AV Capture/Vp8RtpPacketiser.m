@@ -228,12 +228,14 @@
     unsigned int bytes_left = [data length] - FIRST_PACKET_PAYLOAD_LENGTH;
     char * next_packet_payload = (char*)[data bytes] + FIRST_PACKET_PAYLOAD_LENGTH;
     char * next_packet_header = next_packet_payload - PACKET_PREAMBLE_LENGTH;
-    unsigned int next_packet_length;
+    unsigned int next_packet_payload_length;
+    unsigned int next_packet_total_length;
     //
     while (bytes_left > 0) {
         
         // Calculate size of next packet
-        next_packet_length = MIN(bytes_left, MAX_PACKET_PAYLOAD_LENGTH);
+        next_packet_payload_length = MIN(bytes_left, MAX_PACKET_PAYLOAD_LENGTH);
+        next_packet_total_length = next_packet_payload_length + PACKET_PREAMBLE_LENGTH;
         
         // Check if this is the last packet
         if (bytes_left <= MAX_PACKET_PAYLOAD_LENGTH) {
@@ -242,11 +244,11 @@
         
         // Insert frame and send the packet
         [self insertPacketHeader:next_packet_header];
-        [packetSender sendPacket:[NSData dataWithBytesNoCopy:next_packet_header length:next_packet_length freeWhenDone:NO]];
+        [packetSender sendPacket:[NSData dataWithBytesNoCopy:next_packet_header length:next_packet_total_length freeWhenDone:NO]];
         
         // Advance
-        bytes_left -= next_packet_length;
-        next_packet_header += next_packet_length;
+        bytes_left -= next_packet_payload_length;
+        next_packet_header += next_packet_payload_length;
         
     }
 }
