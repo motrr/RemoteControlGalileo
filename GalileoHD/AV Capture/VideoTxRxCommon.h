@@ -14,14 +14,16 @@
 #define RTP_TIMEBASE 90000 // defined by VP8 RTP spec
 
 // Width and height for video as it exists in transit
-#define VIDEO_WIDTH 256
-#define VIDEO_HEIGHT 192
+#define VIDEO_WIDTH 640
+#define VIDEO_HEIGHT 480
+#define TARGET_BITRATE_PER_PIXEL 4
+#define MAX_KEYFRAME_INTERVAL 30 // 0 for all keyframes
 
 // UDP port used for transmitting audio/video
 #define AV_UDP_PORT 1234
 
 // Maximum size of a video frame
-#define MAX_FRAME_LENGTH 20000
+#define MAX_FRAME_LENGTH 250000
 
 // RTP packet header struct
 /*
@@ -83,7 +85,7 @@ typedef struct {
 #define FIRST_PACKET_TOTAL_LENGTH (PACKET_PREAMBLE_LENGTH+FIRST_PACKET_PAYLOAD_LENGTH)
 
 // Subsequent packets should use the maximum allowed size
-#define MAX_PACKET_PAYLOAD_LENGTH 500
+#define MAX_PACKET_PAYLOAD_LENGTH 1450
 #define MAX_PACKET_TOTAL_LENGTH (PACKET_PREAMBLE_LENGTH+MAX_PACKET_PAYLOAD_LENGTH)
 
 

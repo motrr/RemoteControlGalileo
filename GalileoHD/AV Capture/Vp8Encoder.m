@@ -128,11 +128,13 @@ static int read_frame(FILE *f, vpx_image_t *img) {
     }
     
     /* Update the default configuration with our settings */
-    cfg.rc_target_bitrate = width * height * cfg.rc_target_bitrate
-    / cfg.g_w / cfg.g_h;
+    //cfg.rc_target_bitrate = ((width * height * cfg.rc_target_bitrate) / cfg.g_w) / cfg.g_h;
+    cfg.rc_target_bitrate = (width * height * TARGET_BITRATE_PER_PIXEL) / 1000;
     cfg.g_w = width;
     cfg.g_h = height;
-    //cfg.kf_max_dist = 0;
+    cfg.kf_max_dist = MAX_KEYFRAME_INTERVAL;
+    
+    NSLog(@"Target bitrate: %u", cfg.rc_target_bitrate);
     
     /* Initialize codec */
     if(vpx_codec_enc_init(&codec, vpx_interface, &cfg, 0))
@@ -175,7 +177,7 @@ static int read_frame(FILE *f, vpx_image_t *img) {
     
     // Generate the luma plane
     for (unsigned int i=0; i < num_pixels; i++) {
-        y_plane_dst[i] = (0.257 * bgra_planes[4*i+2]) + (0.504 * bgra_planes[4*i+1]) + (0.098 * bgra_planes[4*i]) + 16;
+        y_plane_dst[i] = (bgra_planes[4*i+2]); // + bgra_planes[4*i+1] + bgra_planes[4*i]) / 3;
     }
     
     // Blank out the YV planes

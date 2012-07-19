@@ -60,7 +60,7 @@
 
 // Send a single packet
 - (void) sendPacket:(NSData *)data
-{    
+{
     // Send fragment over socket
     if (sendto(videoTxSocket,
                [data bytes],

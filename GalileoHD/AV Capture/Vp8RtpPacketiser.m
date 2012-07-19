@@ -178,6 +178,8 @@
 - (void) sendFrame:(NSData*)data
 {
 
+    //NSLog(@"New frame of size %u", [data length]);
+    
     // Very small frames can be sent in one packet
     if ([data length] <= FIRST_PACKET_PAYLOAD_LENGTH) {
         [self sendFrameInOnePacket:data];
@@ -186,12 +188,13 @@
     else {
         [self sendFrameInMultiplePackets:data];
     }
+
 }
 
 
 - (void) sendFrameInOnePacket: (NSData*) data
 {
-    NSLog(@"One frame packet");
+    //NSLog(@"One frame packet");
     
     // Just reuse the first packet buffer
     char * packet = first_packet;
@@ -208,6 +211,7 @@
     [self insertPacketHeader:packet];
     NSData* testData = [NSData dataWithBytesNoCopy:packet length:[data length]+PACKET_PREAMBLE_LENGTH freeWhenDone:NO];
     [packetSender sendPacket:testData];
+    //NSLog(@"Sent packet %u", ntohs(((RtpPacketHeaderStruct*)packet)->sequence_num));
     
 }
 - (void) sendFrameInMultiplePackets: (NSData*) data
@@ -223,6 +227,7 @@
     // Insert a packet header and send
     [self insertPacketHeader:first_packet];
     [packetSender sendPacket:[NSData dataWithBytesNoCopy:first_packet length:FIRST_PACKET_TOTAL_LENGTH freeWhenDone:NO]];
+    //NSLog(@"Sent packet %u", ntohs(((RtpPacketHeaderStruct*)first_packet)->sequence_num));
     
     // For subsequent packets we write headers into the data as we go, so no copying needs to be done
     unsigned int bytes_left = [data length] - FIRST_PACKET_PAYLOAD_LENGTH;
@@ -245,6 +250,7 @@
         // Insert frame and send the packet
         [self insertPacketHeader:next_packet_header];
         [packetSender sendPacket:[NSData dataWithBytesNoCopy:next_packet_header length:next_packet_total_length freeWhenDone:NO]];
+        //NSLog(@"Sent packet %u", ntohs(((RtpPacketHeaderStruct*)next_packet_header)->sequence_num));
         
         // Advance
         bytes_left -= next_packet_payload_length;

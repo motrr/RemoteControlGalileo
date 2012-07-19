@@ -21,6 +21,12 @@
     u_short port;
     unsigned int videoRxSocket;
     
+    // Dispatch queue for decoding
+    dispatch_queue_t decodingQueue;
+    
+    char a_frame[MAX_FRAME_LENGTH];
+    char b_frame[MAX_FRAME_LENGTH];
+    
 }
 
 @end
@@ -32,6 +38,10 @@
     if (self = [super init]) {
         port = AV_UDP_PORT;
         videoDecoder = [[VideoDecoder alloc] init];
+        
+        // Create queue for decoding frames
+        decodingQueue = dispatch_queue_create("Decoding queue", NULL);
+        
     }
     return self;
     
@@ -77,8 +87,6 @@
     Vp8PayloadDescriptorStruct *payload_descriptor;
     char* payload;
     
-    char a_frame[MAX_FRAME_LENGTH];
-    char b_frame[MAX_FRAME_LENGTH];
     char* current_frame = a_frame;
     char incoming_packet[MAX_PACKET_TOTAL_LENGTH];
     
@@ -112,12 +120,13 @@
             
             incoming_sequence_num = ntohs(packet_header->sequence_num);
             incoming_timestamp = ntohl(packet_header->timestamp);
-            NSLog(@"Read packet with payload length %u, timestamp %u, seq %u", payload_length, incoming_timestamp, incoming_sequence_num);
+            //NSLog(@"Read packet with payload length %u, timestamp %u, seq %u", payload_length, incoming_timestamp, incoming_sequence_num);
             
             // Completely ignore old packets
             if (incoming_sequence_num < next_sequence_num) {
                 
                 NSLog(@"Warning saw an old packet");
+
             }
             else {
                 
@@ -138,12 +147,20 @@
                     
                     // Display the frame
                     if (!skipThisFrame) {
-                        [self displayFrame:[NSData dataWithBytesNoCopy:current_frame length:bytes_in_frame_so_far freeWhenDone:NO]];
+
+                        // Wait till queue is empty
+                        dispatch_sync(decodingQueue, ^{});
+                        
+                        // Queue up a frame to be decoded
+                        NSData* frameData = [NSData dataWithBytesNoCopy:current_frame length:bytes_in_frame_so_far freeWhenDone:NO];
+                        dispatch_async(decodingQueue, ^{
+                            [self displayFrame:frameData];
+                        });
                     }
                     
                     // Advance to the next frame
-                    NSLog(@"Advancing to next frame");
-                    current_frame = (current_frame == a_frame) ? (b_frame) : (a_frame) ;
+                    //NSLog(@"Advancing to next frame");
+                    current_frame = [self nextFrame:current_frame];
                     bytes_in_frame_so_far = 0;
                     //
                     next_sequence_num = incoming_sequence_num+1;
@@ -160,26 +177,26 @@
     
 }
 
+- (char*) nextFrame: (char*) current_frame
+{
+    char* next_frame;
+    
+    if      (current_frame == a_frame) next_frame = b_frame;
+    else if (current_frame == b_frame) next_frame = a_frame;
+    
+    return next_frame;
+}
+
 - (void) errorReadingFromSocket
 {
     NSLog(@"Bad return value from server socket recvrom()." );
     [NSThread exit];
 }
 
-- (void) recievePacket:(NSData *)data
-{
-    // Read the packet header
-    
-    
-    // Read the packet payload into the correct place
-    
-    // If we see the RTP mark, this is the last packet of the frame so we should display it
-    
-}
 
 - (void) displayFrame: (NSData*) data
 {
-    NSLog(@"Displaying frame");
+    //NSLog(@"Displaying frame");
     
     // Decode data into a pixel buffer
     CVPixelBufferRef pixelBuffer = [videoDecoder decodeFrameData:data];

@@ -41,7 +41,8 @@
     if (hasBeganCapture) {
         // Stop capture
         [captureSession stopRunning];
-        dispatch_release(queue);
+        dispatch_release(cameraQueue);
+        dispatch_release(encodingQueue);
     }
 }
 
@@ -137,8 +138,9 @@
 	captureOutput.alwaysDiscardsLateVideoFrames = YES; 
     
 	// Create a serial queue to handle the processing of frames
-	queue = dispatch_queue_create("cameraQueue", NULL);
-	[captureOutput setSampleBufferDelegate:self queue:queue];
+	cameraQueue = dispatch_queue_create("Camera queue", NULL);
+	[captureOutput setSampleBufferDelegate:self queue:cameraQueue];
+    encodingQueue = dispatch_queue_create("Encoding queue", NULL);
     
 	// Set the video output to store frame in BGRA (supposed to be well supported for Core Graphics)
 	NSString* key = (NSString*)kCVPixelBufferPixelFormatTypeKey; 
@@ -161,7 +163,7 @@
     AVCaptureConnection *videoConnection = [captureOutput connectionWithMediaType:AVMediaTypeVideo];
     [self setCaptureFramerate:videoConnection];
     
-	//Begin capture
+	// Begin capture
 	[captureSession startRunning];
     
 }
@@ -182,21 +184,21 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     
 }
 
+
 #pragma mark -
 #pragma mark OpenGLProcessorOutputDelegate methods
 
 - (void) handleOutputFrame:(CVPixelBufferRef)outputPixelBuffer
 {
-    // Encode the frame using VP8
-    NSData* encodedFrame = [videoEncoder frameDataFromPixelBuffer:outputPixelBuffer];
-    
-    /*
-    NSString* str = @"012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789";
-    NSData* encodedFrame = [NSData dataWithBytes:[str cStringUsingEncoding:NSASCIIStringEncoding] length:[str length]];
-    */
-    
-    // Send the packet
-    [videoPacketiser sendFrame:encodedFrame];
+    dispatch_async(encodingQueue, ^{
+        
+        // Encode the frame using VP8
+        NSData* encodedFrame = [videoEncoder frameDataFromPixelBuffer:outputPixelBuffer];
+        
+        // Send the packet
+        [videoPacketiser sendFrame:encodedFrame];
+        
+    });
     
 }
 

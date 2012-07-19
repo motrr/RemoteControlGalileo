@@ -115,9 +115,10 @@
     CFRelease(inputTexture);
     
     // Process using delegate
+    //[NSThread detachNewThreadSelector:@selector(handleOutputFrame:) toTarget:self.outputDelegate withObject:(__bridge id)(outputPixelBuffer)];
     [self.outputDelegate handleOutputFrame:outputPixelBuffer];
     
-    // Cleanup other textures (but do not release)
+    // Cleanup output texture (but do not release)
     glBindTexture(CVOpenGLESTextureGetTarget(outputTexture), 0); // unbind
     CVOpenGLESTextureCacheFlush(outputTextureCache, 0);
     
