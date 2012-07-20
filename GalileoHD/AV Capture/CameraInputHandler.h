@@ -39,8 +39,9 @@
     NSString*     video_quality; 
     
    // Queues on which video frames are proccessed
-    dispatch_queue_t cameraQueue;
-    dispatch_queue_t encodingQueue;
+    dispatch_queue_t captureAndEncodingQueue;
+    dispatch_queue_t sendQueue;
+    
     
 }
 

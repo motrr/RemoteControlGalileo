@@ -28,7 +28,10 @@
         // The remainder of the video streaming pipeline objects
         videoEncoder = [[Vp8Encoder alloc] init];
         videoPacketiser = [[Vp8RtpPacketiser alloc] init];
-
+        
+        // Create the serial queues
+        captureAndEncodingQueue = dispatch_queue_create("Capture and encoding queue", NULL);
+        sendQueue = dispatch_queue_create("Send queue", NULL);
     
     }
     return self;
@@ -41,8 +44,8 @@
     if (hasBeganCapture) {
         // Stop capture
         [captureSession stopRunning];
-        dispatch_release(cameraQueue);
-        dispatch_release(encodingQueue);
+        dispatch_release(captureAndEncodingQueue);
+        dispatch_release(sendQueue);
     }
 }
 
@@ -135,12 +138,10 @@
 	
     // Setup AV output
 	AVCaptureVideoDataOutput *captureOutput = [[AVCaptureVideoDataOutput alloc] init];
-	captureOutput.alwaysDiscardsLateVideoFrames = YES; 
     
-	// Create a serial queue to handle the processing of frames
-	cameraQueue = dispatch_queue_create("Camera queue", NULL);
-	[captureOutput setSampleBufferDelegate:self queue:cameraQueue];
-    encodingQueue = dispatch_queue_create("Encoding queue", NULL);
+	// Process frames on the same queue as encoding, then discard late frames. This ensures that the capture session doesn't overwhelm the encoder
+	[captureOutput setSampleBufferDelegate:self queue:captureAndEncodingQueue];
+    captureOutput.alwaysDiscardsLateVideoFrames = YES;
     
 	// Set the video output to store frame in BGRA (supposed to be well supported for Core Graphics)
 	NSString* key = (NSString*)kCVPixelBufferPixelFormatTypeKey; 
@@ -190,13 +191,18 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (void) handleOutputFrame:(CVPixelBufferRef)outputPixelBuffer
 {
-    dispatch_async(encodingQueue, ^{
+    
+    dispatch_async(captureAndEncodingQueue, ^{
         
         // Encode the frame using VP8
         NSData* encodedFrame = [videoEncoder frameDataFromPixelBuffer:outputPixelBuffer];
         
         // Send the packet
-        [videoPacketiser sendFrame:encodedFrame];
+        dispatch_async(sendQueue, ^{
+            
+            [videoPacketiser sendFrame:encodedFrame];
+            
+        });
         
     });
     
