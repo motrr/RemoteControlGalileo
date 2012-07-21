@@ -144,7 +144,7 @@
             incoming_sequence_num = ntohs(packet_header->sequence_num);
             incoming_timestamp = ntohl(packet_header->timestamp);
             
-            //NSLog(@"Recieved packet %u, payload length %u", incoming_sequence_num, payload_length);
+            NSLog(@"Recieved packet %u, payload length %u", incoming_sequence_num, payload_length);
             
             // If we are not skipping this frame, examine the packet
             if (!skipThisFrame) {
@@ -244,8 +244,6 @@
             
             [self displayFrame:frameData];
             
-            //NSLog(@"%@", [NSString stringWithCString:[frameData bytes] encoding:NSASCIIStringEncoding]);
-
         });
         
         // Swap frames so we don't write into the old one whilst decoding, and reset counter

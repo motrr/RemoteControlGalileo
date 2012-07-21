@@ -231,6 +231,7 @@
     
     // For subsequent packets we write headers into the data as we go, so no copying needs to be done
     unsigned int bytes_left = [data length] - FIRST_PACKET_PAYLOAD_LENGTH;
+    unsigned int bytes_so_far = 0;
     char * next_packet_payload = (char*)[data bytes] + FIRST_PACKET_PAYLOAD_LENGTH;
     char * next_packet_header = next_packet_payload - PACKET_PREAMBLE_LENGTH;
     unsigned int next_packet_payload_length;
@@ -254,7 +255,14 @@
         
         // Advance
         bytes_left -= next_packet_payload_length;
+        bytes_so_far += next_packet_payload_length;
         next_packet_header += next_packet_payload_length;
+        
+        // Wait a while if we are sending a huge packet, this reduces packet loss (especially for the critical first frame)
+        if (bytes_so_far > 10000) {
+            bytes_so_far = 0;
+            [NSThread sleepForTimeInterval:0.01];
+        }
         
     }
 }
