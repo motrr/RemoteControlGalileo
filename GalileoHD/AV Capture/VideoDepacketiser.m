@@ -15,6 +15,8 @@
 #import <sys/socket.h>
 #import <netinet/in.h>
 
+#define PACKET_BUFFER_SIZE 10
+
 @interface VideoDepacketiser ()
 {
     // BSD socket recieves frames
@@ -24,9 +26,23 @@
     // Dispatch queue for decoding
     dispatch_queue_t decodingQueue;
     
+    char* current_frame;
+    
+    // We swap between two frames, so decoding and depacketising can take place concurrently
     char a_frame[MAX_FRAME_LENGTH];
     char b_frame[MAX_FRAME_LENGTH];
     
+    // We keep a buffer of packets to deal with out of order packets
+    char * packet_buffer[PACKET_BUFFER_SIZE];
+    unsigned int next_packet_index;
+    
+    unsigned int incoming_timestamp;
+    unsigned int next_sequence_num;
+    unsigned int incoming_sequence_num;
+    
+    unsigned int bytes_in_frame_so_far;
+    
+    Boolean skipThisFrame;
 }
 
 @end
@@ -51,6 +67,10 @@
 {
     NSLog(@"VideoDepacketiser exiting");
     [self closeSocket];
+    
+    for (int i=0; i<PACKET_BUFFER_SIZE; i++) {
+        free( packet_buffer[i] );
+    }
 }
 
 #pragma mark -
@@ -82,25 +102,29 @@
 }
 
 - (void) startListeningForVideo
-{    
-    RtpPacketHeaderStruct *packet_header;
-    Vp8PayloadDescriptorStruct *payload_descriptor;
-    char* payload;
-    
-    char* current_frame = a_frame;
-    char incoming_packet[MAX_PACKET_TOTAL_LENGTH];
-    
-    unsigned int current_timestamp = 0;
-    unsigned int incoming_timestamp;
-    unsigned int next_sequence_num = 0;
-    unsigned int incoming_sequence_num;
+{
     
     int amount_read;
-    unsigned int payload_length;
-    unsigned int bytes_in_frame_so_far = 0;
     
-    // We skip displaying any frame which skips over a sequence number
-    Boolean skipThisFrame = NO;
+    RtpPacketHeaderStruct *packet_header;
+    Vp8PayloadDescriptorStruct *payload_descriptor;
+    
+    char* payload;
+    unsigned int payload_length;
+    
+    // The current frame alternates between a_frame and b_frame
+    current_frame = a_frame;
+    
+    // Create a fixed size buffer for reading packets into
+    for (int i=0; i<PACKET_BUFFER_SIZE; i++) {
+        packet_buffer[i] = malloc(MAX_PACKET_TOTAL_LENGTH);
+    }
+    next_packet_index = 0;
+    next_sequence_num = 0;
+    bytes_in_frame_so_far = 0;
+    
+    // We skip displaying any frame that has one or more packets missing
+    skipThisFrame = NO;
     
     // Begin listening for data (JPEG video frames)
     for (;;) {
@@ -109,82 +133,126 @@
         @autoreleasepool {
             
             // First read the packet
-            amount_read = recv(videoRxSocket, incoming_packet, MAX_PACKET_TOTAL_LENGTH, 0);
+            amount_read = recv(videoRxSocket, packet_buffer[next_packet_index], MAX_PACKET_TOTAL_LENGTH, 0);
             if (amount_read < 0) [self errorReadingFromSocket];
             
             // Alias to packet header, payload descriptor and payload
-            packet_header = (RtpPacketHeaderStruct*) incoming_packet;
-            payload_descriptor = (Vp8PayloadDescriptorStruct*) (incoming_packet + sizeof(packet_header));
-            payload = incoming_packet + PACKET_PREAMBLE_LENGTH;
+            packet_header = (RtpPacketHeaderStruct*) packet_buffer[next_packet_index];
+            payload_descriptor = (Vp8PayloadDescriptorStruct*) (packet_buffer[next_packet_index] + sizeof(packet_header));
+            payload = packet_buffer[next_packet_index] + PACKET_PREAMBLE_LENGTH;
             payload_length = amount_read - PACKET_PREAMBLE_LENGTH;
-            
             incoming_sequence_num = ntohs(packet_header->sequence_num);
             incoming_timestamp = ntohl(packet_header->timestamp);
-            //NSLog(@"Read packet with payload length %u, timestamp %u, seq %u", payload_length, incoming_timestamp, incoming_sequence_num);
             
-            // Completely ignore old packets
-            if (incoming_sequence_num < next_sequence_num) {
-                
-                NSLog(@"Warning saw an old packet");
-
-            }
-            else {
-                
-                // Skip displaying any frame in which a sequence number skip occurs
-                if (incoming_sequence_num != next_sequence_num) {
-                    NSLog(@"This frame will be skipped");
-                    skipThisFrame = YES;
-                }
-                
-                // Insert packet into frame
-                if (!skipThisFrame) {
-                    memcpy(current_frame+bytes_in_frame_so_far, payload, payload_length);
-                    bytes_in_frame_so_far += payload_length;
-                }
-                
-                // If mark is set, this is the last packet of the frame
-                if (packet_header->marker) {
+            //NSLog(@"Recieved packet %u, payload length %u", incoming_sequence_num, payload_length);
+            
+            // If we are not skipping this frame, examine the packet
+            if (!skipThisFrame) {
+            
+                // Completely ignore old packets
+                if (incoming_sequence_num < next_sequence_num) {
                     
-                    // Display the frame
-                    if (!skipThisFrame) {
+                    NSLog(@"Warning saw an old packet");
 
-                        // Wait till queue is empty
-                        dispatch_sync(decodingQueue, ^{});
-                        
-                        // Queue up a frame to be decoded
-                        NSData* frameData = [NSData dataWithBytesNoCopy:current_frame length:bytes_in_frame_so_far freeWhenDone:NO];
-                        dispatch_async(decodingQueue, ^{
-                            [self displayFrame:frameData];
-                        });
+                }
+                // Store future packets for later (if we have buffer space)
+                else if (incoming_sequence_num > next_sequence_num) {
+                    
+                    NSLog(@"Packet is from the future, buffering for later use");
+                    next_packet_index++;
+                    
+                    if (next_packet_index == PACKET_BUFFER_SIZE) {
+                        NSLog(@"Packet buffer overflow occured, will have to skip this frame");
+                        skipThisFrame = YES;
+                        next_packet_index = 0;
                     }
                     
-                    // Advance to the next frame
-                    //NSLog(@"Advancing to next frame");
-                    current_frame = [self nextFrame:current_frame];
-                    bytes_in_frame_so_far = 0;
-                    //
-                    next_sequence_num = incoming_sequence_num+1;
-                    skipThisFrame = NO;
+                }
+                // Otherwise, insert this packet (and also any others from the buffer) into the frame
+                else {
                     
-                } else next_sequence_num++;
+                    // Insert the this packet
+                    [self insertPacketIntoFrame:payload payloadLength:payload_length markerSet:packet_header->marker];
+                    
+                    // Try insert any packets from the buffer
+                    for (int i=0; i<next_packet_index; i++) {
+                        
+                        // Alias to packet header, payload descriptor and payload
+                        packet_header = (RtpPacketHeaderStruct*) packet_buffer[i];
+                        payload_descriptor = (Vp8PayloadDescriptorStruct*) (packet_buffer[i] + sizeof(packet_header));
+                        payload = packet_buffer[i] + PACKET_PREAMBLE_LENGTH;
+                        payload_length = amount_read - PACKET_PREAMBLE_LENGTH;
+                        incoming_sequence_num = ntohs(packet_header->sequence_num);
+                        incoming_timestamp = ntohl(packet_header->timestamp);
+                        
+                        if (incoming_sequence_num == next_sequence_num) {
+                            
+                            // Insert packet
+                            [self insertPacketIntoFrame:payload payloadLength:payload_length markerSet:packet_header->marker];
+                            
+                            // Remove packet from the buffer
+                            if (next_packet_index > 1) {
+                                packet_buffer[i] = packet_buffer[next_packet_index-1];
+                                next_packet_index--;
+                            }
+                            else next_packet_index = 0;
+                            
+                            // Reset iterator so we loop through again
+                            i = 0;
+                        }
+                        
+                    }
+                    
+                }
                 
+            }
+            // If we are skipping this frame, we don't do anything till a marker packet
+            else if (packet_header->marker) {
+                
+                NSLog(@"Resetting after skip");
+                // Reset state so the next frame can be decoded
+                bytes_in_frame_so_far = 0;
+                skipThisFrame = NO;
+                next_sequence_num = incoming_sequence_num+1;
             }
             
         }
         
     }
     
-    
 }
 
-- (char*) nextFrame: (char*) current_frame
+- (void) insertPacketIntoFrame: (char*) payload payloadLength: (unsigned int) payload_length markerSet: (Boolean) marker
 {
-    char* next_frame;
     
-    if      (current_frame == a_frame) next_frame = b_frame;
-    else if (current_frame == b_frame) next_frame = a_frame;
+    // Insert packet into frame
+    memcpy( current_frame+bytes_in_frame_so_far, payload, payload_length );
+    bytes_in_frame_so_far += payload_length;
+    next_sequence_num++;
     
-    return next_frame;
+    // If mark is set, this is the last packet of the frame
+    if (marker) {
+        
+        NSLog(@"Displaying frame");
+            
+        // Wait till queue is empty
+        dispatch_sync(decodingQueue, ^{});
+        
+        // Queue up a frame to be decoded
+        NSData* frameData = [NSData dataWithBytesNoCopy:current_frame length:bytes_in_frame_so_far freeWhenDone:NO];
+        dispatch_async(decodingQueue, ^{
+            
+            [self displayFrame:frameData];
+            
+            //NSLog(@"%@", [NSString stringWithCString:[frameData bytes] encoding:NSASCIIStringEncoding]);
+
+        });
+        
+        // Swap frames so we don't write into the old one whilst decoding, and reset counter
+        current_frame = (current_frame == a_frame? b_frame : a_frame);
+        bytes_in_frame_so_far = 0;
+        
+    }
 }
 
 - (void) errorReadingFromSocket
@@ -196,7 +264,6 @@
 
 - (void) displayFrame: (NSData*) data
 {
-    //NSLog(@"Displaying frame");
     
     // Decode data into a pixel buffer
     CVPixelBufferRef pixelBuffer = [videoDecoder decodeFrameData:data];

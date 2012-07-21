@@ -21,6 +21,10 @@
         // Quality vars
         video_quality = AVCaptureSessionPresetHigh;
         
+        // Create the serial queues
+        captureAndEncodingQueue = dispatch_queue_create("Capture and encoding queue", NULL);
+        sendQueue = dispatch_queue_create("Send queue", NULL);
+        
         // The video proccessor crops, scales and performs pixel format transforms. The result is passed asynchronously back here, to its delegate
         videoProcessor = [[OpenGLProcessor alloc] init];
         videoProcessor.outputDelegate = self;
@@ -29,9 +33,7 @@
         videoEncoder = [[Vp8Encoder alloc] init];
         videoPacketiser = [[Vp8RtpPacketiser alloc] init];
         
-        // Create the serial queues
-        captureAndEncodingQueue = dispatch_queue_create("Capture and encoding queue", NULL);
-        sendQueue = dispatch_queue_create("Send queue", NULL);
+
     
     }
     return self;
@@ -44,9 +46,10 @@
     if (hasBeganCapture) {
         // Stop capture
         [captureSession stopRunning];
-        dispatch_release(captureAndEncodingQueue);
-        dispatch_release(sendQueue);
     }
+    
+    dispatch_release(captureAndEncodingQueue);
+    dispatch_release(sendQueue);
 }
 
 
@@ -194,14 +197,15 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     
     dispatch_async(captureAndEncodingQueue, ^{
         
+        // Wait for any packet sending to finish
+        dispatch_sync(sendQueue, ^{});
+        
         // Encode the frame using VP8
         NSData* encodedFrame = [videoEncoder frameDataFromPixelBuffer:outputPixelBuffer];
         
         // Send the packet
         dispatch_async(sendQueue, ^{
-            
             [videoPacketiser sendFrame:encodedFrame];
-            
         });
         
     });
