@@ -55,13 +55,12 @@ unsigned char * output[1024*1024];
 
 static vpx_codec_err_t  decoder_res;
 
+
 @implementation VideoDecoder
 
 - (id) init
 {
     if (self = [super init]) {
-        
-        //luma = (unsigned char*) calloc(VIDEO_WIDTH*VIDEO_HEIGHT*4, 1);
         
         (void)decoder_res;
         
@@ -96,24 +95,43 @@ static vpx_codec_err_t  decoder_res;
     vpx_image_t * img = vpx_codec_get_frame(&decoder_codec, &iter);
     
     // Grab the luma component
-    luma = img->planes[0];
+    y_plane = img->planes[0];
+    u_plane = img->planes[1];
+    v_plane = img->planes[2];
     unsigned int stride = img->stride[0];
     
     unsigned int width = VIDEO_WIDTH;
     unsigned int height = VIDEO_HEIGHT;
     
-    // Convert to RGB pixelbuffer (still greyscale
+    // Convert to RGB pixelbuffer
+    // B = 1.164(Y - 16) + 2.018(U - 128)
+    // G = 1.164(Y - 16) - 0.813(V - 128) - 0.391(U - 128)
+    // R = 1.164(Y - 16) + 1.596(V - 128)
+    
     char* bgra_frame = malloc(width*height*4);
+    unsigned int src_idx;
+    unsigned int dst_idx;
+    int y, u, v;
+    int r, g, b, a;
     for (unsigned int i=0; i<height; i++) {
         for (unsigned int j=0; j<width; j++) {
             
-            unsigned int src_idx = (i*stride) + j;
-            unsigned int dst_idx = (i*width) + j;
+            src_idx = (i*stride) + j;
+            dst_idx = (i*width) + j;
             
-            bgra_frame[4*dst_idx+0] = luma[src_idx];
-            bgra_frame[4*dst_idx+1] = luma[src_idx];
-            bgra_frame[4*dst_idx+2] = luma[src_idx];
-            bgra_frame[4*dst_idx+3] = 0xFF;
+            y = y_plane[src_idx];
+            u = u_plane[src_idx / 4];
+            v = v_plane[src_idx / 4];
+            
+            r = 1.164*(y - 16) + 2.018*(u - 128);
+            g = 1.164*(y - 16) - 0.813*(v - 128) - 0.391*(u - 128);
+            b = 1.164*(y - 16) + 1.596*(v - 128);
+            a = 0xFF;
+            
+            bgra_frame[4*dst_idx+0] = b > 255 ? 255 : (b < 0 ? 0 : b) ;
+            bgra_frame[4*dst_idx+1] = g > 255 ? 255 : (g < 0 ? 0 : g) ;
+            bgra_frame[4*dst_idx+2] = r > 255 ? 255 : (r < 0 ? 0 : r) ;
+            bgra_frame[4*dst_idx+3] = a ;
             
         }
     }

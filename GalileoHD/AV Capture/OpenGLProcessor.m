@@ -315,6 +315,7 @@
                                                                 GL_UNSIGNED_BYTE,
                                                                 0,
                                                                 &texture);
+
     
     if (!texture || err) {
         NSLog(@"CVOpenGLESTextureCacheCreateTextureFromImage failed (error: %d)", err);  

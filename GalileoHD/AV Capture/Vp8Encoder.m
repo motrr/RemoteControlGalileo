@@ -175,15 +175,20 @@ static int read_frame(FILE *f, vpx_image_t *img) {
     unsigned char* u_plane = y_plane_dst + num_luma_pixels;
     unsigned char* v_plane = u_plane + num_chroma_pixels;
     
-    // Generate the luma plane
+    // Fill in the luma plane
+    // Y = (0.257 * R) + (0.504 * G) + (0.098 * B) + 16
     for (unsigned int i=0; i < num_pixels; i++) {
-        y_plane_dst[i] = (bgra_planes[4*i+2]); // + bgra_planes[4*i+1] + bgra_planes[4*i]) / 3;
+        y_plane_dst[i] = 0.257*bgra_planes[4*i+2] + 0.504*bgra_planes[4*i+1] + 0.098*bgra_planes[4*i] + 16;
     }
     
-    // Blank out the YV planes
+    // Fill in the chroma planes
+    // V =  (0.439 * R) - (0.368 * G) - (0.071 * B) + 128
+    // U = -(0.148 * R) - (0.291 * G) + (0.439 * B) + 128
+    unsigned int j;
     for (unsigned int i = 0; i < num_chroma_pixels; i++) {
-        v_plane[i] = 0x00;
-        u_plane[i] = 0x00;
+        j = 4*i;
+        v_plane[i] = (0.439 * bgra_planes[4*j+2]) - (0.368 * bgra_planes[4*j+1]) - (0.071 * bgra_planes[4*j]) + 128;
+        u_plane[i] = -(0.148 * bgra_planes[4*j+2]) - (0.291 * bgra_planes[4*j+1]) + (0.439 * bgra_planes[4*j]) + 128;
     }
     
     // Run through encoder

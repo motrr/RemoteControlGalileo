@@ -10,7 +10,10 @@
 
 @interface VideoDecoder : NSObject
 {
-    unsigned char* luma;
+    unsigned char* y_plane;
+    unsigned char* u_plane;
+    unsigned char* v_plane;
+    
 }
 
 - (CVPixelBufferRef) decodeFrameData: (NSData*) data;

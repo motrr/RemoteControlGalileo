@@ -144,7 +144,7 @@
             incoming_sequence_num = ntohs(packet_header->sequence_num);
             incoming_timestamp = ntohl(packet_header->timestamp);
             
-            NSLog(@"Recieved packet %u, payload length %u", incoming_sequence_num, payload_length);
+            //NSLog(@"Recieved packet %u, payload length %u", incoming_sequence_num, payload_length);
             
             // If we are not skipping this frame, examine the packet
             if (!skipThisFrame) {
@@ -233,7 +233,7 @@
     // If mark is set, this is the last packet of the frame
     if (marker) {
         
-        NSLog(@"Displaying frame");
+        //NSLog(@"Displaying frame");
             
         // Wait till queue is empty
         dispatch_sync(decodingQueue, ^{});
