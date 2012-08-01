@@ -55,12 +55,13 @@ unsigned char * output[1024*1024];
 
 static vpx_codec_err_t  decoder_res;
 
-
 @implementation VideoDecoder
 
 - (id) init
 {
     if (self = [super init]) {
+        
+        hasBgraFrameBeenAllocated = NO;
         
         (void)decoder_res;
         
@@ -78,6 +79,9 @@ static vpx_codec_err_t  decoder_res;
 - (void) dealloc
 {
     printf("Processed %d frames.\n",decoder_frame_cnt);
+    
+    if (hasBgraFrameBeenAllocated) free(bgra_frame);
+    
     if(vpx_codec_destroy(&decoder_codec))
         decoder_die_codec(&decoder_codec, "Failed to destroy codec");
 }
@@ -94,62 +98,61 @@ static vpx_codec_err_t  decoder_res;
     /* Write decoded data to buffer */
     vpx_image_t * img = vpx_codec_get_frame(&decoder_codec, &iter);
     
-    // Grab the luma component
-    y_plane = img->planes[0];
-    u_plane = img->planes[1];
-    v_plane = img->planes[2];
-    unsigned int stride = img->stride[0];
-    
-    unsigned int width = VIDEO_WIDTH;
-    unsigned int height = VIDEO_HEIGHT;
-    
-    // Convert to RGB pixelbuffer
-    // B = 1.164(Y - 16) + 2.018(U - 128)
-    // G = 1.164(Y - 16) - 0.813(V - 128) - 0.391(U - 128)
-    // R = 1.164(Y - 16) + 1.596(V - 128)
-    
-    char* bgra_frame = malloc(width*height*4);
-    unsigned int src_idx;
-    unsigned int dst_idx;
-    int y, u, v;
-    int r, g, b, a;
-    for (unsigned int i=0; i<height; i++) {
-        for (unsigned int j=0; j<width; j++) {
-            
-            src_idx = (i*stride) + j;
-            dst_idx = (i*width) + j;
-            
-            y = y_plane[src_idx];
-            u = u_plane[src_idx / 4];
-            v = v_plane[src_idx / 4];
-            
-            r = 1.164*(y - 16) + 2.018*(u - 128);
-            g = 1.164*(y - 16) - 0.813*(v - 128) - 0.391*(u - 128);
-            b = 1.164*(y - 16) + 1.596*(v - 128);
-            a = 0xFF;
-            
-            bgra_frame[4*dst_idx+0] = b > 255 ? 255 : (b < 0 ? 0 : b) ;
-            bgra_frame[4*dst_idx+1] = g > 255 ? 255 : (g < 0 ? 0 : g) ;
-            bgra_frame[4*dst_idx+2] = r > 255 ? 255 : (r < 0 ? 0 : r) ;
-            bgra_frame[4*dst_idx+3] = a ;
-            
-        }
-    }
+    // Copy decoded image into a contigious block
+    [self copyImageToContigiousBlock:img];
     
     // Create pixel buffer from image data bytes
     CVPixelBufferRef pixelBuffer = NULL;
-
     CVPixelBufferCreateWithBytes(NULL,
-                                 width, height,
+                                 img->d_w, img->d_h,
                                  kCVPixelFormatType_32BGRA,
                                  bgra_frame,
-                                 width*4,
-                                 pixelBufferReleaseCallback, 0, NULL,
+                                 img->d_w*4,
+                                 NULL, 0, NULL,
                                  &pixelBuffer);
     
     return pixelBuffer;
 }
 
+- (void) copyImageToContigiousBlock: (vpx_image_t *) img
+{
+    // Alias to planes and dimensions
+    unsigned char* y_plane = img->planes[0];
+    unsigned char* u_plane = img->planes[1];
+    unsigned char* v_plane = img->planes[2];
+    unsigned int stride;
+    unsigned int width = img->d_w;
+    unsigned int height = img->d_h;
+    
+    //NSLog(@"Stride is %u, %u, %u", img->stride[0],img->stride[1],img->stride[2]);
+    
+    // Copy rows into contigious memory block
+    if (!hasBgraFrameBeenAllocated) {
+        bgra_frame = malloc(width*height*4);
+        hasBgraFrameBeenAllocated = YES;
+    }
+    // Copy Y
+    char * current_bgra_offset = bgra_frame;
+    stride = img->stride[0];
+    for (unsigned int i=0; i<height; i++) {
+        memcpy(current_bgra_offset+i*width, y_plane+i*stride, width);
+    }
+    // Copy U
+    current_bgra_offset += height * width;
+    stride = img->stride[1];
+    for (unsigned int i=0; i<height/2; i++) {
+        memcpy(current_bgra_offset+i*width/2, u_plane+i*stride, width/2);
+    }
+    // Copy V
+    current_bgra_offset += (height/2) * (width/2);
+    stride = img->stride[2];
+    for (unsigned int i=0; i<height/2; i++) {
+        memcpy(current_bgra_offset+i*width/2, v_plane+i*stride, width/2);
+    }
+    
+}
+
+/*
 void pixelBufferReleaseCallback(void *releaseRefCon, const void *baseAddress)
 {
     // Alias to the entire buffer, including the JPEG framgment header
@@ -158,6 +161,6 @@ void pixelBufferReleaseCallback(void *releaseRefCon, const void *baseAddress)
     // Deallocate
     free(old_frame);
 }
-
+*/
 
 @end

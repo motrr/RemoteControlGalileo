@@ -9,11 +9,9 @@
 #import <Foundation/Foundation.h>
 
 @interface VideoDecoder : NSObject
-{
-    unsigned char* y_plane;
-    unsigned char* u_plane;
-    unsigned char* v_plane;
-    
+{    
+    Boolean hasBgraFrameBeenAllocated;
+    char* bgra_frame;
 }
 
 - (CVPixelBufferRef) decodeFrameData: (NSData*) data;

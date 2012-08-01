@@ -22,7 +22,7 @@
         
         if (![self setupLayer]) NSLog(@"Problem setting up layers");
         if (![self createContext]) NSLog(@"Problem setting up context");
-        passThroughProgram = [self loadShader:@"passThrough"];
+        yuvPlanar2BgraProgram = [self loadShader:@"passThrough"];
         if (![self generateTextureCaches]) NSLog(@"Problem generating texture cache");
         
         isFirstRenderCall = YES;
@@ -64,7 +64,7 @@
     glEnableVertexAttribArray(ATTRIB_TEXTUREPOSITON);
     
     // Render the full video frame to the screen
-    glUseProgram(passThroughProgram);
+    glUseProgram(yuvPlanar2BgraProgram);
     [onscreenFrameBuffer render]; // will set viewport itself
     
     // Cleanup input texture
@@ -157,7 +157,7 @@
     CVReturn err;
     
     //  Create a new video input texture cache
-    err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, oglContext, NULL, &inputTextureCache);
+    err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)(oglContext), NULL, &inputTextureCache);
     if (err) {
         NSLog(@"Error creating input texture cache with CVReturn error %u", err);
         return false;
@@ -197,7 +197,7 @@
     
     // Set texture parameters
 	glBindTexture(CVOpenGLESTextureGetTarget(texture), CVOpenGLESTextureGetName(texture));
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

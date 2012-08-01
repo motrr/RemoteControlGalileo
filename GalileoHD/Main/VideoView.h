@@ -28,7 +28,7 @@
     CVOpenGLESTextureRef inputTexture; // linked to input pixelBuffer  
     
     // Handle to the shader programs
-    GLuint passThroughProgram;
+    GLuint yuvPlanar2BgraProgram;
     
     Boolean isFirstRenderCall;
 

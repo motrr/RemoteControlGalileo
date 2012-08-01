@@ -21,6 +21,8 @@
 		3069D8A515A16F4C0038DAAF /* Vp8Encoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 3069D8A415A16F4C0038DAAF /* Vp8Encoder.m */; };
 		306FC90315A39B4A00FA5DA7 /* Vp8RtpPacketiser.m in Sources */ = {isa = PBXBuildFile; fileRef = 306FC90215A39B4A00FA5DA7 /* Vp8RtpPacketiser.m */; };
 		306FC90715A39B6F00FA5DA7 /* VideoDepacketiser.m in Sources */ = {isa = PBXBuildFile; fileRef = 306FC90615A39B6E00FA5DA7 /* VideoDepacketiser.m */; };
+		3095132B15BC9254006716F9 /* yuvPlanar2Bgra.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3095132A15BC9254006716F9 /* yuvPlanar2Bgra.frag */; };
+		3095132E15BC9269006716F9 /* yuvPlanar2Bgra.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3095132D15BC9269006716F9 /* yuvPlanar2Bgra.vert */; };
 		309AAC4C158AD4BB007015A9 /* UserInputHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC4A158AD4BB007015A9 /* UserInputHandler.m */; };
 		309AAC50158AD560007015A9 /* VideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC4F158AD560007015A9 /* VideoViewController.m */; };
 		309AAC54158AE2E8007015A9 /* DockConnectorController.m in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC52158AE2E8007015A9 /* DockConnectorController.m */; };
@@ -76,6 +78,8 @@
 		306FC90515A39B6E00FA5DA7 /* VideoDepacketiser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoDepacketiser.h; path = "AV Capture/VideoDepacketiser.h"; sourceTree = "<group>"; };
 		306FC90615A39B6E00FA5DA7 /* VideoDepacketiser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoDepacketiser.m; path = "AV Capture/VideoDepacketiser.m"; sourceTree = "<group>"; };
 		306FC90D15A4049400FA5DA7 /* VideoTxRxCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VideoTxRxCommon.h; path = "AV Capture/VideoTxRxCommon.h"; sourceTree = "<group>"; };
+		3095132A15BC9254006716F9 /* yuvPlanar2Bgra.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = yuvPlanar2Bgra.frag; sourceTree = "<group>"; };
+		3095132D15BC9269006716F9 /* yuvPlanar2Bgra.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = yuvPlanar2Bgra.vert; sourceTree = "<group>"; };
 		309AAC49158AD4BB007015A9 /* UserInputHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserInputHandler.h; path = Main/UserInputHandler.h; sourceTree = "<group>"; };
 		309AAC4A158AD4BB007015A9 /* UserInputHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserInputHandler.m; path = Main/UserInputHandler.m; sourceTree = "<group>"; };
 		309AAC4E158AD560007015A9 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoViewController.h; path = Main/VideoViewController.h; sourceTree = "<group>"; };
@@ -253,8 +257,10 @@
 				309AAC90158AFD87007015A9 /* IpAddress.c */,
 				309AAC56158AE331007015A9 /* UIDevice+ModelDetection.h */,
 				309AAC53158AE2E8007015A9 /* UIDevice+ModelDetection.m */,
-				309AAC92158AFE75007015A9 /* passThrough.frag */,
 				309AAC93158AFE75007015A9 /* passThrough.vert */,
+				309AAC92158AFE75007015A9 /* passThrough.frag */,
+				3095132D15BC9269006716F9 /* yuvPlanar2Bgra.vert */,
+				3095132A15BC9254006716F9 /* yuvPlanar2Bgra.frag */,
 			);
 			name = Utilities;
 			path = GalileoHD/OpenGL;
@@ -332,6 +338,8 @@
 				302362E3158A8FEE00B2DF09 /* InfoPlist.strings in Resources */,
 				309AAC94158AFE75007015A9 /* passThrough.frag in Resources */,
 				309AAC95158AFE75007015A9 /* passThrough.vert in Resources */,
+				3095132B15BC9254006716F9 /* yuvPlanar2Bgra.frag in Resources */,
+				3095132E15BC9269006716F9 /* yuvPlanar2Bgra.vert in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,8 +410,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				SDKROOT = iphoneos;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -421,9 +429,9 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -446,6 +454,7 @@
 				LIBRARY_SEARCH_PATHS = libvpx/lib;
 				OTHER_LDFLAGS = "-lvpx";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos5.0;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -467,6 +476,7 @@
 				LIBRARY_SEARCH_PATHS = libvpx/lib;
 				OTHER_LDFLAGS = "-lvpx";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos5.0;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -48,8 +48,6 @@
         [captureSession stopRunning];
     }
     
-    dispatch_release(captureAndEncodingQueue);
-    dispatch_release(sendQueue);
 }
 
 
