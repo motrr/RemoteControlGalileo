@@ -22,7 +22,7 @@
         
         if (![self setupLayer]) NSLog(@"Problem setting up layers");
         if (![self createContext]) NSLog(@"Problem setting up context");
-        yuvPlanar2BgraProgram = [self loadShader:@"passThrough"];
+        yuvPlanar2BgraProgram = [self loadShader:@"yuvPlanar2Bgra"];
         if (![self generateTextureCaches]) NSLog(@"Problem generating texture cache");
         
         isFirstRenderCall = YES;
@@ -46,7 +46,7 @@
         // Record the dimensions of the pixel buffer (we assume they won't change from now on)
         pixelBufferWidth = CVPixelBufferGetWidth(inputPixelBuffer);
         pixelBufferHeight = CVPixelBufferGetHeight(inputPixelBuffer);
-        NSLog(@"Pixel buffer dimensions %zu x %zu", pixelBufferWidth, pixelBufferHeight);
+        NSLog(@"Recieved pixel buffer dimensions %zu x %zu", pixelBufferWidth, pixelBufferHeight);
         
         // Our rendering target is always the full viewport (either the entire screen or entire destination texture surface)
         glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0, originCentredSquareVertices);
@@ -157,7 +157,7 @@
     CVReturn err;
     
     //  Create a new video input texture cache
-    err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)(oglContext), NULL, &inputTextureCache);
+    err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge CVEAGLContext)((__bridge void *)(oglContext)), NULL, &inputTextureCache);
     if (err) {
         NSLog(@"Error creating input texture cache with CVReturn error %u", err);
         return false;

@@ -2,7 +2,6 @@
 //  Copyright (c) 2012 Swift Navigation. All rights reserved.
 //
 
-#import <GalileoControl/GalileoControl.h>
 #import "DockConnectorController.h"
 
 @implementation DockConnectorController
@@ -15,9 +14,9 @@
     if (self = [super init]) {
         
         // Connect to Galileo, currently using the non-MFi method which requires (amongst other things) a jailbroken iOS device.
-        NSError* error;
-        [PreMFiGalileoController connectToGalileo: &error ];
-        if (error) NSLog(@"Error connecting to physical Galileo device. Ensure Galileo is plugged in.");
+        //NSError* error;
+        //[PreMFiGalileoController connectToGalileo: &error ];
+        //if (error) NSLog(@"Error connecting to physical Galileo device. Ensure Galileo is plugged in.");
         
     }
     return self;
@@ -37,8 +36,8 @@
                                      momentum:(bool)momentum
 {
     // Watch out for ignore flags (which signal no new velocity should be sent)
-    [PreMFiGalileoController panGalileoAtSpeed: [panAmount floatValue]];
-    [PreMFiGalileoController panGalileoAtSpeed: [tiltAmount floatValue]];
+    //[PreMFiGalileoController panGalileoAtSpeed: [panAmount floatValue]];
+    //[PreMFiGalileoController panGalileoAtSpeed: [tiltAmount floatValue]];
 }
 
 

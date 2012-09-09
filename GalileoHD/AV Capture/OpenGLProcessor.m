@@ -75,6 +75,7 @@
         // We set the output dimensions at a nice iPhone/iPad friendly aspect ratio
         outputPixelBufferWidth = VIDEO_WIDTH;
         outputPixelBufferHeight = VIDEO_HEIGHT;
+        NSLog(@"Output pixel buffer dimensions %zu x %zu", outputPixelBufferWidth, outputPixelBufferHeight);
         
         // These calls use the pixel buffer dimensions
         [self createPixelBuffer:&outputPixelBuffer width:outputPixelBufferWidth height:outputPixelBufferHeight];
@@ -189,13 +190,13 @@
     CVReturn err;
     
     //  Create a new video input texture cache
-    err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)(oglContext), NULL, &inputTextureCache);
+    err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge CVEAGLContext)((__bridge void *)(oglContext)), NULL, &inputTextureCache);
     if (err) {
         NSLog(@"Error creating input texture cache with CVReturn error %u", err);
         return false;
     }
     //  Create a new video output texture cache
-    err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)(oglContext), NULL, &outputTextureCache);
+    err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge CVEAGLContext)((__bridge void *)(oglContext)), NULL, &outputTextureCache);
     if (err) {
         NSLog(@"Error creating output texture cache with CVReturn error %u", err);
         return false;

@@ -134,9 +134,20 @@ static vpx_codec_err_t  decoder_res;
     // Copy Y
     char * current_bgra_offset = bgra_frame;
     stride = img->stride[0];
+    char* ret = bgra_frame;
+    char* buf = (char*)y_plane;
     for (unsigned int i=0; i<height; i++) {
-        memcpy(current_bgra_offset+i*width, y_plane+i*stride, width);
+        //memcpy(current_bgra_offset+i*width, y_plane+i*stride, width);
+        /*
+        for (unsigned int j=0; j<width; j++) {
+            current_bgra_offset[i*width + j] = y_plane[i*stride + j];
+        }
+        */
+        memcpy(ret, buf, img->d_w);
+        ret += img->d_w;
+        buf += img->stride[0];
     }
+    
     // Copy U
     current_bgra_offset += height * width;
     stride = img->stride[1];

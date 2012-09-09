@@ -42,7 +42,6 @@
 		309AAC91158AFD87007015A9 /* IpAddress.c in Sources */ = {isa = PBXBuildFile; fileRef = 309AAC90158AFD87007015A9 /* IpAddress.c */; };
 		309AAC94158AFE75007015A9 /* passThrough.frag in Resources */ = {isa = PBXBuildFile; fileRef = 309AAC92158AFE75007015A9 /* passThrough.frag */; };
 		309AAC95158AFE75007015A9 /* passThrough.vert in Resources */ = {isa = PBXBuildFile; fileRef = 309AAC93158AFE75007015A9 /* passThrough.vert */; };
-		30D9E40715AE975C004A11A4 /* GalileoControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30D9E40615AE975C004A11A4 /* GalileoControl.framework */; };
 		30DC070615A0013000D74E9F /* OnscreenFBO.m in Sources */ = {isa = PBXBuildFile; fileRef = 30DC070515A0013000D74E9F /* OnscreenFBO.m */; };
 		30DC070915A0038600D74E9F /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 30DC070815A0038600D74E9F /* VideoView.m */; };
 		30E162B915A266E4009ED65A /* VideoDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 30E162B815A266E4009ED65A /* VideoDecoder.m */; };
@@ -110,7 +109,6 @@
 		309AAC90158AFD87007015A9 /* IpAddress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = IpAddress.c; path = ../Main/IpAddress.c; sourceTree = "<group>"; };
 		309AAC92158AFE75007015A9 /* passThrough.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = passThrough.frag; sourceTree = "<group>"; };
 		309AAC93158AFE75007015A9 /* passThrough.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = passThrough.vert; sourceTree = "<group>"; };
-		30D9E40615AE975C004A11A4 /* GalileoControl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GalileoControl.framework; path = "../Library/Developer/Xcode/DerivedData/Build/Products/Release-iphoneos/GalileoControl.framework"; sourceTree = "<group>"; };
 		30DC070415A0013000D74E9F /* OnscreenFBO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnscreenFBO.h; sourceTree = "<group>"; };
 		30DC070515A0013000D74E9F /* OnscreenFBO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnscreenFBO.m; sourceTree = "<group>"; };
 		30DC070715A0038600D74E9F /* VideoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoView.h; path = Main/VideoView.h; sourceTree = "<group>"; };
@@ -134,7 +132,6 @@
 				302362DD158A8FEE00B2DF09 /* CoreGraphics.framework in Frameworks */,
 				302362D9158A8FEE00B2DF09 /* UIKit.framework in Frameworks */,
 				302362DB158A8FEE00B2DF09 /* Foundation.framework in Frameworks */,
-				30D9E40715AE975C004A11A4 /* GalileoControl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,7 +161,6 @@
 		302362D7158A8FEE00B2DF09 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				30D9E40615AE975C004A11A4 /* GalileoControl.framework */,
 				309AAC8C158AFA2F007015A9 /* GameKit.framework */,
 				309AAC8A158AFA18007015A9 /* CoreVideo.framework */,
 				309AAC88158AFA04007015A9 /* GLKit.framework */,

@@ -12,8 +12,8 @@ void main()
     float w,h;
     int w_i, h_i;
     
-    w = 640.0;
-    h = 960.0;
+    w = 64.0;
+    h = 96.0;
     w_i = int(w);
     h_i = int(h);
     
@@ -42,19 +42,17 @@ void main()
     pixel_idx = int( floor( (float(byte_idx) / 4.0) ));
     
     // Map pixel index to source coords
-    src_x = int( mod(float(pixel_idx), w) );
-    src_y = (pixel_idx - src_x) / w_i;
+    src_x = dst_x; //int( mod(float(pixel_idx), w) );
+    src_y = dst_y; //int(floor(float(pixel_idx) / w));
 
     // Normalise source coords
     src_x_n = float(src_x) / w;
     src_y_n = float(src_y) / h;
     
-    if (src_x_n < 0.5) {
+    //if ( mod(float(dst_y), 4.0) == 0.0 ) {
         y = texture2D( videoframe, vec2(src_x_n,src_y_n) )[src_ch];
-    }
-    else {
-        y= 0.0;
-    }
+    //}
+
     
     
     u = 0.0;
