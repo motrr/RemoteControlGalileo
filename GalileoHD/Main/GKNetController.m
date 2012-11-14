@@ -216,7 +216,6 @@ typedef struct {
     
 }
 
-
 #pragma mark -
 #pragma mark NetworkControllerDelegate methods
 
