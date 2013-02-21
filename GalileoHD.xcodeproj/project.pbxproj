@@ -45,6 +45,7 @@
 		30DC070615A0013000D74E9F /* OnscreenFBO.m in Sources */ = {isa = PBXBuildFile; fileRef = 30DC070515A0013000D74E9F /* OnscreenFBO.m */; };
 		30DC070915A0038600D74E9F /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 30DC070815A0038600D74E9F /* VideoView.m */; };
 		30E162B915A266E4009ED65A /* VideoDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 30E162B815A266E4009ED65A /* VideoDecoder.m */; };
+		832FD5C416D5B379001CDF65 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 832FD5C316D5B379001CDF65 /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -115,6 +116,7 @@
 		30DC070815A0038600D74E9F /* VideoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoView.m; path = Main/VideoView.m; sourceTree = "<group>"; };
 		30E162B715A266E4009ED65A /* VideoDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoDecoder.h; path = Main/VideoDecoder.h; sourceTree = "<group>"; };
 		30E162B815A266E4009ED65A /* VideoDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoDecoder.m; path = Main/VideoDecoder.m; sourceTree = "<group>"; };
+		832FD5C316D5B379001CDF65 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "GalileoHD/en.lproj/Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +143,7 @@
 		302362C9158A8FEE00B2DF09 = {
 			isa = PBXGroup;
 			children = (
+				832FD5C316D5B379001CDF65 /* Default-568h@2x.png */,
 				302362DE158A8FEE00B2DF09 /* Initialisation */,
 				30236306158A946300B2DF09 /* Main */,
 				309AAC61158AE960007015A9 /* Utilities */,
@@ -306,7 +309,7 @@
 		302362CB158A8FEE00B2DF09 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Swift Navigation";
 			};
 			buildConfigurationList = 302362CE158A8FEE00B2DF09 /* Build configuration list for PBXProject "GalileoHD" */;
@@ -336,6 +339,7 @@
 				309AAC95158AFE75007015A9 /* passThrough.vert in Resources */,
 				3095132B15BC9254006716F9 /* yuvPlanar2Bgra.frag in Resources */,
 				3095132E15BC9269006716F9 /* yuvPlanar2Bgra.vert in Resources */,
+				832FD5C416D5B379001CDF65 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,6 +396,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -407,7 +415,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				SDKROOT = iphoneos5.0;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -418,6 +426,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -427,7 +439,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				SDKROOT = iphoneos5.0;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -450,7 +462,7 @@
 				LIBRARY_SEARCH_PATHS = libvpx/lib;
 				OTHER_LDFLAGS = "-lvpx";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos5.0;
+				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -472,7 +484,7 @@
 				LIBRARY_SEARCH_PATHS = libvpx/lib;
 				OTHER_LDFLAGS = "-lvpx";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos5.0;
+				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
