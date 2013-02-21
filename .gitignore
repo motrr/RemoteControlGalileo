@@ -3,6 +3,8 @@
 gcc/
 clang/
 
+# OS X Files #
+.DS_Store
 
 # XCode build folder #
 
@@ -22,3 +24,4 @@ xcuserdata/
 
 # Linux build directory #
 build
+
