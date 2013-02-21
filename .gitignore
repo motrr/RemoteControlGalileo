@@ -1,17 +1,5 @@
-# Build folders #
-
-gcc/
-clang/
-
 # OS X Files #
 .DS_Store
-
-# XCode build folder #
-
-xcode*/Debug
-xcode*/legit.build
-xcode*/src/*/legit.build/
-
 
 # XCode files we don't want to track #
 
@@ -21,7 +9,3 @@ xcuserdata/
 
 # Emacs temp files #
 *~
-
-# Linux build directory #
-build
-
