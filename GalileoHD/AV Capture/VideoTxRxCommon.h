@@ -10,12 +10,12 @@
 #define GalileoHD_VideoTxRxCommon_h
 
 // Capture framerate of the camera
-#define CAPTURE_FRAMES_PER_SECOND   1
+#define CAPTURE_FRAMES_PER_SECOND   20
 #define RTP_TIMEBASE 90000 // defined by VP8 RTP spec
 
 // Width and height for video as it exists in transit
-#define VIDEO_WIDTH 96
-#define VIDEO_HEIGHT 64
+#define VIDEO_WIDTH 192
+#define VIDEO_HEIGHT 128
 #define TARGET_BITRATE_PER_PIXEL 4
 #define MAX_KEYFRAME_INTERVAL 30 // 0 for all keyframes
 

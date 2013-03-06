@@ -261,7 +261,7 @@
         // Wait a while if we are sending a huge packet, this reduces packet loss (especially for the critical first frame)
         if (bytes_so_far > 1000) {
             bytes_so_far = 0;
-            [NSThread sleepForTimeInterval:0.02];
+            [NSThread sleepForTimeInterval:0.02]; // TODO - Investigate different intervals
         }
         
     }

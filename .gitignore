@@ -9,3 +9,8 @@ xcuserdata/
 
 # Emacs temp files #
 *~
+
+# Build folders #
+vpx/build/
+vpx/include/
+vpx/lib/

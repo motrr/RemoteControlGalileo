@@ -394,7 +394,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = armv7;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -417,6 +417,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = armv7;
 			};
 			name = Debug;
 		};
@@ -424,7 +425,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = armv7;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -442,6 +443,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = armv7;
 			};
 			name = Release;
 		};
@@ -456,10 +458,10 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GalileoHD/GalileoHD-Prefix.pch";
-				HEADER_SEARCH_PATHS = libvpx/include;
+				HEADER_SEARCH_PATHS = vpx/include;
 				INFOPLIST_FILE = "GalileoHD/GalileoHD-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = libvpx/lib;
+				LIBRARY_SEARCH_PATHS = vpx/lib;
 				OTHER_LDFLAGS = "-lvpx";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -478,10 +480,10 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GalileoHD/GalileoHD-Prefix.pch";
-				HEADER_SEARCH_PATHS = libvpx/include;
+				HEADER_SEARCH_PATHS = vpx/include;
 				INFOPLIST_FILE = "GalileoHD/GalileoHD-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = libvpx/lib;
+				LIBRARY_SEARCH_PATHS = vpx/lib;
 				OTHER_LDFLAGS = "-lvpx";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;

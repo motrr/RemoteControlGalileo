@@ -12,12 +12,13 @@ void main()
     float w,h;
     int w_i, h_i;
     
-    w = 64.0;
-    h = 96.0;
+    w = 128.0;
+    h = 192.0;
     w_i = int(w);
     h_i = int(h);
     
-    float y, u, v, a;
+    float y, u, v;
+    float b, g, r, a;
     
     int byte_idx;
     int pixel_idx;
@@ -42,24 +43,24 @@ void main()
     pixel_idx = int( floor( (float(byte_idx) / 4.0) ));
     
     // Map pixel index to source coords
-    src_x = dst_x; //int( mod(float(pixel_idx), w) );
-    src_y = dst_y; //int(floor(float(pixel_idx) / w));
+    src_x = int( mod(float(pixel_idx), w) );
+    src_y = int(floor(float(pixel_idx) / w));
 
     // Normalise source coords
     src_x_n = float(src_x) / w;
     src_y_n = float(src_y) / h;
-    
-    //if ( mod(float(dst_y), 4.0) == 0.0 ) {
-        y = texture2D( videoframe, vec2(src_x_n,src_y_n) )[src_ch];
-    //}
 
-    
-    
-    u = 0.0;
-    v = 0.0;
+    // Extract y component
+    y = texture2D( videoframe, vec2(src_x_n,src_y_n) )[src_ch];
+
+    // Place into r (red) component
+    b = 0.0;
+    g = 0.0;
+    r = y;
     a = 1.0;
     
-    gl_FragColor = vec4(y, u, v, a);
+    // Output pixel
+    gl_FragColor = vec4(r, g, b, a);
     
 }
 

@@ -174,9 +174,9 @@
 #pragma mark -
 #pragma mark AVCaptureSessionDelegate methods
 
-- (void)captureOutput:(AVCaptureOutput *)captureOutput 
-didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
-	   fromConnection:(AVCaptureConnection *)connection 
+- (void) captureOutput:(AVCaptureOutput *)captureOutput 
+ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
+        fromConnection:(AVCaptureConnection *)connection 
 {
     // Update the processor with the latest frame
     [videoProcessor setLatestPixelBuffer:CMSampleBufferGetImageBuffer(sampleBuffer)];
