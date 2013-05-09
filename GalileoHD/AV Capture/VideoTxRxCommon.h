@@ -14,8 +14,8 @@
 #define RTP_TIMEBASE 90000 // defined by VP8 RTP spec
 
 // Width and height for video as it exists in transit
-#define VIDEO_WIDTH 192
-#define VIDEO_HEIGHT 128
+#define VIDEO_WIDTH 768
+#define VIDEO_HEIGHT 512
 #define TARGET_BITRATE_PER_PIXEL 4
 #define MAX_KEYFRAME_INTERVAL 30 // 0 for all keyframes
 
