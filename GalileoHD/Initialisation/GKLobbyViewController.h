@@ -6,7 +6,7 @@
 #import "GKSessionManager.h"
 #import "GalileoCommon.h"
 
-@class Galileo;
+@class GalileoContainer;
 
 @interface GKLobbyViewController : UITableViewController 
 <UITableViewDelegate, UITableViewDataSource, SessionManagerLobbyDelegate, UIAlertViewDelegate>

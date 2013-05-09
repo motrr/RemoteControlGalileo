@@ -2,7 +2,7 @@
 //  Copyright (c) 2011 Swift Navigation. All rights reserved.
 //
 
-#import "Galileo.h"
+#import "GalileoContainer.h"
 #import "GKSessionManager.h"
 
 #import "GalileoCommon.h"
@@ -13,7 +13,7 @@
 #import "DockConnectorController.h"
 #import "UIDevice+ModelDetection.h"
 
-@implementation Galileo
+@implementation GalileoContainer
 
 @synthesize videoViewController;
 
@@ -55,7 +55,6 @@
         
         // Start pinging
         //timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:networkModule selector:@selector(sendPing) userInfo:nil repeats:YES];
-
         
     }
     return self;

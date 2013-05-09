@@ -16,7 +16,7 @@
 		302362FD158A933300B2DF09 /* GKLobbyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 302362F8158A933200B2DF09 /* GKLobbyViewController.m */; };
 		302362FE158A933300B2DF09 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 302362FA158A933200B2DF09 /* RootViewController.m */; };
 		302362FF158A933300B2DF09 /* GKSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 302362FC158A933300B2DF09 /* GKSessionManager.m */; };
-		30236309158A94C400B2DF09 /* Galileo.m in Sources */ = {isa = PBXBuildFile; fileRef = 30236308158A94C400B2DF09 /* Galileo.m */; };
+		30236309158A94C400B2DF09 /* GalileoContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 30236308158A94C400B2DF09 /* GalileoContainer.m */; };
 		3023630C158A957D00B2DF09 /* GKNetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3023630B158A957D00B2DF09 /* GKNetController.m */; };
 		3069D8A515A16F4C0038DAAF /* Vp8Encoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 3069D8A415A16F4C0038DAAF /* Vp8Encoder.m */; };
 		306FC90315A39B4A00FA5DA7 /* Vp8RtpPacketiser.m in Sources */ = {isa = PBXBuildFile; fileRef = 306FC90215A39B4A00FA5DA7 /* Vp8RtpPacketiser.m */; };
@@ -46,6 +46,7 @@
 		30DC070915A0038600D74E9F /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 30DC070815A0038600D74E9F /* VideoView.m */; };
 		30E162B915A266E4009ED65A /* VideoDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 30E162B815A266E4009ED65A /* VideoDecoder.m */; };
 		832FD5C416D5B379001CDF65 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 832FD5C316D5B379001CDF65 /* Default-568h@2x.png */; };
+		838E622B173C0F5C006063E4 /* GalileoControl-private.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 838E622A173C0F5C006063E4 /* GalileoControl-private.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,8 +67,8 @@
 		302362FB158A933300B2DF09 /* GKSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GKSessionManager.h; path = Initialisation/GKSessionManager.h; sourceTree = "<group>"; };
 		302362FC158A933300B2DF09 /* GKSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GKSessionManager.m; path = Initialisation/GKSessionManager.m; sourceTree = "<group>"; };
 		30236304158A945C00B2DF09 /* GalileoCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GalileoCommon.h; path = Main/GalileoCommon.h; sourceTree = "<group>"; };
-		30236307158A94C400B2DF09 /* Galileo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Galileo.h; path = Main/Galileo.h; sourceTree = "<group>"; };
-		30236308158A94C400B2DF09 /* Galileo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Galileo.m; path = Main/Galileo.m; sourceTree = "<group>"; };
+		30236307158A94C400B2DF09 /* GalileoContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GalileoContainer.h; path = Main/GalileoContainer.h; sourceTree = "<group>"; };
+		30236308158A94C400B2DF09 /* GalileoContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GalileoContainer.m; path = Main/GalileoContainer.m; sourceTree = "<group>"; };
 		3023630A158A957D00B2DF09 /* GKNetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GKNetController.h; path = Main/GKNetController.h; sourceTree = "<group>"; };
 		3023630B158A957D00B2DF09 /* GKNetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GKNetController.m; path = Main/GKNetController.m; sourceTree = "<group>"; };
 		3023630D158A9EEF00B2DF09 /* IpAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IpAddress.h; path = ../Main/IpAddress.h; sourceTree = "<group>"; };
@@ -117,6 +118,7 @@
 		30E162B715A266E4009ED65A /* VideoDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoDecoder.h; path = Main/VideoDecoder.h; sourceTree = "<group>"; };
 		30E162B815A266E4009ED65A /* VideoDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoDecoder.m; path = Main/VideoDecoder.m; sourceTree = "<group>"; };
 		832FD5C316D5B379001CDF65 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "GalileoHD/en.lproj/Default-568h@2x.png"; sourceTree = "<group>"; };
+		838E622A173C0F5C006063E4 /* GalileoControl-private.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = "GalileoControl-private.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +136,7 @@
 				302362DD158A8FEE00B2DF09 /* CoreGraphics.framework in Frameworks */,
 				302362D9158A8FEE00B2DF09 /* UIKit.framework in Frameworks */,
 				302362DB158A8FEE00B2DF09 /* Foundation.framework in Frameworks */,
+				838E622B173C0F5C006063E4 /* GalileoControl-private.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,6 +167,7 @@
 		302362D7158A8FEE00B2DF09 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				838E622A173C0F5C006063E4 /* GalileoControl-private.framework */,
 				309AAC8C158AFA2F007015A9 /* GameKit.framework */,
 				309AAC8A158AFA18007015A9 /* CoreVideo.framework */,
 				309AAC88158AFA04007015A9 /* GLKit.framework */,
@@ -214,8 +218,8 @@
 			isa = PBXGroup;
 			children = (
 				30236304158A945C00B2DF09 /* GalileoCommon.h */,
-				30236307158A94C400B2DF09 /* Galileo.h */,
-				30236308158A94C400B2DF09 /* Galileo.m */,
+				30236307158A94C400B2DF09 /* GalileoContainer.h */,
+				30236308158A94C400B2DF09 /* GalileoContainer.m */,
 				306FC90D15A4049400FA5DA7 /* VideoTxRxCommon.h */,
 				309AAC65158AE9F7007015A9 /* Video Tx */,
 				306FC90815A3DFA600FA5DA7 /* Video Rx */,
@@ -355,7 +359,7 @@
 				302362FD158A933300B2DF09 /* GKLobbyViewController.m in Sources */,
 				302362FE158A933300B2DF09 /* RootViewController.m in Sources */,
 				302362FF158A933300B2DF09 /* GKSessionManager.m in Sources */,
-				30236309158A94C400B2DF09 /* Galileo.m in Sources */,
+				30236309158A94C400B2DF09 /* GalileoContainer.m in Sources */,
 				3023630C158A957D00B2DF09 /* GKNetController.m in Sources */,
 				309AAC4C158AD4BB007015A9 /* UserInputHandler.m in Sources */,
 				309AAC50158AD560007015A9 /* VideoViewController.m in Sources */,
@@ -455,6 +459,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../Library/Developer/Xcode/DerivedData/Build/Products/Release-iphoneos\"",
 					"\"$(SRCROOT)/../Library/Developer/Xcode/DerivedData/GalileoControl-aupxpuxvuvnvoadkuuatbqdzowyw/Build/Products/Release-iphoneos\"",
+					"\"$(SRCROOT)\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GalileoHD/GalileoHD-Prefix.pch";
@@ -477,6 +482,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../Library/Developer/Xcode/DerivedData/Build/Products/Release-iphoneos\"",
 					"\"$(SRCROOT)/../Library/Developer/Xcode/DerivedData/GalileoControl-aupxpuxvuvnvoadkuuatbqdzowyw/Build/Products/Release-iphoneos\"",
+					"\"$(SRCROOT)\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GalileoHD/GalileoHD-Prefix.pch";

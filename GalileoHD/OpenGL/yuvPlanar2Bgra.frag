@@ -12,8 +12,8 @@ void main()
     float w,h;
     int w_i, h_i;
     
-    w = 128.0;
-    h = 192.0;
+    w = 512.0;
+    h = 768.0;
     w_i = int(w);
     h_i = int(h);
     
