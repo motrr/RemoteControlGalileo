@@ -13,6 +13,8 @@
 #import "DockConnectorController.h"
 #import "UIDevice+ModelDetection.h"
 
+#import <GalileoControl-private/GalileoControl+Private.h>
+
 @implementation GalileoContainer
 
 @synthesize videoViewController;
@@ -56,8 +58,17 @@
         // Start pinging
         //timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:networkModule selector:@selector(sendPing) userInfo:nil repeats:YES];
         
+        // Start testing Galileo movement control
+        [[Galileo sharedGalileo] waitForConnection];
+        NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(testMove) userInfo:nil repeats:YES];
+        
     }
     return self;
+}
+
+- (void) testMove
+{
+    [[[Galileo sharedGalileo] positionControlForAxis:GalileoControlAxisPan] incrementTargetPosition:45.0 completionBlock:nil waitUntilStationary:NO];
 }
 
 - (void) networkControllerIsReady
