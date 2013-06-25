@@ -2,7 +2,7 @@
 //  Copyright (c) 2011 Swift Navigation. All rights reserved.
 //
 
-#import "Galileo.h"
+#import "GalileoContainer.h"
 #import "GKSessionManager.h"
 
 #import "GalileoCommon.h"
@@ -16,14 +16,14 @@
 
 #include "AudioDevice.h"
 
-@interface Galileo ()
+@interface GalileoContainer ()
 {
     AudioDevice *audioDevice;
 }
 
 @end
 
-@implementation Galileo
+@implementation GalileoContainer
 
 @synthesize videoViewController;
 
@@ -37,11 +37,11 @@
         networkController = initNetworkController;
         
         // Create subcomponents
-        cameraInputHandler  = [CameraInputHandler alloc];
-        audioInputOutput   = [AudioInputOutput alloc];
-        videoViewController = [VideoViewController alloc];
-        userInputHandler    = [UserInputHandler alloc];
-        serialController    = [DockConnectorController alloc];
+        cameraInputHandler  = [[CameraInputHandler alloc] init];
+        audioInputOutput   = [[AudioInputOutput alloc] init];
+        videoViewController = [[VideoViewController alloc] init];
+        userInputHandler    = [[UserInputHandler alloc] init];
+        serialController    = [[DockConnectorController alloc] init];
         
         // Set delegates for responding to recieved packets
         [networkController setVideoConfigResponder: cameraInputHandler];
@@ -58,13 +58,6 @@
         
         // User input handler needs a view to get touch responses from
         [userInputHandler setViewForGestureInput: videoViewController.view];
-        
-        // Initialise everything
-        cameraInputHandler  = [cameraInputHandler init];
-        audioInputOutput   = [audioInputOutput init];
-        videoViewController = [videoViewController init];
-        userInputHandler    = [userInputHandler init];
-        serialController    = [serialController init];
         
         // Start pinging
         //timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:networkModule selector:@selector(sendPing) userInfo:nil repeats:YES];

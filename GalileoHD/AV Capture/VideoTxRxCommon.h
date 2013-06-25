@@ -1,7 +1,3 @@
-//
-//  Vp8RtpPacket.h
-//  GalileoHD
-//
 //  Created by Chris Harding on 03/07/2012.
 //  Copyright (c) 2012 Swift Navigation. All rights reserved.
 //
@@ -12,14 +8,14 @@
 #define FORCE_REAR_CAMERA YES
 
 // Capture framerate of the camera
-#define CAPTURE_FRAMES_PER_SECOND   12
+#define CAPTURE_FRAMES_PER_SECOND   10
 #define RTP_TIMEBASE 90000 // defined by VP8 RTP spec
 
-// Width and height for video as it exists in transit
+// Resolution of video stream
 #define VIDEO_WIDTH 480 // 192
-#define VIDEO_HEIGHT 320 // 128
-#define TARGET_BITRATE_PER_PIXEL 4
-#define MAX_KEYFRAME_INTERVAL 5 // 0 for all keyframes
+#define VIDEO_HEIGHT 360 // 128
+#define TARGET_BITRATE_PER_PIXEL 5
+#define MAX_KEYFRAME_INTERVAL 10 // 0 for all keyframes
 
 // UDP port used for transmitting audio/video
 #define AUDIO_UDP_PORT 1234

@@ -269,7 +269,7 @@ typedef struct {
                              tilt : (NSNumber*) tiltAmount ignore: (Boolean) ignoreTilt
                           momentum:(bool) momentum
 {
-    NSLog( @"Going to send Galileo control packet");
+    //NSLog( @"Going to send Galileo control packet");
     GalileoControlPacket outgoing;
     
     // We use NO_CHANGE to signify no change to velocity
@@ -291,7 +291,7 @@ typedef struct {
 
 - (void) sendZoomFactor:(NSNumber *)scale
 {
-    NSLog( @"Going to send Galileo zoom packet");
+    //NSLog( @"Going to send Galileo zoom packet");
     GalileoZoomPacket outgoing;
     
     outgoing.scale = [scale floatValue];

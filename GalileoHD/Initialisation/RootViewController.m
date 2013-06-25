@@ -9,7 +9,7 @@
 #import "RootViewController.h"
 #import "GKSessionManager.h"
 #import "GKLobbyViewController.h"
-#import "Galileo.h"
+#import "GalileoContainer.h"
 #import "GKNetController.h"
 
 @implementation RootViewController
@@ -56,7 +56,7 @@
     netController = [netController initWithManager:manager];
     
     // Create a Galileo object with the network controller. This will set required delegates in the net controller
-    galileo = [[Galileo alloc] initWithNetworkController:netController];
+    galileoContainer = [[GalileoContainer alloc] initWithNetworkController:netController];
     
 }
 
@@ -66,10 +66,10 @@
      NSLog(@"Connection state changed - connectionIsNowAlive");
     
     // Signal to the Galileo object that the connection is up and running
-    [galileo networkControllerIsReady];
+    [galileoContainer networkControllerIsReady];
     
     // Push video view controller on to navigation stack
-    [self.navigationController pushViewController: (UIViewController*)galileo.videoViewController animated:YES];
+    [self.navigationController pushViewController: (UIViewController*)galileoContainer.videoViewController animated:YES];
     
     // Hide status bar
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
@@ -93,7 +93,7 @@
     [self.navigationController popViewControllerAnimated:YES];
     
     // Nil out Galileo and net controller so they can be released
-    galileo = nil;
+    galileoContainer = nil;
     netController = nil;
     
     // Restart session manager
