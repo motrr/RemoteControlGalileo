@@ -2,7 +2,7 @@
 //  Copyright (c) 2011 Swift Navigation. All rights reserved.
 //
 
-#import "GalileoContainer.h"
+#import "RemoteControlGalileo.h"
 #import "GKSessionManager.h"
 
 #import "GalileoCommon.h"
@@ -16,14 +16,14 @@
 
 #include "AudioDevice.h"
 
-@interface GalileoContainer ()
+@interface RemoteControlGalileo ()
 {
     AudioDevice *audioDevice;
 }
 
 @end
 
-@implementation GalileoContainer
+@implementation RemoteControlGalileo
 
 @synthesize videoViewController;
 

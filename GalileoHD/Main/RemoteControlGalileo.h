@@ -15,7 +15,7 @@
 @class DockConnectorController;
 
 
-@interface GalileoContainer : UIViewController
+@interface RemoteControlGalileo : UIViewController
 {
     NSTimer *pingPingTimer;
     

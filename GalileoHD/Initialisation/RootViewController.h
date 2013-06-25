@@ -10,15 +10,9 @@
 @class GKSessionManager;
 @class GKLobbyViewController;
 @class GKNetController;
-@class GalileoContainer;
+@class RemoteControlGalileo;
 
 
 @interface RootViewController : UIViewController <ConnectionStateResponderDelegate>
-{
-    GKSessionManager *manager; 
-    GKLobbyViewController *lobby;
-    GKNetController *netController;
-    GalileoContainer *galileoContainer;
-}
 
 @end

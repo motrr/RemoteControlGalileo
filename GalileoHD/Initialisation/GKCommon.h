@@ -14,7 +14,7 @@ typedef enum {
     PacketTypeControl = 2,
     PacketTypeZoom = 3,
     PacketTypePing = 4,
-    PacketTypePong = 5,
+    PacketTypePong = 5, 
     PacketTypeRecord = 6
 } PacketType;
 
