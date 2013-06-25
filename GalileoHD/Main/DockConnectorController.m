@@ -3,6 +3,7 @@
 //
 
 #import "DockConnectorController.h"
+#import <GalileoControl/GalileoControl.h>
 
 @implementation DockConnectorController
 
@@ -13,10 +14,8 @@
 {
     if (self = [super init]) {
         
-        // Connect to Galileo, currently using the non-MFi method which requires (amongst other things) a jailbroken iOS device.
-        //NSError* error;
-        //[PreMFiGalileoController connectToGalileo: &error ];
-        //if (error) NSLog(@"Error connecting to physical Galileo device. Ensure Galileo is plugged in.");
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(galileoDidDisconnect) name:GalileoDidDisconnectNotification object:nil];
+        [[Galileo sharedGalileo] waitForConnection];
         
     }
     return self;
@@ -29,6 +28,15 @@
 }
 
 #pragma mark -
+#pragma mark GalleoDelegate methods
+
+- (void) GalileoDidDisconnectNotification
+{
+    [[Galileo sharedGalileo] waitForConnection];
+}
+
+
+#pragma mark -
 #pragma mark GalileoControlResponderDelegate methods
 
 - (void) galileoControlCommandRecievedWithPan: (NSNumber*) panAmount  ignore: (Boolean) ignorePan
@@ -36,8 +44,13 @@
                                      momentum:(bool)momentum
 {
     // Watch out for ignore flags (which signal no new velocity should be sent)
-    //[PreMFiGalileoController panGalileoAtSpeed: [panAmount floatValue]];
-    //[PreMFiGalileoController panGalileoAtSpeed: [tiltAmount floatValue]];
+    
+    if ([[Galileo sharedGalileo] isConnected]) {
+
+        [[[Galileo sharedGalileo] velocityControlForAxis:GalileoControlAxisPan] setTargetVelocity:[panAmount floatValue]];
+        [[[Galileo sharedGalileo] velocityControlForAxis:GalileoControlAxisTilt] setTargetVelocity:[tiltAmount floatValue]];
+        
+    }
 }
 
 
