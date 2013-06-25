@@ -9,18 +9,21 @@
 #ifndef GalileoHD_VideoTxRxCommon_h
 #define GalileoHD_VideoTxRxCommon_h
 
+#define FORCE_REAR_CAMERA YES
+
 // Capture framerate of the camera
-#define CAPTURE_FRAMES_PER_SECOND   20
+#define CAPTURE_FRAMES_PER_SECOND   12
 #define RTP_TIMEBASE 90000 // defined by VP8 RTP spec
 
 // Width and height for video as it exists in transit
-#define VIDEO_WIDTH 768
-#define VIDEO_HEIGHT 512
+#define VIDEO_WIDTH 480 // 192
+#define VIDEO_HEIGHT 320 // 128
 #define TARGET_BITRATE_PER_PIXEL 4
-#define MAX_KEYFRAME_INTERVAL 30 // 0 for all keyframes
+#define MAX_KEYFRAME_INTERVAL 5 // 0 for all keyframes
 
 // UDP port used for transmitting audio/video
-#define AV_UDP_PORT 1234
+#define AUDIO_UDP_PORT 1234
+#define VIDEO_UDP_PORT 1235
 
 // Maximum size of a video frame
 #define MAX_FRAME_LENGTH 250000
@@ -51,7 +54,7 @@ typedef struct {
     
     // Remaining bytes
     unsigned short sequence_num    : 16;
-    unsigned long timestamp         : 32;    
+    unsigned long timestamp         : 32;
     unsigned long ssrc              : 32;
     
 } RtpPacketHeaderStruct;
@@ -77,16 +80,17 @@ typedef struct {
     
 } Vp8PayloadDescriptorStruct;
 
-// Packet preamble size, contains the RTP packet headers
-#define PACKET_PREAMBLE_LENGTH (sizeof(RtpPacketHeaderStruct)+sizeof(Vp8PayloadDescriptorStruct))
 
 // The first packets are small since they require copying into memory to prepend the header
 #define FIRST_PACKET_PAYLOAD_LENGTH 50
-#define FIRST_PACKET_TOTAL_LENGTH (PACKET_PREAMBLE_LENGTH+FIRST_PACKET_PAYLOAD_LENGTH)
+
+// sizeof(header) + 2 bytes for possible descriptor
+#define MAX_PACKET_PAYLOAD_HEADER_LENGTH (sizeof(RtpPacketHeaderStruct) + 2)
+#define MAX_FIRST_PACKET_PAYLOAD_LENGTH (FIRST_PACKET_PAYLOAD_LENGTH + MAX_PACKET_PAYLOAD_HEADER_LENGTH)
 
 // Subsequent packets should use the maximum allowed size
 #define MAX_PACKET_PAYLOAD_LENGTH 1450
-#define MAX_PACKET_TOTAL_LENGTH (PACKET_PREAMBLE_LENGTH+MAX_PACKET_PAYLOAD_LENGTH)
+#define MAX_PACKET_TOTAL_LENGTH (MAX_PACKET_PAYLOAD_HEADER_LENGTH + MAX_PACKET_PAYLOAD_LENGTH)
 
 
 #endif // GalileoHD_VideoTxRxCommon_h

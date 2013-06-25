@@ -34,9 +34,11 @@
     
     // AVCapture vars
     AVCaptureSession* captureSession;
+    AVCaptureDeviceInput* videoCaptureInput;
+    AVCaptureVideoDataOutput* videoDataOutput;
     
     // Quality vars
-    NSString*     video_quality; 
+    NSString* videoQuality; 
     
    // Queues on which video frames are proccessed
     dispatch_queue_t captureAndEncodingQueue;

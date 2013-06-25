@@ -8,8 +8,6 @@
 #import "Vp8RtpPacketiser.h"
 #import "PacketSender.h"
 
-#define FORCE_REAR_CAMERA           YES
-
 @implementation CameraInputHandler
 
 - (id) init
@@ -19,11 +17,11 @@
         hasBeganCapture = NO;
         
         // Quality vars
-        video_quality = AVCaptureSessionPresetHigh;
+        videoQuality = AVCaptureSessionPresetHigh;
         
         // Create the serial queues
-        captureAndEncodingQueue = dispatch_queue_create("Capture and encoding queue", NULL);
-        sendQueue = dispatch_queue_create("Send queue", NULL);
+        captureAndEncodingQueue = dispatch_queue_create("Video capture and encoding queue", DISPATCH_QUEUE_SERIAL);
+        sendQueue = dispatch_queue_create("Video send queue", DISPATCH_QUEUE_SERIAL);
         
         // The video proccessor crops, scales and performs pixel format transforms. The result is passed asynchronously back here, to its delegate
         videoProcessor = [[OpenGLProcessor alloc] init];
@@ -31,9 +29,7 @@
         
         // The remainder of the video streaming pipeline objects
         videoEncoder = [[Vp8Encoder alloc] init];
-        videoPacketiser = [[Vp8RtpPacketiser alloc] init];
-        
-
+        videoPacketiser = [[Vp8RtpPacketiser alloc] initWithPayloadType:96];
     
     }
     return self;
@@ -60,7 +56,7 @@
     if (hasBeganCapture) return;
     
     // Prepare the packetiser for sending
-    [videoPacketiser prepareForSendingTo:addressString onPort:AV_UDP_PORT];
+    [videoPacketiser prepareForSendingTo:addressString onPort:VIDEO_UDP_PORT];
     
     // Begin video capture and transmission
     [self startCapture];
@@ -79,11 +75,11 @@
 // Helper function to return a front facing camera, if one is available
 - (AVCaptureDevice *)frontFacingCameraIfAvailable
 {
-    NSArray * videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     AVCaptureDevice *captureDevice = nil;
 
     // Look at all the video devices and get the first one that's on the front
     if (!FORCE_REAR_CAMERA) {
+        NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
         for (AVCaptureDevice *device in videoDevices)
         {
             if (device.position == AVCaptureDevicePositionFront)
@@ -96,14 +92,14 @@
     }
     
     // If we couldn't find one on the front, just get the default video device.
-    if ( !captureDevice )
+    if (!captureDevice)
     {
         NSLog(@"Couldn't find front facing camera");
         captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
         videoProcessor.cameraOrientation = REAR_FACING_CAMERA;
     }
     
-    if (! captureDevice) NSLog( @"Error - couldn't create video capture device" );
+    if (!captureDevice) NSLog( @"Error - couldn't create video capture device" );
     
     return captureDevice;
 }
@@ -126,47 +122,52 @@
     NSLog( @"...framerate set");
 }
 
+- (void)setupVideoOutput
+{
+    // Setup AV input
+    AVCaptureDevice* front = [self frontFacingCameraIfAvailable];
+    NSError *error;
+    videoCaptureInput = [AVCaptureDeviceInput deviceInputWithDevice:front error:&error];
+    if (error) NSLog( @"Error - couldn't create video input" );
+    
+    // Setup AV output
+    videoDataOutput = [[AVCaptureVideoDataOutput alloc] init];
+
+    // Process frames on the same queue as encoding, then discard late frames. This ensures that the capture session doesn't overwhelm the encoder
+    [videoDataOutput setSampleBufferDelegate:self queue:captureAndEncodingQueue];
+    videoDataOutput.alwaysDiscardsLateVideoFrames = YES;
+    
+    // Set the video output to store frame in BGRA (supposed to be well supported for Core Graphics)
+    NSString* key = (NSString*)kCVPixelBufferPixelFormatTypeKey; 
+    NSNumber* value = [NSNumber numberWithUnsignedInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange];
+    NSDictionary* videoSettings = [NSDictionary dictionaryWithObject:value forKey:key]; 
+    [videoDataOutput setVideoSettings:videoSettings];
+}
+
 // Begin capturing video through a camera
 - (void)startCapture
 {
     hasBeganCapture = YES;
     
-	// Setup AV input
-    AVCaptureDevice* front = [self frontFacingCameraIfAvailable];
-    NSError *error;
-	AVCaptureDeviceInput *captureInput = [AVCaptureDeviceInput deviceInputWithDevice:front error:&error];
-    if (error) NSLog( @"Error - couldn't create video input" );
-	
-    // Setup AV output
-	AVCaptureVideoDataOutput *captureOutput = [[AVCaptureVideoDataOutput alloc] init];
-    
-	// Process frames on the same queue as encoding, then discard late frames. This ensures that the capture session doesn't overwhelm the encoder
-	[captureOutput setSampleBufferDelegate:self queue:captureAndEncodingQueue];
-    captureOutput.alwaysDiscardsLateVideoFrames = YES;
-    
-	// Set the video output to store frame in BGRA (supposed to be well supported for Core Graphics)
-	NSString* key = (NSString*)kCVPixelBufferPixelFormatTypeKey; 
-	NSNumber* value = [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA];
-	NSDictionary* videoSettings = [NSDictionary dictionaryWithObject:value forKey:key]; 
-	[captureOutput setVideoSettings:videoSettings];
+    [self setupVideoOutput];
     
     // Create a capture session, add inputs/outputs and set camera quality
-	captureSession = [[AVCaptureSession alloc] init];
-    if ([captureSession canAddInput:captureInput])
-        [captureSession addInput:captureInput];
+    captureSession = [[AVCaptureSession alloc] init];
+    if ([captureSession canAddInput:videoCaptureInput])
+        [captureSession addInput:videoCaptureInput];
     else NSLog(@"Error - couldn't add video input");
-    if ([captureSession canAddOutput:captureOutput])
-        [captureSession addOutput:captureOutput];
+    if ([captureSession canAddOutput:videoDataOutput])
+        [captureSession addOutput:videoDataOutput];
     else NSLog(@"Error - couldn't add video output");
-    if ([captureSession canSetSessionPreset:video_quality])
-        [captureSession setSessionPreset:video_quality];
+    if ([captureSession canSetSessionPreset:videoQuality])
+        [captureSession setSessionPreset:videoQuality];
     
     // Set the framerate through the capture connection
-    AVCaptureConnection *videoConnection = [captureOutput connectionWithMediaType:AVMediaTypeVideo];
+    AVCaptureConnection *videoConnection = [videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
     [self setCaptureFramerate:videoConnection];
     
-	// Begin capture
-	[captureSession startRunning];
+    // Begin capture
+    [captureSession startRunning];
     
 }
 
@@ -178,12 +179,7 @@
  didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
         fromConnection:(AVCaptureConnection *)connection 
 {
-    // Update the processor with the latest frame
-    [videoProcessor setLatestPixelBuffer:CMSampleBufferGetImageBuffer(sampleBuffer)];
-    
-    // Queue up a call to perform GPU image processing, we will be notified by the result since we are the processor's delegate
-    [videoProcessor performSelectorOnMainThread:@selector(processVideoFrame) withObject:nil waitUntilDone:NO];
-    
+    [videoProcessor processVideoFrameYuv:CMSampleBufferGetImageBuffer(sampleBuffer)];
 }
 
 
@@ -192,22 +188,16 @@
 
 - (void) handleOutputFrame:(CVPixelBufferRef)outputPixelBuffer
 {
+    // Wait for any packet sending to finish
+    dispatch_sync(sendQueue, ^{});
     
-    dispatch_async(captureAndEncodingQueue, ^{
-        
-        // Wait for any packet sending to finish
-        dispatch_sync(sendQueue, ^{});
-        
-        // Encode the frame using VP8
-        NSData* encodedFrame = [videoEncoder frameDataFromPixelBuffer:outputPixelBuffer];
-        
-        // Send the packet
-        dispatch_async(sendQueue, ^{
-            [videoPacketiser sendFrame:encodedFrame];
-        });
-        
+    // Encode the frame using VP8
+    NSData* encodedFrame = [videoEncoder frameDataFromYuvPixelBuffer:outputPixelBuffer];
+    
+    // Send the packet
+    dispatch_async(sendQueue, ^{
+        [videoPacketiser sendFrame:encodedFrame];
     });
-    
 }
 
 @end

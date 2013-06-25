@@ -7,27 +7,49 @@
 #import "PacketSender.h"
 #import "OffscreenFBO.h"
 
+#import "ShaderUtilities.h"
+
+GLfloat yPlaneUVs[8] = {
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    0.0f, 0.3f,
+    1.0f, 0.3f
+};
+
+GLfloat yPlaneVertices[8] = {
+    -1.0f, -1.0f,
+     1.0f, -1.0f,
+    -1.0f, -0.4f,
+     1.0f, -0.4f
+};
+
+GLfloat uvPlaneUVs[8] = {
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    0.0f, 0.1f,
+    1.0f, 0.1f
+};
+
+GLfloat uPlaneVertices[8] = {
+    -1.0f, -0.4f,
+     1.0f, -0.4f,
+    -1.0f, -0.2f,
+     1.0f, -0.2f
+};
+
+GLfloat vPlaneVertices[8] = {
+    -1.0f, -0.2f,
+     1.0f, -0.2f,
+    -1.0f,  0.0f,
+     1.0f,  0.0f
+};
+
 #define JPEG_QUALITY_FACTOR     0.9
 
 @implementation OpenGLProcessor
 
 @synthesize cameraOrientation;
 @synthesize zoomFactor;
-
-- (CVPixelBufferRef) latestPixelBuffer
-{
-    return latestPixelBuffer;
-}
-
-- (void) setLatestPixelBuffer: (CVPixelBufferRef) latestPixelBuffer_
-{
-    @synchronized (self) {
-        CVPixelBufferRelease(latestPixelBuffer);
-        latestPixelBuffer = latestPixelBuffer_;
-        CVPixelBufferRetain(latestPixelBuffer);
-    }
-}
-
 
 - (id) init
 {
@@ -36,8 +58,14 @@
         zoomFactor = 1.0;
         
         if (![self createContext]) NSLog(@"Problem setting up context");
-        passThroughProgram = [self loadShader:@"passThrough"];
+        yuv2yuvProgram = [self loadShader:@"yuv2yuv"];
+        yPlanarProgram = [self loadShader:@"y2planar"];
+        uPlanarProgram = [self loadShader:@"u2planar"];
+        vPlanarProgram = [self loadShader:@"v2planar"];
         if (![self generateTextureCaches]) NSLog(@"Problem generating texture cache");
+        
+        inputTexture[0] = NULL;
+        inputTexture[1] = NULL;
         
         isFirstRenderCall = YES;
     }
@@ -50,17 +78,8 @@
     NSLog(@"VideoProcessor exiting");
 }
 
-- (void) processVideoFrame
+- (void) processVideoFrameYuv: (CVPixelBufferRef) inputPixelBuffer
 {
-
-    @synchronized (self) {
-        
-        // Make sure we process the latest frame available
-        inputPixelBuffer = self.latestPixelBuffer;
-        CVPixelBufferRetain(inputPixelBuffer);
-        
-    }
-
     // This isn't the only OpenGL ES context
     [EAGLContext setCurrentContext:oglContext];
     
@@ -79,57 +98,132 @@
         
         // These calls use the pixel buffer dimensions
         [self createPixelBuffer:&outputPixelBuffer width:outputPixelBufferWidth height:outputPixelBufferHeight];
-        [self generateTextureVertices:cropInputTextureVertices];
-        
-        // Our rendering target is always the full viewport (either the entire screen or entire destination texture surface)
-        glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0, originCentredSquareVertices);
-        glEnableVertexAttribArray(ATTRIB_VERTEX);
         
         // We can now create the output texture, which only need to be done once (whereas the input texture must be created once per frame)
-        outputTexture = [self createTextureLinkedToBuffer:outputPixelBuffer withCache:outputTextureCache];
+        outputTexture = [self createTextureLinkedToBuffer:outputPixelBuffer withCache:outputTextureCache textureType:TT_RGBA];
         
         // With their respective textures we can now create the two offscreen buffers
-        offscreenFrameBuffer = [[OffscreenFBO alloc] initWithTexture:outputTexture];
+        offscreenFrameBuffer[0] = [[OffscreenFBO alloc] initWithTexture:outputTexture 
+                                                                  width:outputPixelBufferWidth height:outputPixelBufferHeight];//*/
+        
+        // Create intermediate texture with resize data
+        offscreenFrameBuffer[1] = [[OffscreenFBO alloc] initWithWidth:outputPixelBufferWidth height:outputPixelBufferHeight];
+        
+        // setup resize params
+        GLint location1 = glueGetUniformLocation(yuv2yuvProgram, "yPlane");
+        GLint location2 = glueGetUniformLocation(yuv2yuvProgram, "uvPlane");
+        GLint location3;
+        glUseProgram(yuv2yuvProgram);
+        glUniform1i(location1, 0);
+        glUniform1i(location2, 1);
+        
+        // setup YUV params
+        GLfloat resultYSize[] = { outputPixelBufferWidth - 1, outputPixelBufferHeight - 1, outputPixelBufferWidth, 0.0f };
+        GLfloat resultYInvSize[] = { 1.f / resultYSize[0], 1.f / resultYSize[1], 1.f / resultYSize[2] };
+        GLfloat resultUVSize[] = { outputPixelBufferWidth / 2 - 1, outputPixelBufferHeight / 2 - 1, outputPixelBufferWidth / 2, 0.0f };
+        GLfloat resultUVInvSize[] = { 1.f / resultUVSize[0], 1.f / resultUVSize[1], 1.f / resultUVSize[2] };
+        
+        location1 = glueGetUniformLocation(yPlanarProgram, "resultSize");
+        location2 = glueGetUniformLocation(yPlanarProgram, "resultInvSize");
+        glUseProgram(yPlanarProgram);
+        glUniform3fv(location1, 1, resultYSize);
+        glUniform3fv(location2, 1, resultYInvSize);
+        
+        location1 = glueGetUniformLocation(uPlanarProgram, "resultSize");
+        location2 = glueGetUniformLocation(uPlanarProgram, "resultInvSize");
+        location3 = glueGetUniformLocation(uPlanarProgram, "planeSize");
+        glUseProgram(uPlanarProgram);
+        glUniform3fv(location1, 1, resultUVSize);
+        glUniform3fv(location2, 1, resultUVInvSize);
+        glUniform3fv(location3, 1, resultYSize);
+        
+        location1 = glueGetUniformLocation(vPlanarProgram, "resultSize");
+        location2 = glueGetUniformLocation(vPlanarProgram, "resultInvSize");
+        location3 = glueGetUniformLocation(vPlanarProgram, "planeSize");
+        glUseProgram(vPlanarProgram);
+        glUniform3fv(location1, 1, resultUVSize);
+        glUniform3fv(location2, 1, resultUVInvSize);
+        glUniform3fv(location3, 1, resultYSize);
         
         isFirstRenderCall = NO;
     }
     
-    // We can now create the input texture, which has to be done every frame
-    inputTexture = [self createTextureLinkedToBuffer:inputPixelBuffer withCache:inputTextureCache];
+    // Pass 1: resizing
+    [offscreenFrameBuffer[1] beginRender];
+    //glClear(GL_COLOR_BUFFER_BIT);
     
     // We also need to recalculate texture vertices in case the zoom level has changed
     [self generateTextureVertices:cropInputTextureVertices];
     
+    // We should lock/unlock input pixel buffer to prevent strange artifacts 
+    CVPixelBufferLockBaseAddress(inputPixelBuffer, 0);
     // Bind the input texture containing a new video frame, ensuring the texture vertices crop the input
-    glBindTexture(CVOpenGLESTextureGetTarget(inputTexture), CVOpenGLESTextureGetName(inputTexture));
-    glVertexAttribPointer(ATTRIB_TEXTUREPOSITON, 2, GL_FLOAT, 0, 0, cropInputTextureVertices);
+    glActiveTexture(GL_TEXTURE0);
+    inputTexture[0] = [self createTextureLinkedToBuffer:inputPixelBuffer withCache:inputTextureCache textureType:TT_LUMA];
+    glActiveTexture(GL_TEXTURE1);
+    inputTexture[1] = [self createTextureLinkedToBuffer:inputPixelBuffer withCache:inputTextureCache textureType:TT_CHROMA];//*/
+    CVPixelBufferUnlockBaseAddress(inputPixelBuffer, 0);
+    
+    glEnableVertexAttribArray(ATTRIB_VERTEX);
     glEnableVertexAttribArray(ATTRIB_TEXTUREPOSITON);
+    glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0, originCentredSquareVertices);
+    glVertexAttribPointer(ATTRIB_TEXTUREPOSITON, 2, GL_FLOAT, 0, 0, cropInputTextureVertices);
     
     // Render video frame offscreen to the FBO
-    glViewport(0, 0, outputPixelBufferWidth, outputPixelBufferHeight);
-    glUseProgram(passThroughProgram);
-    [offscreenFrameBuffer render];
+    glUseProgram(yuv2yuvProgram);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     // Cleanup input texture
-    glBindTexture(CVOpenGLESTextureGetTarget(inputTexture), 0); // unbind   
-    CVOpenGLESTextureCacheFlush(inputTextureCache, 0);
-    CFRelease(inputTexture);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, 0); // unbind
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0); // unbind
+    //
+    if(inputTexture[0]) CFRelease(inputTexture[0]), inputTexture[0] = NULL;
+    if(inputTexture[1]) CFRelease(inputTexture[1]), inputTexture[1] = NULL;
+    CVOpenGLESTextureCacheFlush(inputTextureCache, 0);//*/
+    
+    [offscreenFrameBuffer[1] endRender];
+    
+    // Pass 2: render YUV
+    [offscreenFrameBuffer[0] beginRender];
+    [offscreenFrameBuffer[1] bindTexture];
+    //glClear(GL_COLOR_BUFFER_BIT);
+    
+    // render Y
+    glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0, yPlaneVertices);
+    glVertexAttribPointer(ATTRIB_TEXTUREPOSITON, 2, GL_FLOAT, 0, 0, yPlaneUVs);
+    
+    glUseProgram(yPlanarProgram);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
+    //render U
+    glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0, uPlaneVertices);
+    glVertexAttribPointer(ATTRIB_TEXTUREPOSITON, 2, GL_FLOAT, 0, 0, uvPlaneUVs);
+    
+    glUseProgram(uPlanarProgram);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
+    //render V
+    glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0, vPlaneVertices);
+    glVertexAttribPointer(ATTRIB_TEXTUREPOSITON, 2, GL_FLOAT, 0, 0, uvPlaneUVs);
+    
+    glUseProgram(vPlanarProgram);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
+    glBindTexture(GL_TEXTURE_2D, 0); // unbind
+    [offscreenFrameBuffer[0] endRender];//*/
+    
+    //glFlush();
+    //glFinish();
     
     // Process using delegate
     //[NSThread detachNewThreadSelector:@selector(handleOutputFrame:) toTarget:self.outputDelegate withObject:(__bridge id)(outputPixelBuffer)];
     [self.outputDelegate handleOutputFrame:outputPixelBuffer];
     
     // Cleanup output texture (but do not release)
-    glBindTexture(CVOpenGLESTextureGetTarget(outputTexture), 0); // unbind
     CVOpenGLESTextureCacheFlush(outputTextureCache, 0);
-    
-    // Release the input pixel buffer
-    @synchronized (self) {
-        CVPixelBufferRelease(inputPixelBuffer);
-    }
-    
 }
-
 
 #pragma mark
 #pragma mark Primary initialisation helper methods
@@ -142,6 +236,13 @@
         return false;
     else
         return true;
+        
+    glClearColor(1.f, 1.f, 1.f, 1.f);
+    glDisable(GL_DITHER);
+    glDisable(GL_BLEND);
+    glDisable(GL_STENCIL_TEST);
+    //glDisable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
 }
 
 - (GLuint) loadShader: (NSString*) name
@@ -157,7 +258,7 @@
         ATTRIB_VERTEX, ATTRIB_TEXTUREPOSITON,
     };
     GLchar *attribName[NUM_ATTRIBUTES] = {
-        "position", "textureCoordinate",			
+        "position", "textureCoordinate",
     };
     
     // Create the shader program
@@ -189,12 +290,13 @@
 {
     CVReturn err;
     
-    //  Create a new video input texture cache
+     //  Create a new video input texture cache
     err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge CVEAGLContext)((__bridge void *)(oglContext)), NULL, &inputTextureCache);
     if (err) {
         NSLog(@"Error creating input texture cache with CVReturn error %u", err);
         return false;
     }
+    
     //  Create a new video output texture cache
     err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge CVEAGLContext)((__bridge void *)(oglContext)), NULL, &outputTextureCache);
     if (err) {
@@ -302,19 +404,25 @@
 
 - (CVOpenGLESTextureRef) createTextureLinkedToBuffer: (CVPixelBufferRef) pixelBuffer
                                            withCache: (CVOpenGLESTextureCacheRef) textureCache
+                                         textureType: (int)textureType
 {
+    size_t planeIndex = (textureType == TT_CHROMA) ? 1 : 0;
+    GLint format = (textureType == TT_RGBA) ? GL_RGBA :
+                        (textureType == TT_LUMA) ? GL_LUMINANCE : GL_LUMINANCE_ALPHA;
+    unsigned int width = CVPixelBufferGetWidth(pixelBuffer) >> planeIndex;
+    unsigned int height = CVPixelBufferGetHeight(pixelBuffer) >> planeIndex;
     CVOpenGLESTextureRef texture = NULL;
     CVReturn err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, 
                                                                 textureCache,
                                                                 pixelBuffer,
                                                                 NULL,
                                                                 GL_TEXTURE_2D,
-                                                                GL_RGBA,
-                                                                CVPixelBufferGetWidth(pixelBuffer),
-                                                                CVPixelBufferGetHeight(pixelBuffer),
-                                                                GL_BGRA,
+                                                                format,
+                                                                width,
+                                                                height,
+                                                                format,
                                                                 GL_UNSIGNED_BYTE,
-                                                                0,
+                                                                planeIndex,
                                                                 &texture);
 
     
@@ -324,13 +432,10 @@
     
     // Set texture parameters
 	glBindTexture(CVOpenGLESTextureGetTarget(texture), CVOpenGLESTextureGetName(texture));
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
     return texture;
 }
-
 
 @end

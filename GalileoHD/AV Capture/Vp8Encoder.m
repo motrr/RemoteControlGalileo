@@ -156,45 +156,54 @@ static int read_frame(FILE *f, vpx_image_t *img) {
         die_codec(&codec, "Failed to destroy codec");
 }
 
-- (NSData*) frameDataFromPixelBuffer: (CVPixelBufferRef) pixelBuffer
+
+- (NSData*) frameDataFromYuvPixelBuffer: (CVPixelBufferRef) pixelBuffer
 {
     vpx_image_t * img = &raw;
-    size_t num_pixels = img->w * img->h;
     size_t num_luma_pixels = img->w * img->h;
-    size_t num_chroma_pixels = (img->w * img->h) / 4;
+    size_t num_chroma_pixels = num_luma_pixels / 4;
+    //size_t chroma_width = img->w / 2;
+    //size_t chroma_height = img->h / 2;
     
     // Get access to raw pixel data
-    CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+    CVPixelBufferLockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
     unsigned char* base_address = (unsigned char*) CVPixelBufferGetBaseAddress(pixelBuffer);
     
     // Alias to planes in source image
-    unsigned char* bgra_planes = base_address;
+    unsigned char* yuv_planes = base_address;
     
     // Alias to planes in destination image
     unsigned char* y_plane_dst = img->planes[0];
     unsigned char* u_plane = y_plane_dst + num_luma_pixels;
     unsigned char* v_plane = u_plane + num_chroma_pixels;
     
+    int offsetU = floor(img->h * 0.3 + 0.5) * img->w * 4;
+    int offsetV = floor(img->h * 0.4 + 0.5) * img->w * 4;
+    memcpy(y_plane_dst, yuv_planes, num_luma_pixels);
+    memcpy(u_plane, yuv_planes + offsetU, num_chroma_pixels);
+    memcpy(v_plane, yuv_planes + offsetV, num_chroma_pixels);//*/
+    
     // Fill in the luma plane
-    // Y = (0.257 * R) + (0.504 * G) + (0.098 * B) + 16
-    for (unsigned int i=0; i < num_pixels; i++) {
-        y_plane_dst[i] = 0.257*bgra_planes[4*i+2] + 0.504*bgra_planes[4*i+1] + 0.098*bgra_planes[4*i] + 16;
+    /*for (unsigned int i=0; i < num_luma_pixels; i++) {
+        y_plane_dst[i] = yuv_planes[4*i + 0];
     }
     
-    // Fill in the chroma planes
-    // V =  (0.439 * R) - (0.368 * G) - (0.071 * B) + 128
-    // U = -(0.148 * R) - (0.291 * G) + (0.439 * B) + 128
-    unsigned int j;
-    for (unsigned int i = 0; i < num_chroma_pixels; i++) {
-        j = 4*i;
-        v_plane[i] = (0.439 * bgra_planes[4*j+2]) - (0.368 * bgra_planes[4*j+1]) - (0.071 * bgra_planes[4*j]) + 128;
-        u_plane[i] = -(0.148 * bgra_planes[4*j+2]) - (0.291 * bgra_planes[4*j+1]) + (0.439 * bgra_planes[4*j]) + 128;
-    }
+    // Fill in the chroma planes (skip every second pixel)
+    unsigned int index = 0;
+    unsigned int offset = 0;
+    for (unsigned int j = 0; j < chroma_height; j++) {
+        for (unsigned int i = 0; i < chroma_width; i++, index++) {
+            u_plane[index] = yuv_planes[offset + 8*i + 1];
+            v_plane[index] = yuv_planes[offset + 8*i + 2];
+        }
+        
+        offset += img->w * 8;
+    }//*/
+    
+    CVPixelBufferUnlockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
     
     // Run through encoder
     const vpx_codec_cx_pkt_t * pkt = [self encode_frame:img];
-    
-    CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
     
     // Ensure frame isn't too big
     assert(pkt->data.frame.sz <= MAX_FRAME_LENGTH);

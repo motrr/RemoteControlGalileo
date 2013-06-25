@@ -2,38 +2,50 @@
 //  Copyright (c) 2011 Swift Navigation. All rights reserved.
 //
 
-#import "GalileoContainer.h"
+#import "Galileo.h"
 #import "GKSessionManager.h"
 
 #import "GalileoCommon.h"
 #import "GKNetController.h"
 #import "CameraInputHandler.h"
+#import "AudioInputOutput.h"
 #import "VideoViewController.h"
 #import "UserInputHandler.h"
 #import "DockConnectorController.h"
 #import "UIDevice+ModelDetection.h"
 
-@implementation GalileoContainer
+#include "AudioDevice.h"
+
+@interface Galileo ()
+{
+    AudioDevice *audioDevice;
+}
+
+@end
+
+@implementation Galileo
 
 @synthesize videoViewController;
 
-
-- (id)initWithNetworkController: (id<NetworkControllerDelegate>) initNetworkController;
+- (id)initWithNetworkController: (id<NetworkControllerDelegate>) initNetworkController
 {
     self = [super init];
     if (self) {
+        audioDevice = new AudioDevice(8000, 1);
         
         // Store the networking module, this will negotiate networks comms.
         networkController = initNetworkController;
         
         // Create subcomponents
-        cameraInputHandler = [CameraInputHandler alloc];
+        cameraInputHandler  = [CameraInputHandler alloc];
+        audioInputOutput   = [AudioInputOutput alloc];
         videoViewController = [VideoViewController alloc];
-        userInputHandler = [UserInputHandler alloc];
-        serialController = [DockConnectorController alloc];
+        userInputHandler    = [UserInputHandler alloc];
+        serialController    = [DockConnectorController alloc];
         
         // Set delegates for responding to recieved packets
         [networkController setVideoConfigResponder: cameraInputHandler];
+        [networkController setAudioConfigResponder: audioInputOutput];
         [networkController setOrientationUpdateResponder: videoViewController];
         [networkController setGalileoControlResponder: serialController];
         
@@ -49,13 +61,13 @@
         
         // Initialise everything
         cameraInputHandler  = [cameraInputHandler init];
+        audioInputOutput   = [audioInputOutput init];
         videoViewController = [videoViewController init];
         userInputHandler    = [userInputHandler init];
         serialController    = [serialController init];
         
         // Start pinging
         //timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:networkModule selector:@selector(sendPing) userInfo:nil repeats:YES];
-        
     }
     return self;
 }
@@ -76,6 +88,7 @@
 - (void) dealloc
 {
     NSLog(@"Galileo exiting");
+    if (audioDevice) delete audioDevice;
 }
 
 @end

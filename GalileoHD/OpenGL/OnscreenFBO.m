@@ -49,20 +49,25 @@
     return self;
 }
 
-- (void) render
+- (void) beginRender
 {
-    // Bind the framebuffer and render buffer
+    // Bind the framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
     
     // Set the view port to the entire view usind the dimensions
     glViewport(0, 0, renderBufferWidth, renderBufferHeight);
+}
 
-    // Draw the video texture
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    
-    // Present
+- (void) endRender
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+- (void) present
+{
+    glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
     [oglContext presentRenderbuffer:GL_RENDERBUFFER];
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 
 - (void) dealloc

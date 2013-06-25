@@ -9,7 +9,7 @@
 #import "RootViewController.h"
 #import "GKSessionManager.h"
 #import "GKLobbyViewController.h"
-#import "GalileoContainer.h"
+#import "Galileo.h"
 #import "GKNetController.h"
 
 @implementation RootViewController
@@ -56,7 +56,7 @@
     netController = [netController initWithManager:manager];
     
     // Create a Galileo object with the network controller. This will set required delegates in the net controller
-    galileo = [[GalileoContainer alloc] initWithNetworkController:netController];
+    galileo = [[Galileo alloc] initWithNetworkController:netController];
     
 }
 

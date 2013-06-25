@@ -6,7 +6,7 @@
 #import  <QuartzCore/CALayer.h>
 
 #import "VideoTxRxCommon.h"
-#import "VideoDepacketiser.h"
+#import "Vp8RtpDepacketiser.h"
 #import "VideoView.h"
 
 #define ROTATION_ANIMATION_DURATION 0.5
@@ -39,13 +39,12 @@
 {
     // Create the view which will show the received video
     self.wantsFullScreenLayout = YES;
-    self.view = [[VideoView alloc]
-                 initWithFrame:[UIScreen mainScreen].applicationFrame];
+    self.view = [[VideoView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
     //[self.view.layer setMagnificationFilter:kCAFilterTrilinear];
     [self.view setBackgroundColor:[UIColor blackColor]];
     
     // Add the view to the depacketiser so it can display completed frames upon it
-    videoDepacketiser = [[VideoDepacketiser alloc] init];
+    videoDepacketiser = [[Vp8RtpDepacketiser alloc] initWithPort:VIDEO_UDP_PORT];
     videoDepacketiser.viewForDisplayingFrames = (VideoView*)self.view;
     
 }
@@ -63,7 +62,7 @@
     [videoDepacketiser openSocket];
 
     // Start listening in the background
-    [NSThread detachNewThreadSelector: @selector(startListeningForVideo)
+    [NSThread detachNewThreadSelector: @selector(startListening)
                              toTarget: videoDepacketiser
                            withObject: nil];
 }

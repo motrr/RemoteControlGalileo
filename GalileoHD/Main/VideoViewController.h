@@ -6,12 +6,12 @@
 #import <UIKit/UIKit.h>
 #import "GalileoCommon.h"
 
-@class VideoDepacketiser;
+@class Vp8RtpDepacketiser;
 
 @interface VideoViewController : UIViewController <OrientationUpdateResponderDelegate>
 {
     // Video depacketiser listens for video packets and displays them on the view
-    VideoDepacketiser* videoDepacketiser;
+    Vp8RtpDepacketiser* videoDepacketiser;
     
     // Keep track of local and remote orientation
     UIDeviceOrientation currentLocalOrientation;

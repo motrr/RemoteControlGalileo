@@ -7,15 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RtpPacketiser.h"
 
-@class PacketSender;
+@interface Vp8RtpPacketiser : RtpPacketiser
 
-@interface Vp8RtpPacketiser : NSObject
-{
-    PacketSender* packetSender;
-}
-
-- (void) prepareForSendingTo: (NSString*) ipAddress onPort: (unsigned int) port;
-- (void) sendFrame: (NSData*) data;
+- (id) initWithPayloadType: (unsigned char) payloadType; // payloadLength = sizeof(RtpPacketHeaderStruct) + sizeof(Vp8PayloadDescriptorStruct)
+- (void) insertCustomPacketHeader: (char*) buffer;
 
 @end

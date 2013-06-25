@@ -48,6 +48,7 @@ typedef struct {
 
 @synthesize connectionStateResponder;
 @synthesize videoConfigResponder;
+@synthesize audioConfigResponder;
 @synthesize orientationUpdateResponder;
 @synthesize galileoControlResponder;
 
@@ -107,6 +108,7 @@ typedef struct {
                                         incoming.ip3,
                                         incoming.ip4];
         [videoConfigResponder ipAddressRecieved: ipAddressString];
+        [audioConfigResponder ipAddressRecieved: ipAddressString];
         
     }
 }

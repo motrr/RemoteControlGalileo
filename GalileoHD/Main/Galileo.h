@@ -9,18 +9,20 @@
 @class GKSessionManager;
 @class GKNetController;
 @class CameraInputHandler;
+@class AudioInputOutput;
 @class VideoViewController;
 @class UserInputHandler;
 @class DockConnectorController;
 
 
-@interface GalileoContainer : UIViewController
+@interface Galileo : UIViewController
 {
     NSTimer *pingPingTimer;
     
     id<NetworkControllerDelegate> networkController;
     
     CameraInputHandler *cameraInputHandler;
+    AudioInputOutput *audioInputOutput;
     VideoViewController *videoViewController;
     UserInputHandler *userInputHandler;
     DockConnectorController *serialController;

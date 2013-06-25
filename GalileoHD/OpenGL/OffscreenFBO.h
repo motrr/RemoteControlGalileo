@@ -9,10 +9,19 @@
 
 @interface OffscreenFBO : NSObject
 {
+    GLuint texture;
     GLuint frameBuffer;
+    
+    int renderBufferWidth;
+    int renderBufferHeight;
 }
 
-- (id) initWithTexture: (CVOpenGLESTextureRef) texture;
-- (void) render;
+- (id) initWithWidth: (int) width height: (int) height;
+- (id) initWithTexture: (CVOpenGLESTextureRef) texture width: (int) width height: (int) height;
+
+- (void) beginRender;
+- (void) endRender;
+
+- (void) bindTexture;
 
 @end

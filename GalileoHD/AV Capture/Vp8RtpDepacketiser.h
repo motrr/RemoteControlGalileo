@@ -7,26 +7,25 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RtpDepacketiser.h"
 
 @class VideoView;
 @class VideoDecoder;
 
-@interface VideoDepacketiser : NSObject
-{    
-    
+@interface Vp8RtpDepacketiser : RtpDepacketiser
+{
     // Decoder to decoder frames
     VideoDecoder* videoDecoder;
-    
-    // AV reception
-    NSData* imageData;
 }
 
 // Video frames are displayed on this view once decoded
 @property (nonatomic, weak) VideoView* viewForDisplayingFrames;
 
-- (void) openSocket;
-- (void) startListeningForVideo;
-- (void) closeSocket;
+- (id) initWithPort: (u_short) port;
 
+//
+- (void) processEncodedData: (NSData*) data;
+- (void) insertPacketIntoFrame: (char*) payload payloadDescriptor:(char*) payload_descriptor 
+                 payloadLength: (unsigned int) payload_length markerSet: (Boolean) marker;
 
 @end

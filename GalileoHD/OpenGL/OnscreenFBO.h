@@ -20,7 +20,9 @@
 }
 
 - (id) initWithLayer:(CAEAGLLayer *)layer andContext: (EAGLContext*) context;
-- (void) render;
 
+- (void) beginRender;
+- (void) endRender;
+- (void) present;
 
 @end

@@ -10,6 +10,6 @@
 
 @interface Vp8Encoder : NSObject
 
-- (NSData*) frameDataFromPixelBuffer: (CVPixelBufferRef) pixelBuffer;
+- (NSData*) frameDataFromYuvPixelBuffer: (CVPixelBufferRef) pixelBuffer;
 
 @end

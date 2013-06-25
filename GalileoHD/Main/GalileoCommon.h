@@ -8,6 +8,7 @@
 // Forward declarations
 @protocol NetworkControllerDelegate;
 @protocol VideoConfigResponderDelegate;
+@protocol AudioConfigResponderDelegate;
 @protocol OrientationUpdateResponderDelegate;
 @protocol GalileoControlResponderDelegate;
 
@@ -22,6 +23,7 @@
  */
 
 @property (nonatomic, weak) id <VideoConfigResponderDelegate> videoConfigResponder;
+@property (nonatomic, weak) id <AudioConfigResponderDelegate> audioConfigResponder;
 @property (nonatomic, weak) id <OrientationUpdateResponderDelegate> orientationUpdateResponder;
 @property (nonatomic, weak) id <GalileoControlResponderDelegate> galileoControlResponder;
 
@@ -59,6 +61,12 @@
 
 @end
 
+@protocol AudioConfigResponderDelegate <NSObject>
+
+// Handle reception of an IP address from the remote device
+- (void) ipAddressRecieved: (NSString*) addressString;
+
+@end
 
 @protocol OrientationUpdateResponderDelegate <NSObject>
 
@@ -80,5 +88,10 @@
                                          tilt: (NSNumber*) tiltAmount ignore: (Boolean) ignoreTilt
                         momentum:(bool) momentum;
 
+@end
+
+@protocol AudioDepacketiserDelegate
+
+- (void) processEncodedData: (NSData*) data;
 
 @end

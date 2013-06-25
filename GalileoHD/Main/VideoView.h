@@ -7,33 +7,33 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "VideoDecoder.h"
 
 @class OnscreenFBO;
-
 
 @interface VideoView : UIView
 {
     // On screen frame buffer to display frames
     OnscreenFBO* onscreenFrameBuffer;
     
-    // Dimensions of the pixel buffer
-    size_t pixelBufferWidth; 
-    size_t pixelBufferHeight;
-    
     // Graphics context
     EAGLContext* oglContext;
     
     // Texture and texture caches for video frames
     CVOpenGLESTextureCacheRef inputTextureCache;
-    CVOpenGLESTextureRef inputTexture; // linked to input pixelBuffer  
+    CVOpenGLESTextureRef inputTexture[3]; // linked to input pixelBuffer  
     
     // Handle to the shader programs
-    GLuint yuvPlanar2BgraProgram;
+    GLuint yuv2bgrProgram;
+    
+    // Texture handles
+    GLuint yuvTextures[3]; // YUV
+    GLfloat textureUvs[8];
     
     Boolean isFirstRenderCall;
 
 }
 
-- (void) renderPixelBuffer:(CVPixelBufferRef)inputPixelBuffer;
+- (void) renderYuvBuffer:(YuvBuffer*)yuvBuffer;
 
 @end
