@@ -69,7 +69,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		302362D4158A8FEE00B2DF09 /* GalileoHD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GalileoHD.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		302362D4158A8FEE00B2DF09 /* RemoteControlGalileo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RemoteControlGalileo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		302362D8158A8FEE00B2DF09 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		302362DA158A8FEE00B2DF09 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		302362DC158A8FEE00B2DF09 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -212,7 +212,7 @@
 		302362D5158A8FEE00B2DF09 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				302362D4158A8FEE00B2DF09 /* GalileoHD.app */,
+				302362D4158A8FEE00B2DF09 /* RemoteControlGalileo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -257,7 +257,7 @@
 				3023630B158A957D00B2DF09 /* GKNetController.m */,
 			);
 			name = Initialisation;
-			path = GalileoHD;
+			path = RemoteControlGalileo;
 			sourceTree = "<group>";
 		};
 		302362DF158A8FEE00B2DF09 /* Supporting Files */ = {
@@ -270,7 +270,7 @@
 				832FD5C316D5B379001CDF65 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
-			path = GalileoHD;
+			path = RemoteControlGalileo;
 			sourceTree = "<group>";
 		};
 		30236306158A946300B2DF09 /* Main */ = {
@@ -291,7 +291,7 @@
 				309AAC52158AE2E8007015A9 /* DockConnectorController.m */,
 			);
 			name = Main;
-			path = GalileoHD;
+			path = RemoteControlGalileo;
 			sourceTree = "<group>";
 		};
 		306FC90815A3DFA600FA5DA7 /* Video Rx */ = {
@@ -320,7 +320,7 @@
 				309AAC53158AE2E8007015A9 /* UIDevice+ModelDetection.m */,
 			);
 			name = Utilities;
-			path = GalileoHD/OpenGL;
+			path = RemoteControlGalileo/OpenGL;
 			sourceTree = "<group>";
 		};
 		309AAC65158AE9F7007015A9 /* Video Tx */ = {
@@ -392,7 +392,7 @@
 				309AAC92158AFE75007015A9 /* passThrough.frag */,
 			);
 			name = OpenGL;
-			path = GalileoHD/OpenGL;
+			path = RemoteControlGalileo/OpenGL;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -411,8 +411,8 @@
 			dependencies = (
 			);
 			name = RemoteControlGalileo;
-			productName = GalileoHD;
-			productReference = 302362D4158A8FEE00B2DF09 /* GalileoHD.app */;
+			productName = RemoteControlGalileo;
+			productReference = 302362D4158A8FEE00B2DF09 /* RemoteControlGalileo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -580,12 +580,12 @@
 					"\"$(SRCROOT)/Galileo-iOS-SDK/frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "GalileoHD/RemoteControlGalileo-Prefix.pch";
+				GCC_PREFIX_HEADER = "RemoteControlGalileo/RemoteControlGalileo-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					vpx/include,
 					ilbc/include,
 				);
-				INFOPLIST_FILE = "GalileoHD/RemoteControlGalileo-Info.plist";
+				INFOPLIST_FILE = "RemoteControlGalileo/RemoteControlGalileo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					vpx/lib,
@@ -608,12 +608,12 @@
 					"\"$(SRCROOT)/Galileo-iOS-SDK/frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "GalileoHD/RemoteControlGalileo-Prefix.pch";
+				GCC_PREFIX_HEADER = "RemoteControlGalileo/RemoteControlGalileo-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					vpx/include,
 					ilbc/include,
 				);
-				INFOPLIST_FILE = "GalileoHD/RemoteControlGalileo-Info.plist";
+				INFOPLIST_FILE = "RemoteControlGalileo/RemoteControlGalileo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					vpx/lib,

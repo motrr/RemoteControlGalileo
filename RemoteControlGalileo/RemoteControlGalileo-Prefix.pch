@@ -1,5 +1,5 @@
 //
-// Prefix header for all source files of the 'GalileoHD' target in the 'GalileoHD' project
+// Prefix header for all source files of the 'RemoteControlGalileo' target in the 'RemoteControlGalileo' project
 //
 
 #import <Availability.h>

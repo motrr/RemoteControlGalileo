@@ -2,8 +2,8 @@
 //  Copyright (c) 2012 Swift Navigation. All rights reserved.
 //
 
-#ifndef GalileoHD_VideoTxRxCommon_h
-#define GalileoHD_VideoTxRxCommon_h
+#ifndef RemoteControlGalileo_VideoTxRxCommon_h
+#define RemoteControlGalileo_VideoTxRxCommon_h
 
 #define FORCE_REAR_CAMERA YES
 
@@ -89,4 +89,4 @@ typedef struct {
 #define MAX_PACKET_TOTAL_LENGTH (MAX_PACKET_PAYLOAD_HEADER_LENGTH + MAX_PACKET_PAYLOAD_LENGTH)
 
 
-#endif // GalileoHD_VideoTxRxCommon_h
+#endif // RemoteControlGalileo_VideoTxRxCommon_h

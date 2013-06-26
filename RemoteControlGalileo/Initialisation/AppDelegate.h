@@ -1,6 +1,6 @@
 //
 //  AppDelegate.h
-//  GalileoHD
+//  RemoteControlGalileo
 //
 //  Created by Chris Harding on 14/06/2012.
 //  Copyright (c) 2012 Swift Navigation. All rights reserved.
