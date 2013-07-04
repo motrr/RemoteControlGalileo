@@ -90,8 +90,3 @@
 
 @end
 
-@protocol AudioDepacketiserDelegate
-
-- (void) processEncodedData: (NSData*) data;
-
-@end

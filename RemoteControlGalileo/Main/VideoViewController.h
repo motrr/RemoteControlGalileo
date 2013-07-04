@@ -6,13 +6,8 @@
 #import <UIKit/UIKit.h>
 #import "GalileoCommon.h"
 
-@class Vp8RtpDepacketiser;
-
 @interface VideoViewController : UIViewController <OrientationUpdateResponderDelegate>
 {
-    // Video depacketiser listens for video packets and displays them on the view
-    Vp8RtpDepacketiser* videoDepacketiser;
-    
     // Keep track of local and remote orientation
     UIDeviceOrientation currentLocalOrientation;
     UIDeviceOrientation currentRemoteOrientation;
@@ -21,11 +16,10 @@
     BOOL isLocked;
     
     // Button for recording
-    UIButton* recordButton;
+    UIButton *recordButton;
     BOOL isRecording;
-    
 }
 
-@property (nonatomic, weak) id<NetworkControllerDelegate> networkControllerDelegate;
+@property(nonatomic, weak) id<NetworkControllerDelegate> networkControllerDelegate;
 
 @end

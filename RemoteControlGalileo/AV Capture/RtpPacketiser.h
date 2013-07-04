@@ -1,35 +1,48 @@
-//
-//  VideoPacketiser.h
-//  RemoteControlGalileo
-//
-//  Created by Chris Harding on 03/07/2012.
-//  Copyright (c) 2012 Swift Navigation. All rights reserved.
-//
+#ifndef RtpPacketiser_H
+#define RtpPacketiser_H
 
-#import <UIKit/UIKit.h>
+#include "VideoTxRxCommon.h"
+#include "Buffer.h"
 
-@class PacketSender;
+#include <string>
 
-@interface RtpPacketiser : NSObject
+class Socket;
+class RtpPacketiser
 {
-    PacketSender* packetSender;
-    unsigned int payloadHeaderLength; // payloadLength = sizeof(RtpPacketHeaderStruct) + sizeof(CustomPayloadDescriptorStruct) if any
+public:
+    // payloadDescriptorLength = sizeof(CustomPayloadDescriptorStruct) for example, if 0 no descriptor
+    RtpPacketiser(unsigned char payloadType, size_t payloadDescriptorLength = 0);
+    virtual ~RtpPacketiser();
+
+    bool configure(const std::string &ipAddress, size_t port);
+    void sendFrame(void *buffer, size_t size);
     
-    // some variables you may use for custom packed header, todo?
-    unsigned int current_start_of_partition;
-}
+protected:
+    // internal, override this if you want to add some custom data to your payload
+    // CustomPayloadDescriptorStruct* rtpPacketHeader = (CustomPayloadDescriptorStruct*) buffer;
+    virtual void insertCustomPacketHeader(char *buffer);
+    void insertPacketHeader(char *buffer);
+    
+    void sendFrameInOnePacket(void *buffer, size_t size);
+    void sendFrameInMultiplePackets(void *buffer, size_t size);
+    void nextPacketIsLastInFrame();
+    void nextPacketIsFirstInFrame();
+    void nextPacketIsFirstInPartition();
 
-// payloadDescriptorLength = sizeof(CustomPayloadDescriptorStruct) for example, if 0 no descriptor
-- (id) initWithPayloadType: (unsigned char) payloadType payloadDescriptorLength: (unsigned int) payloadDescriptorLength;
-- (id) initWithPayloadType: (unsigned char) payloadType; // payloadLength = sizeof(RtpPacketHeaderStruct)
+    //
+    Socket *mSocket;
+    size_t mPayloadHeaderLength; // payloadLength = sizeof(RtpPacketHeaderStruct) + sizeof(CustomPayloadDescriptorStruct) if any
+    
+    // Skeleton packet headers to copy in, only a few fields need to be dynamically set
+    RtpPacketHeaderStruct mSkeletonRtpPacketHeader;
+    
+    // Buffer to hold the first packet of each frame only
+    char mFirstPacket[MAX_FIRST_PACKET_PAYLOAD_LENGTH];
+    
+    size_t mCurrentMarker;
+    size_t mCurrentSequenceNumber;
+    size_t mCurrentTimestamp;
+    size_t mCurrentPartitionStart;
+};
 
-- (void) prepareForSendingTo: (NSString*) ipAddress onPort: (unsigned int) port;
-- (void) sendFrame: (NSData*) data;
-// will free data when done, make sure to use malloc() to allocate data
-- (void) sendFrame: (void*) bytes length: (unsigned int) length;
-
-// internal, override this if you want to add some custom data to your payload
-// CustomPayloadDescriptorStruct* rtpPacketHeader = (CustomPayloadDescriptorStruct*) buffer;
-- (void) insertCustomPacketHeader: (char*) buffer;
-
-@end
+#endif

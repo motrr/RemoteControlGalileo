@@ -8,12 +8,11 @@
 
 @class GKSessionManager;
 @class GKNetController;
-@class CameraInputHandler;
 @class AudioInputOutput;
+@class VideoInputOutput;
 @class VideoViewController;
 @class UserInputHandler;
 @class DockConnectorController;
-
 
 @interface RemoteControlGalileo : UIViewController
 {
@@ -21,23 +20,20 @@
     
     id<NetworkControllerDelegate> networkController;
     
-    CameraInputHandler *cameraInputHandler;
+    VideoInputOutput *videoInputOutput;
     AudioInputOutput *audioInputOutput;
     VideoViewController *videoViewController;
     UserInputHandler *userInputHandler;
     DockConnectorController *serialController;
-    
 }
 
+// The video view has to be an accessible property so that it can be displayed
+@property(readonly, nonatomic, strong) VideoViewController *videoViewController;
+
 // We must initilise with some kind of network controller delegate, who also has delegates that should be set
-- (id)initWithNetworkController: (id<NetworkControllerDelegate>) initNetworkController;
+- (id)initWithNetworkController:(id<NetworkControllerDelegate>)initNetworkController;
 
 // When the network controller is ready we can begin
--(void) networkControllerIsReady;
-
-
-// The video view has to be an accessible property so that it can be displayed
-@property (readonly, nonatomic, strong) VideoViewController *videoViewController;
-
+-(void)networkControllerIsReady;
 
 @end

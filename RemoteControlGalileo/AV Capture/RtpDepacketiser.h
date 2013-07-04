@@ -1,12 +1,10 @@
-//
-//  VideoDepacketiser.h
-//  RemoteControlGalileo
-//
-//  Created by Chris Harding on 03/07/2012.
-//  Copyright (c) 2012 Swift Navigation. All rights reserved.
-//
-
 #import <UIKit/UIKit.h>
+
+@protocol RtpDepacketiserDelegate
+
+- (void)processEncodedData:(NSData*)data;
+
+@end
 
 @interface RtpDepacketiser : NSObject
 {
@@ -15,16 +13,17 @@
     unsigned int payloadHeaderLength;
 }
 
-// should we care about payload type?
-- (id) initWithPort: (u_short) port payloadDescriptorLength: (unsigned int) payloadDescriptorLength;
+@property(nonatomic, weak) id delegate;
 
-- (void) openSocket;
-- (void) startListening;
-- (void) closeSocket;
+// should we care about payload type?
+- (id)initWithPort:(u_short)port payloadDescriptorLength:(unsigned int)payloadDescriptorLength;
+
+- (void)openSocket;
+- (void)startListening;
+- (void)closeSocket;
 
 // override this for subclasses
-- (void) processEncodedData: (NSData*) data;
-- (void) insertPacketIntoFrame: (char*) payload payloadDescriptor:(char*) payload_descriptor 
-                 payloadLength: (unsigned int) payload_length markerSet: (Boolean) marker;
+- (void)insertPacketIntoFrame:(char*)payload payloadDescriptor:(char*)payloadDescriptor 
+                payloadLength:(unsigned int)payloadLength markerSet:(Boolean)marker;
 
 @end

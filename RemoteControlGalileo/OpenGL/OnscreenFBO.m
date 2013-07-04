@@ -4,8 +4,6 @@
 
 #import "OnscreenFBO.h"
 
-#import "ShaderUtilities.h"
-
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/EAGLDrawable.h>
 #import <OpenGLES/ES2/glext.h>
