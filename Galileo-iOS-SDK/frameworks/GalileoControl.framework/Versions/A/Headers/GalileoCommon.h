@@ -29,6 +29,3 @@ typedef NSUInteger GalileoQueueEndBehaviour;
 extern NSString *const GalileoDidConnectNotification;
 extern NSString *const GalileoDidDisconnectNotification;
 
-
-
-

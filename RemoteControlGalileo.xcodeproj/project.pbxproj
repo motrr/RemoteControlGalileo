@@ -68,6 +68,7 @@
 		830C56B91779341B0058015E /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 830C56B81779341B0058015E /* libxml2.dylib */; };
 		830C56BB177934230058015E /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 830C56BA177934230058015E /* ExternalAccessory.framework */; };
 		832FD5C416D5B379001CDF65 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 832FD5C316D5B379001CDF65 /* Default-568h@2x.png */; };
+		83619CC9178ABFBF00B9EB20 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83619CC8178ABFBF00B9EB20 /* CoreBluetooth.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -179,6 +180,7 @@
 		830C56B81779341B0058015E /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		830C56BA177934230058015E /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 		832FD5C316D5B379001CDF65 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "en.lproj/Default-568h@2x.png"; sourceTree = "<group>"; };
+		83619CC8178ABFBF00B9EB20 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,6 +188,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83619CC9178ABFBF00B9EB20 /* CoreBluetooth.framework in Frameworks */,
 				830C56BB177934230058015E /* ExternalAccessory.framework in Frameworks */,
 				830C56B91779341B0058015E /* libxml2.dylib in Frameworks */,
 				690EE76C1772FAC4005C4451 /* AudioToolbox.framework in Frameworks */,
@@ -236,6 +239,7 @@
 				693E8F7217623506007FD105 /* libvpx.a */,
 				693E8F70176234FB007FD105 /* libilbc.a */,
 				830C56B81779341B0058015E /* libxml2.dylib */,
+				83619CC8178ABFBF00B9EB20 /* CoreBluetooth.framework */,
 				830C56B6177932A90058015E /* GalileoControl.framework */,
 				830C56BA177934230058015E /* ExternalAccessory.framework */,
 				690EE76B1772FAC3005C4451 /* AudioToolbox.framework */,
@@ -559,6 +563,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -589,6 +594,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -608,6 +614,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Chris Harding (X37VD5V6Q9)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Galileo-iOS-SDK/frameworks\"",
@@ -627,6 +634,7 @@
 					"\"$(SRCROOT)/vpx/lib\"",
 				);
 				PRODUCT_NAME = RemoteControlGalileo;
+				PROVISIONING_PROFILE = "5427FB04-4FF4-4123-8BE7-02FB823800CD";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
@@ -636,6 +644,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Chris Harding (X37VD5V6Q9)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Galileo-iOS-SDK/frameworks\"",
@@ -655,6 +664,7 @@
 					"\"$(SRCROOT)/vpx/lib\"",
 				);
 				PRODUCT_NAME = RemoteControlGalileo;
+				PROVISIONING_PROFILE = "5427FB04-4FF4-4123-8BE7-02FB823800CD";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
