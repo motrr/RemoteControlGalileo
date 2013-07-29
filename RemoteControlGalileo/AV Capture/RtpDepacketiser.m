@@ -4,7 +4,7 @@
 #import <sys/socket.h>
 #import <netinet/in.h>
 
-#define PACKET_BUFFER_SIZE 10
+#define PACKET_BUFFER_SIZE 25
 #define FRAME_BUFFER_SIZE 20
 
 @interface RtpDepacketiser ()
@@ -19,10 +19,9 @@
     unsigned int currentFrameIndex;
     
     // We keep a buffer of packets to deal with out of order packets
-    char *packetPuffer[PACKET_BUFFER_SIZE];
+    char *packetBuffer[PACKET_BUFFER_SIZE];
     unsigned int nextPacketIndex;
     
-    unsigned int incomingTimestamp;
     unsigned int nextSequenceNum;
     unsigned int incomingSequenceNum;
     
@@ -60,9 +59,19 @@
         free(frameBuffer[i]);
     
     for(int i = 0; i < PACKET_BUFFER_SIZE; i++)
-        free(packetPuffer[i]);
+        free(packetBuffer[i]);
     
     //dispatch_release(decodingQueue); 
+}
+
+- (BOOL)hasKeyframes
+{
+    return NO;
+}
+
+- (BOOL)isKeyframe:(char *)payloadDescriptor
+{
+    return NO;
 }
 
 #pragma mark -
@@ -108,8 +117,11 @@
     
     // Create a fixed size buffer for reading packets into
     for(int i = 0; i < PACKET_BUFFER_SIZE; i++)
-        packetPuffer[i] = malloc(MAX_PACKET_TOTAL_LENGTH);
-        
+    {
+        packetBuffer[i] = malloc(MAX_PACKET_TOTAL_LENGTH);
+        memset(packetBuffer[i], 0, MAX_PACKET_TOTAL_LENGTH);
+    }
+    
     nextPacketIndex = 0;
     nextSequenceNum = 0;
     byteInFrameSoFar = 0;
@@ -124,98 +136,112 @@
     // We skip displaying any frame that has one or more packets missing
     skipThisFrame = NO;
     
+    int notInsertedCounter = 0;
+        
     // Begin listening for data
     for(;;)
     {
         // Otherwise, recieve and display frame
         @autoreleasepool
         {
-            // First read the packet
-            amountRead = recv(rxSocket, packetPuffer[nextPacketIndex], MAX_PACKET_TOTAL_LENGTH, 0);
+            // 1. Read packet
+            amountRead = recv(rxSocket, packetBuffer[nextPacketIndex], MAX_PACKET_TOTAL_LENGTH, 0);
             if (amountRead < 0)
             {
                 NSLog(@"Bad return value from server socket recvrom().");
                 return;
             }
+                        
+            // 2. Insert packets to frame
+            int lastInsertedIndex = -1;
             
-            // Alias to packet header, payload descriptor and payload
-            packetHeader = (RtpPacketHeaderStruct*)packetPuffer[nextPacketIndex];
-            payloadDescriptor = (char*)(packetPuffer[nextPacketIndex] + sizeof(packetHeader));
-            payload = packetPuffer[nextPacketIndex] + payloadHeaderLength;
-            payloadLength = amountRead - payloadHeaderLength;
-            incomingSequenceNum = ntohs(packetHeader->sequenceNum);
-            incomingTimestamp = ntohl(packetHeader->timestamp);
-            
-            //NSLog(@"Recieved packet %u, payload length %u", incomingSequenceNum, payloadLength);
-            
-            // If we are not skipping this frame, examine the packet
-            if(!skipThisFrame)
+            for(int i = 0; i < PACKET_BUFFER_SIZE; i++)
             {
-                // Completely ignore old packets
-                if(incomingSequenceNum < nextSequenceNum)
-                {
-                    NSLog(@"Warning saw an old packet");
-                }
-                // Store future packets for later (if we have buffer space)
-                else if(incomingSequenceNum > nextSequenceNum)
-                {
-                    NSLog(@"Packet is from the future, buffering for later use");
-                    nextPacketIndex++;
-                    
-                    if(nextPacketIndex == PACKET_BUFFER_SIZE)
-                    {
-                        NSLog(@"Packet buffer overflow occured, will have to skip this frame");
-                        skipThisFrame = YES;
-                        nextPacketIndex = 0;
-                    }
-                }
-                // Otherwise, insert this packet (and also any others from the buffer) into the frame
-                else
-                {
-                    // Insert the this packet
-                    [self insertPacketIntoFrame:payload payloadDescriptor:payloadDescriptor 
+                packetHeader = (RtpPacketHeaderStruct*)packetBuffer[i];
+                payloadDescriptor = (char*)(packetBuffer[i] + sizeof(RtpPacketHeaderStruct));
+                payload = packetBuffer[i] + payloadHeaderLength;
+                payloadLength = amountRead - payloadHeaderLength;
+                incomingSequenceNum = ntohs(packetHeader->sequenceNum);
+            
+                // Check sequence
+                if(incomingSequenceNum == nextSequenceNum)
+                {                    
+                    [self insertPacketIntoFrame:payload payloadDescriptor:payloadDescriptor
                                   payloadLength:payloadLength markerSet:packetHeader->marker];
                     
-                    // Try insert any packets from the buffer
-                    for(int i = 0; i < nextPacketIndex; i++)
+                    // Save last inserted index 
+                    lastInsertedIndex = i;
+                                        
+                    // Iterate one more time to check other packets
+                    // to be inserted after current
+                    i = -1;
+                }
+            }
+            
+            // 3. If no packets was inserted
+            if(lastInsertedIndex == -1)
+            {
+                // Increase not inserted packets counter
+                notInsertedCounter++;
+                
+                // Check unsended packets counter for overflow
+                if(notInsertedCounter > PACKET_BUFFER_SIZE)
+                {
+                    NSLog(@"Searching #%u:", nextSequenceNum);                   
+                    
+                    RtpPacketHeaderStruct *header = (RtpPacketHeaderStruct*)packetBuffer[nextPacketIndex];
+                    Vp8PayloadDescriptorStruct *desc = (Vp8PayloadDescriptorStruct *)(header + sizeof(RtpPacketHeaderStruct));
+                    
+                    if(![self hasKeyframes])
                     {
-                        // Alias to packet header, payload descriptor and payload
-                        packetHeader = (RtpPacketHeaderStruct*)packetPuffer[i];
-                        payloadDescriptor = (char*)(packetPuffer[i] + sizeof(packetHeader));
-                        payload = packetPuffer[i] + payloadHeaderLength;
-                        payloadLength = amountRead - payloadHeaderLength;
-                        incomingSequenceNum = ntohs(packetHeader->sequenceNum);
-                        incomingTimestamp = ntohl(packetHeader->timestamp);
-                        
-                        if(incomingSequenceNum == nextSequenceNum)
+                        if(header->marker)
                         {
-                            // Insert packet
-                            [self insertPacketIntoFrame:payload payloadDescriptor:payloadDescriptor 
-                                          payloadLength:payloadLength markerSet:packetHeader->marker];
+                            notInsertedCounter = 0;
+                            byteInFrameSoFar   = 0;
                             
-                            // Remove packet from the buffer
-                            if(nextPacketIndex > 1)
-                            {
-                                packetPuffer[i] = packetPuffer[nextPacketIndex-1];
-                                nextPacketIndex--;
-                            }
-                            else 
-                                nextPacketIndex = 0;
+                            nextSequenceNum = ntohs(header->sequenceNum) + 1;
                             
-                            // Reset iterator so we loop through again
-                            i = 0;
+                            NSLog(@"Skipping to the next packet #%u", nextSequenceNum);
+                        }
+                    }
+                    else
+                    {
+                        if([self isKeyframe:(char*)desc])
+                        {
+                            notInsertedCounter = 0;
+                            byteInFrameSoFar   = 0;
+                            
+                            nextSequenceNum = ntohs(header->sequenceNum);
+                            
+                            NSLog(@"Skipping to the next key frame packet #%u", nextSequenceNum);
                         }
                     }
                 }
+                
+                // Reuse buffer's packet slot with minimum sequence value
+                int minSeqIndex = 0;
+                unsigned int minSeq = -1;
+                
+                for(int i = 0; i < PACKET_BUFFER_SIZE; i++)
+                {                    
+                    int seq = ntohs(((RtpPacketHeaderStruct*)packetBuffer[i])->sequenceNum);
+                    
+                    if(minSeq > seq)
+                    {
+                        minSeqIndex = i;
+                        minSeq = seq;
+                    }
+                }
+                
+                nextPacketIndex = minSeqIndex;
             }
-            // If we are skipping this frame, we don't do anything till a marker packet
-            else if(packetHeader->marker)
+            else
             {
-                NSLog(@"Resetting after skip");
-                // Reset state so the next frame can be decoded
-                byteInFrameSoFar = 0;
-                skipThisFrame = NO;
-                nextSequenceNum = incomingSequenceNum + 1;
+                // If some frame was inserted reset counter
+                notInsertedCounter = 0;
+                
+                // Reuse just inserted packet slot
+                nextPacketIndex = lastInsertedIndex;
             }
         }
     }

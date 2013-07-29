@@ -81,11 +81,11 @@ bool AudioDevice::initialize()
         printf("error - can't set hardware sample rate\n");
         result = false;
     }
-    
+
     // Create audio unit
     AudioComponentDescription componentDescription;
     componentDescription.componentType = kAudioUnitType_Output;
-    componentDescription.componentSubType = kAudioUnitSubType_RemoteIO;
+    componentDescription.componentSubType = kAudioUnitSubType_VoiceProcessingIO; // Needed for better voice processing
     componentDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
     componentDescription.componentFlags = 0;
     componentDescription.componentFlagsMask = 0;
@@ -100,7 +100,7 @@ bool AudioDevice::initialize()
     return result;
 }
 
-bool AudioDevice::initializeRecord(const RecordStatusCallback &statusCallback, const RecordBufferCallback &bufferCallback)
+bool AudioDevice::initializeRecord(const RecordStatusCallback &statusCallback, const RecordBufferCallback &bufferCallback, bool autoGain)
 {
     bool result = true;
     OSStatus error = noErr;
@@ -119,6 +119,28 @@ bool AudioDevice::initializeRecord(const RecordStatusCallback &statusCallback, c
     if(error != noErr)
     {
         printf("error - can't set stream format for input\n");
+        result = false;
+    }
+    
+    if(!autoGain)
+    {
+        // Turn off auto gain control
+        property = 0;
+        error = AudioUnitSetProperty(mAudioUnit, kAUVoiceIOProperty_VoiceProcessingEnableAGC, kAudioUnitScope_Global, kInputBus, &property, sizeof(property));
+        if(error != noErr)
+        {
+            
+            printf("error - can't turn off automatic gain control %ld\n", error);
+            result = false;
+        }
+    }
+    
+    // Set best voice processing quality
+    property = 127;
+    error = AudioUnitSetProperty(mAudioUnit, kAUVoiceIOProperty_VoiceProcessingQuality, kAudioUnitScope_Global, kInputBus, &property, sizeof(property));
+    if(error != noErr)
+    {
+        printf("error - can't set voice processing quality %ld\n", error);
         result = false;
     }
     

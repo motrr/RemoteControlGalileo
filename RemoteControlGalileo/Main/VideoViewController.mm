@@ -76,6 +76,19 @@
                          }
          ];
     }
+    // Rotate screen by -180 to reach same result when one device in landscape right or left mode
+    // and another in upside down mode
+    else if (currentRemoteOrientation == UIDeviceOrientationPortraitUpsideDown
+             &&
+             (   currentLocalOrientation == UIDeviceOrientationLandscapeLeft
+              || currentLocalOrientation == UIDeviceOrientationLandscapeRight))
+    {
+        [UIView animateWithDuration: ROTATION_ANIMATION_DURATION
+                         animations:^ {
+                             self.view.transform = CGAffineTransformMakeRotation(-M_PI);
+                         }
+         ];
+    }
     else
     {
         [UIView animateWithDuration: ROTATION_ANIMATION_DURATION

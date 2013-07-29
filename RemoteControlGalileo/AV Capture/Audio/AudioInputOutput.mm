@@ -143,7 +143,7 @@
         size = buffer->getSize();
         
         dispatch_async(sendQueue, ^{
-            audioPacketiser->sendFrame(data, size);
+            audioPacketiser->sendFrame(data, size, true);
         });
     }
 }

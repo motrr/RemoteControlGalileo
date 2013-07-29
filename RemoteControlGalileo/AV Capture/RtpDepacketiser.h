@@ -21,6 +21,8 @@
 - (void)openSocket;
 - (void)startListening;
 - (void)closeSocket;
+- (BOOL)hasKeyframes;
+- (BOOL)isKeyframe:(char *)payloadDescriptor;
 
 // override this for subclasses
 - (void)insertPacketIntoFrame:(char*)payload payloadDescriptor:(char*)payloadDescriptor 

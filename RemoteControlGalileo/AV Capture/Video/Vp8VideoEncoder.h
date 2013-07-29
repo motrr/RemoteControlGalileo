@@ -22,7 +22,7 @@ public:
     ~Vp8VideoEncoder();
 
     virtual bool setup(int width, int height, int bitratePerPixel, int keyframeInterval);
-    virtual BufferPtr encodeYUV(const void *buffer, size_t size, bool interleaved);
+    virtual BufferPtr encodeYUV(const void *buffer, size_t size, bool interleaved, bool &isKey);
 
 private:
     const vpx_codec_cx_pkt_t *encodeImage(vpx_image_t *image);

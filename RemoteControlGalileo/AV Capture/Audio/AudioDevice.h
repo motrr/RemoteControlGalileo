@@ -54,7 +54,7 @@ public:
 
     bool initialize();
     //
-    bool initializeRecord(const RecordStatusCallback &statusCallback, const RecordBufferCallback &bufferCallback);
+    bool initializeRecord(const RecordStatusCallback &statusCallback, const RecordBufferCallback &bufferCallback, bool autoGain = false);
     // callback is called when playback needs input data
     bool initializePlayback(const PlaybackCallback &callback, bool useSpeaker);
     bool start();

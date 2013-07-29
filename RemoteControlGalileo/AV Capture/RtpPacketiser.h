@@ -15,16 +15,16 @@ public:
     virtual ~RtpPacketiser();
 
     bool configure(const std::string &ipAddress, size_t port);
-    void sendFrame(void *buffer, size_t size);
+    void sendFrame(void *buffer, size_t size, bool isKey);
     
 protected:
     // internal, override this if you want to add some custom data to your payload
     // CustomPayloadDescriptorStruct* rtpPacketHeader = (CustomPayloadDescriptorStruct*) buffer;
-    virtual void insertCustomPacketHeader(char *buffer);
-    void insertPacketHeader(char *buffer);
+    virtual void insertCustomPacketHeader(char *buffer, bool isKey);
+    void insertPacketHeader(char *buffer, bool isKey);
     
-    void sendFrameInOnePacket(void *buffer, size_t size);
-    void sendFrameInMultiplePackets(void *buffer, size_t size);
+    void sendFrameInOnePacket(void *buffer, size_t size, bool isKey);
+    void sendFrameInMultiplePackets(void *buffer, size_t size, bool isKey);
     void nextPacketIsLastInFrame();
     void nextPacketIsFirstInFrame();
     void nextPacketIsFirstInPartition();

@@ -50,6 +50,19 @@ bool Vp8VideoEncoder::setup(int width, int height, int bitratePerPixel, int keyf
     mConfig.g_w = width;
     mConfig.g_h = height;
     mConfig.kf_max_dist = keyframeInterval;
+    mConfig.kf_mode = VPX_KF_AUTO;
+    
+    // settings from mediastreamer2
+    int fps = 30; // todo: set to needed fps
+    int cpuCount = sysconf(_SC_NPROCESSORS_ONLN);
+    mConfig.g_pass = VPX_RC_ONE_PASS; // -p 1
+    mConfig.g_timebase.num = 1;
+    mConfig.g_timebase.den = fps;
+    mConfig.rc_end_usage = VPX_CBR; // --end-usage=cbr
+    mConfig.g_threads = cpuCount;
+    mConfig.rc_undershoot_pct = 95; // --undershoot-pct=95
+    mConfig.g_error_resilient = 1;
+    mConfig.g_lag_in_frames = 0;
     
     printf("Target bitrate: %u\n", mConfig.rc_target_bitrate);
     
@@ -60,6 +73,10 @@ bool Vp8VideoEncoder::setup(int width, int height, int bitratePerPixel, int keyf
         return false;
     }
     
+    vpx_codec_control(&mCodec, VP8E_SET_CPUUSED, (mConfig.g_threads > 1) ? 10 : 10);
+    vpx_codec_control(&mCodec, VP8E_SET_STATIC_THRESHOLD, 0);
+    vpx_codec_control(&mCodec, VP8E_SET_ENABLEAUTOALTREF, 1);
+    
     if(!vpx_img_alloc(&mImage, VPX_IMG_FMT_YV12, width, height, 1))
     {
         printf("Failed to allocate image\n");
@@ -69,7 +86,7 @@ bool Vp8VideoEncoder::setup(int width, int height, int bitratePerPixel, int keyf
     return true;
 }
 
-BufferPtr Vp8VideoEncoder::encodeYUV(const void *buffer, size_t size, bool interleaved)
+BufferPtr Vp8VideoEncoder::encodeYUV(const void *buffer, size_t size, bool interleaved, bool &isKey)
 {
     size_t numLumaPixels = mImage.w * mImage.h;
     size_t numChromaPixels = numLumaPixels / 4;
@@ -115,6 +132,12 @@ BufferPtr Vp8VideoEncoder::encodeYUV(const void *buffer, size_t size, bool inter
     
     // Run through encoder
     const vpx_codec_cx_pkt_t *packet = encodeImage(&mImage);
+    
+    if(packet)
+    {
+        isKey = (packet->data.frame.flags & VPX_FRAME_IS_KEY);
+    }
+    
     return packet ? BufferPtr(new WrapBuffer(packet->data.frame.buf, packet->data.frame.sz)) : BufferPtr();
 }
 

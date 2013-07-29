@@ -42,7 +42,7 @@ Vp8RtpPacketiser::~Vp8RtpPacketiser()
     
 }
 
-void Vp8RtpPacketiser::insertCustomPacketHeader(char *buffer)
+void Vp8RtpPacketiser::insertCustomPacketHeader(char *buffer, bool isKey)
 {
     // Alias to the packet headers in the buffer
     Vp8PayloadDescriptorStruct *vp8PayloadDescriptor = (Vp8PayloadDescriptorStruct*)buffer;
@@ -51,6 +51,6 @@ void Vp8RtpPacketiser::insertCustomPacketHeader(char *buffer)
     memcpy(vp8PayloadDescriptor, &mSkeletonPayloadDescriptor, sizeof(mSkeletonPayloadDescriptor));
     
     //
-    vp8PayloadDescriptor->nonReferenceFrame = 0; // TODO - actually set this for keyframes
+    vp8PayloadDescriptor->nonReferenceFrame = isKey; // TODO - actually set this for keyframes
     vp8PayloadDescriptor->partiotionStart = mCurrentPartitionStart;
 }
