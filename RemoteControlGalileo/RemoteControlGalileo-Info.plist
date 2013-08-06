@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
-	<string>Galileo.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>${PRODUCT_NAME:rfc1034identifier}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -22,23 +22,23 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
-	<key>UIApplicationExitsOnSuspend</key>
-	<true/>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UIApplicationExitsOnSuspend</key>
 	<true/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
+	</array>
+	<key>UISupportedExternalAccessoryProtocols</key>
+	<array>
+		<string>com.motrr.galileo</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UISupportedExternalAccessoryProtocols</key>
-	<array>
-		<string>com.motrr.galileo</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
