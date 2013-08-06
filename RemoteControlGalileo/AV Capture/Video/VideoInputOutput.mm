@@ -107,7 +107,9 @@
     bool interleaved = false;
 #endif
     
-    BufferPtr buffer = videoEncoder->encodeYUV(baseAddress, size, interleaved);
+    bool isKey = false;
+    
+    BufferPtr buffer = videoEncoder->encodeYUV(baseAddress, size, interleaved, isKey);
     CVPixelBufferUnlockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
     
     if(buffer.get())
@@ -120,7 +122,7 @@
         
         // Send the packet
         dispatch_async(sendQueue, ^{
-            videoPacketiser->sendFrame(data, size);
+            videoPacketiser->sendFrame(data, size, isKey);
         });
     }
 }

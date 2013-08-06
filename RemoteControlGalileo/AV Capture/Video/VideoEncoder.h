@@ -12,7 +12,7 @@ public:
     // return false in case of error
     // todo: consider moving to constructor with exceptions
     virtual bool setup(int width, int height, int bitratePerPixel, int keyframeInterval) = 0;
-    virtual BufferPtr encodeYUV(const void *buffer, size_t size, bool interleaved) = 0; // YV12
+    virtual BufferPtr encodeYUV(const void *buffer, size_t size, bool interleaved, bool &isKey) = 0; // YV12
 };
 
 #endif

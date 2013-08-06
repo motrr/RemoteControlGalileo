@@ -24,6 +24,13 @@ static unsigned int alignPower2(unsigned int value)
     return 0;
 }
 
+@interface VideoView ()
+{
+    float mMaxAnisotropy;
+}
+
+@end
+
 @implementation VideoView
 
 -(id)initWithFrame:(CGRect)frame
@@ -43,6 +50,10 @@ static unsigned int alignPower2(unsigned int value)
         
         memset(yuvTextures, 0, sizeof(GLuint) * 3);
         isFirstRenderCall = YES;
+        
+        mMaxAnisotropy = 0.0f;
+        
+        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &mMaxAnisotropy);
     }
     
     return self;
@@ -182,10 +193,17 @@ static unsigned int alignPower2(unsigned int value)
         {
             unsigned int aw = w;//alignPower2(w);
             unsigned int ah = h;//alignPower2(h);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            
+            if(mMaxAnisotropy > 0.0f)
+            {
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, mMaxAnisotropy);
+            }
+            
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            
             //glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, aw, ah, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0);
             
             if(i == 0)

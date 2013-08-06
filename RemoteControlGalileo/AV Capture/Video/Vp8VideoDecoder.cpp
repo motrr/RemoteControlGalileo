@@ -49,6 +49,11 @@ YuvBufferPtr Vp8VideoDecoder::decodeYUV(const void *buffer, size_t size)
     // Write decoded data to buffer
     vpx_image_t *image = vpx_codec_get_frame(&mCodec, &iter);
     
+    if(!image)
+    {
+        return YuvBufferPtr();
+    }
+    
     //
     void *planes[3] = { image->planes[0], image->planes[1], image->planes[2] };
     size_t stride[3] = { image->stride[0], image->stride[1], image->stride[2] };

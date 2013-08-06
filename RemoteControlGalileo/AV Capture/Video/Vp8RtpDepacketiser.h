@@ -6,6 +6,8 @@
 }
 
 - (id)initWithPort:(u_short)port;
+- (BOOL)hasKeyframes;
+- (BOOL)isKeyframe:(char *)payloadDescriptor;
 
 //
 - (void)insertPacketIntoFrame:(char*)payload payloadDescriptor:(char*)payloadDescriptor 

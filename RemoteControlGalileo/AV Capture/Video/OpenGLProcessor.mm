@@ -8,6 +8,13 @@
 #include "Shader.h"
 #include "GLConstants.h"
 
+@interface OpenGLProcessor ()
+{
+    float mMaxAnisotropy;
+}
+
+@end
+
 @implementation OpenGLProcessor
 
 @synthesize zoomFactor;
@@ -212,6 +219,9 @@
     //glDisable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
     
+    mMaxAnisotropy = 0.0f;
+    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &mMaxAnisotropy);
+    
     return true;
 }
 
@@ -367,6 +377,14 @@
     
     // Set texture parameters
     glBindTexture(CVOpenGLESTextureGetTarget(texture), CVOpenGLESTextureGetName(texture));
+    
+    if(mMaxAnisotropy > 0.0f)
+    {
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, mMaxAnisotropy);
+    }
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     

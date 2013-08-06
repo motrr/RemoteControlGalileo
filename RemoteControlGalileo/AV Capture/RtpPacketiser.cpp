@@ -114,21 +114,21 @@ bool RtpPacketiser::configure(const std::string &ipAddress, size_t port)
     return mSocket->openSocket(ipAddress, port, MAX_PACKET_TOTAL_LENGTH);
 }
 
-void RtpPacketiser::sendFrame(void *buffer, size_t size)
+void RtpPacketiser::sendFrame(void *buffer, size_t size, bool isKey)
 {
     if(size <= FIRST_PACKET_PAYLOAD_LENGTH)
     {
         // Very small frames can be sent in one packet
-        sendFrameInOnePacket(buffer, size);
+        sendFrameInOnePacket(buffer, size, isKey);
     }
     else
     {
         // Normally we split into at least two packet, the first being very small as it MUST require copying to prepend the packet header
-        sendFrameInMultiplePackets(buffer, size);
+        sendFrameInMultiplePackets(buffer, size, isKey);
     }
 }
 
-void RtpPacketiser::sendFrameInOnePacket(void *buffer, size_t size)
+void RtpPacketiser::sendFrameInOnePacket(void *buffer, size_t size, bool isKey)
 {
     // Just reuse the first packet buffer
     char *packet = mFirstPacket;
@@ -142,12 +142,12 @@ void RtpPacketiser::sendFrameInOnePacket(void *buffer, size_t size)
     nextPacketIsLastInFrame();
     
     // Insert a packet header and send
-    insertPacketHeader(packet);
+    insertPacketHeader(packet, isKey);
     mSocket->sendPacket(packet, size + mPayloadHeaderLength);
     //printf("Sent packet %u\n", ntohs(((RtpPacketHeaderStruct*)packet)->sequence_num));
 }
 
-void RtpPacketiser::sendFrameInMultiplePackets(void *buffer, size_t size)
+void RtpPacketiser::sendFrameInMultiplePackets(void *buffer, size_t size, bool isKey)
 {
     // The first packet requires copying to a temperary buffer so we can prepend the packet header
     char *firstPacketPayload = mFirstPacket + mPayloadHeaderLength;
@@ -158,7 +158,7 @@ void RtpPacketiser::sendFrameInMultiplePackets(void *buffer, size_t size)
     nextPacketIsFirstInFrame();
     
     // Insert a packet header and send
-    insertPacketHeader(mFirstPacket);
+    insertPacketHeader(mFirstPacket, isKey);
     mSocket->sendPacket(mFirstPacket, mFirstPacketPayloadLength);
     //printf("Sent packet %u\n", ntohs(((RtpPacketHeaderStruct*)mFirstPacket)->sequence_num));
     
@@ -183,7 +183,7 @@ void RtpPacketiser::sendFrameInMultiplePackets(void *buffer, size_t size)
         }
         
         // Insert frame and send the packet
-        insertPacketHeader(nextPacketHeader);
+        insertPacketHeader(nextPacketHeader, isKey);
         mSocket->sendPacket(nextPacketHeader, nextPacketTotalLength);
         //printf("Sent packet %u\n", ntohs(((RtpPacketHeaderStruct*)nextPacketHeader)->sequence_num));
         
@@ -222,7 +222,7 @@ void RtpPacketiser::nextPacketIsFirstInPartition()
     mCurrentPartitionStart = 1;
 }
 
-void RtpPacketiser::insertPacketHeader(char *buffer)
+void RtpPacketiser::insertPacketHeader(char *buffer, bool isKey)
 {
     // Alias to the packet headers in the buffer
     RtpPacketHeaderStruct* rtpPacketHeader = (RtpPacketHeaderStruct*)buffer;
@@ -238,14 +238,14 @@ void RtpPacketiser::insertPacketHeader(char *buffer)
     //
     rtpPacketHeader->timestamp = htonl(mCurrentTimestamp);
     
-    insertCustomPacketHeader(buffer + sizeof(RtpPacketHeaderStruct));
+    insertCustomPacketHeader(buffer + sizeof(RtpPacketHeaderStruct), isKey);
     
     // We always reset the start and end frame (marker) indicators, they must be set explicitly
     mCurrentPartitionStart = 0;
     mCurrentMarker = 0;
 }
 
-void RtpPacketiser::insertCustomPacketHeader(char *buffer)
+void RtpPacketiser::insertCustomPacketHeader(char *buffer, bool isKey)
 {
     // do nothing
 }

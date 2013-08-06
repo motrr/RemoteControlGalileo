@@ -11,7 +11,7 @@ public:
     ~Vp8RtpPacketiser();
 
 protected:
-    virtual void insertCustomPacketHeader(char *buffer);
+    virtual void insertCustomPacketHeader(char *buffer, bool isKey);
 
     //
     Vp8PayloadDescriptorStruct mSkeletonPayloadDescriptor;
