@@ -19,8 +19,8 @@
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
         
         // Wait for Galileo to connect
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(galileoDidDisconnect) name:GalileoDidDisconnectNotification object:nil];
-        [[Galileo sharedGalileo] waitForConnection];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(galileoDidDisconnect) name:GCDidDisconnectNotification object:nil];
+        [[GCGalileo sharedGalileo] waitForConnection];
         
     }
     return self;
@@ -37,7 +37,7 @@
 
 - (void) GalileoDidDisconnectNotification
 {
-    [[Galileo sharedGalileo] waitForConnection];
+    [[GCGalileo sharedGalileo] waitForConnection];
 }
 
 
@@ -50,7 +50,7 @@
 {
     // Watch out for ignore flags (which signal no new velocity should be sent)
     
-    if ([[Galileo sharedGalileo] isConnected]) {
+    if ([[GCGalileo sharedGalileo] isConnected]) {
         
         double panVelocity = [panAmount doubleValue] * (-1);
         double tiltVelocity = [tiltAmount doubleValue] * (-1);
@@ -60,19 +60,19 @@
         // Invert direction for rear camera
         tiltModifier *= (FORCE_REAR_CAMERA == YES) ? 1 : -1;
         
-        Galileo *galileo = [Galileo sharedGalileo];
+        GCGalileo *galileo = [GCGalileo sharedGalileo];
         
         // Pan
-        [[galileo velocityControlForAxis:GalileoControlAxisPan] setTargetVelocity:panVelocity];
+        [[galileo velocityControlForAxis:GCControlAxisPan] setTargetVelocity:panVelocity];
         
         // Move tilt panel only if is in landscape
         BOOL isLandscape = UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
         if (isLandscape)
-            [[galileo velocityControlForAxis:GalileoControlAxisTilt] setTargetVelocity:tiltVelocity * tiltModifier];
+            [[galileo velocityControlForAxis:GCControlAxisTilt] setTargetVelocity:tiltVelocity * tiltModifier];
         
 
-        [[[Galileo sharedGalileo] velocityControlForAxis:GalileoControlAxisPan] setTargetVelocity:[panAmount floatValue]];
-        [[[Galileo sharedGalileo] velocityControlForAxis:GalileoControlAxisTilt] setTargetVelocity:[tiltAmount floatValue]];
+        [[[GCGalileo sharedGalileo] velocityControlForAxis:GCControlAxisPan] setTargetVelocity:[panAmount floatValue]];
+        [[[GCGalileo sharedGalileo] velocityControlForAxis:GCControlAxisTilt] setTargetVelocity:[tiltAmount floatValue]];
         
     }
 }
