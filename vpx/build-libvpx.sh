@@ -6,7 +6,7 @@ BUILD_DIR="`pwd`/build"
 LIB_DIR="`pwd`/lib"
 INCLUDE_DIR="`pwd`/include"
 
-SDK_DIR="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/"
+SDK_DIR="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/"
 
 # Compile for each of the four architecures (i386 for simulator)
 
@@ -20,7 +20,7 @@ SDK_DIR="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/
 cd $ROOT_DIR
 mkdir -p $BUILD_DIR/armv7
 cd $BUILD_DIR/armv7
-$SRC_DIR/configure --target=armv7-darwin-gcc  --sdk-path=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer --libc=$SDK_DIR
+$SRC_DIR/configure --target=armv7-darwin-gcc  --sdk-path=/Applications/Xcode4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer --libc=$SDK_DIR
 make 
 
 # We skip armv7s because it isn't supported yet by vp8
