@@ -7,7 +7,7 @@
 #import "GKLobbyViewController.h"
 
 #define TITLE_BAR_HEIGHT 44
-#define TOOLBAR_HEIGHT  44
+#define TOOLBAR_HEIGHT 0 // 44
 #define IPAD_SIZE_FRACTION  0.6
 
 @implementation GKLobbyViewController
@@ -70,11 +70,13 @@
     
     
     // Create toolbar with status text
+    /*
     UIToolbar* toolbar = [[UIToolbar alloc] initWithFrame: CGRectMake(0,
                                                                      viewFrame.size.height - TOOLBAR_HEIGHT,
                                                                      viewFrame.size.width,
                                                                      TOOLBAR_HEIGHT)];
     [self.view addSubview: toolbar];
+     */
     
     
     // Set self as lobby delegate
@@ -82,6 +84,8 @@
     [manager setupSession];
     [self peerListDidChange:nil];
 }
+
+
 
 // On becoming visible
 - (void) viewDidAppear:(BOOL)animated

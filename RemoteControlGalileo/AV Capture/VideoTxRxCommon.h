@@ -1,7 +1,7 @@
 #ifndef VideoTxRxCommon_h
 #define VideoTxRxCommon_h
 
-#define FORCE_REAR_CAMERA YES
+#define FORCE_REAR_CAMERA NO
 
 // Capture framerate of the camera
 #define CAPTURE_FRAMES_PER_SECOND   10
@@ -10,7 +10,7 @@
 // Resolution of video stream
 #define VIDEO_WIDTH 480 // 192
 #define VIDEO_HEIGHT 360 // 128
-#define TARGET_BITRATE_PER_PIXEL 5
+#define TARGET_BITRATE_PER_PIXEL 10
 #define MAX_KEYFRAME_INTERVAL 10 // 0 for all keyframes
 
 #define USE_SINGLE_PASS_PREPROCESS

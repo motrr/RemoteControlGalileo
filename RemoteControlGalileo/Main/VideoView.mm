@@ -13,6 +13,7 @@
 #include "Shader.h"
 #include "GLConstants.h"
 
+/*
 static unsigned int alignPower2(unsigned int value)
 {
     for(int i = 0; i < 32; i++)
@@ -23,6 +24,7 @@ static unsigned int alignPower2(unsigned int value)
     }
     return 0;
 }
+ */
 
 @interface VideoView ()
 {
