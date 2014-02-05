@@ -13,6 +13,7 @@
 #define TRACKPAD_SENSITIVITY 4
 #define MOVING_AVERAGE_WINDOW_SIZE 2
 #define SEND_INTERVAL 0.2
+#define SEND_ORIENTATION_INTERVAL 5.0
 #define LINEAR_DECEL_CONSTANT 20.0
 
 #define IPHONE_WIDTH_MM     75.0
@@ -35,6 +36,9 @@
         
     // A timer is used to periodically send velocity to the recipient
     NSTimer* sendTimer;
+    
+    // A timer is used to periodically send orientation to the recipient
+    NSTimer* sendOrientationTimer;
     
     // We record velocites so they can be filtered using a moving average
     NSMutableArray* panVelocities;
@@ -115,6 +119,13 @@
         pinchRecogniser = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinch:)];
         scaleFromPreviousGesture = 1.0;
         
+        //
+        // Setup orientation timer if not already done so
+        if (sendOrientationTimer == nil) {
+            sendOrientationTimer = [NSTimer scheduledTimerWithTimeInterval:SEND_ORIENTATION_INTERVAL target:self 
+                                                         selector:@selector(localOrientationDidChange:) userInfo:nil repeats:YES];
+            [[NSRunLoop mainRunLoop] addTimer:sendOrientationTimer forMode:NSRunLoopCommonModes];
+        }
     }
     return self;
 }
@@ -170,7 +181,7 @@
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
     
     // Ignore specific orientations
-    if (orientation == UIDeviceOrientationFaceUp || orientation == UIDeviceOrientationFaceDown || orientation == UIDeviceOrientationUnknown || previousLocalOrientation == orientation) {
+    if (orientation == UIDeviceOrientationFaceUp || orientation == UIDeviceOrientationFaceDown || orientation == UIDeviceOrientationUnknown /*|| previousLocalOrientation == orientation*/) {
         return;
     }
     

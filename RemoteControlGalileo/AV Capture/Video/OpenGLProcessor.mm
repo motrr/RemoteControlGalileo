@@ -7,6 +7,7 @@
 
 #include "Shader.h"
 #include "GLConstants.h"
+#include "GLUtils.h"
 
 @interface OpenGLProcessor ()
 {
@@ -129,7 +130,8 @@
     //glClear(GL_COLOR_BUFFER_BIT);
     
     // We also need to recalculate texture vertices in case the zoom level has changed
-    [self generateTextureVertices:cropInputTextureVertices];
+    GL::calculateUVs(GL::CM_SCALE_ASPECT_TO_FILL, inputPixelBufferWidth / (float)inputPixelBufferHeight, 
+                     outputPixelBufferWidth / (float)outputPixelBufferHeight, zoomFactor, cropInputTextureVertices);//*/
     
     // We should lock/unlock input pixel buffer to prevent strange artifacts 
     CVPixelBufferLockBaseAddress(inputPixelBuffer, 0);
@@ -289,58 +291,6 @@
     }
     
     return true;
-}
-
-- (void) generateTextureVertices:(GLfloat*)textureVertices
-{
-    CGRect textureSamplingRect = [self textureSamplingRectForCroppingTextureWithAspectRatio:
-            CGSizeMake(inputPixelBufferWidth, inputPixelBufferHeight)
-        toAspectRatio:CGSizeMake(outputPixelBufferWidth, outputPixelBufferHeight)];
-
-    CGSize newSize = textureSamplingRect.size;
-    CGSize oldSize = textureSamplingRect.size;
-    newSize.width *= zoomFactor;
-    newSize.height *= zoomFactor;
-    textureSamplingRect.origin.x += (oldSize.width - newSize.width) / 2;
-    textureSamplingRect.origin.y += (oldSize.height - newSize.height) / 2;
-    textureSamplingRect.size = newSize;
-
-    textureVertices[0] = CGRectGetMaxX(textureSamplingRect);
-    textureVertices[1] = CGRectGetMaxY(textureSamplingRect);
-    //
-    textureVertices[2] = CGRectGetMaxX(textureSamplingRect);
-    textureVertices[3] = CGRectGetMinY(textureSamplingRect);
-    //
-    textureVertices[4] = CGRectGetMinX(textureSamplingRect);
-    textureVertices[5] = CGRectGetMaxY(textureSamplingRect);
-    //
-    textureVertices[6] = CGRectGetMinX(textureSamplingRect);
-    textureVertices[7] = CGRectGetMinY(textureSamplingRect);
-}
-
-- (CGRect)textureSamplingRectForCroppingTextureWithAspectRatio:(CGSize)textureAspectRatio toAspectRatio:(CGSize)croppingAspectRatio
-{
-    CGRect normalizedSamplingRect = CGRectZero;
-    CGSize cropScaleAmount = CGSizeMake(croppingAspectRatio.width / textureAspectRatio.width, croppingAspectRatio.height / textureAspectRatio.height);
-    CGFloat maxScale = fmax(cropScaleAmount.width, cropScaleAmount.height);
-    CGSize scaledTextureSize = CGSizeMake(textureAspectRatio.width * maxScale, textureAspectRatio.height * maxScale);
-    
-    if(cropScaleAmount.height > cropScaleAmount.width)
-    {
-        normalizedSamplingRect.size.width = croppingAspectRatio.width / scaledTextureSize.width;
-        normalizedSamplingRect.size.height = 1.0;
-    }
-    else
-    {
-        normalizedSamplingRect.size.height = croppingAspectRatio.height / scaledTextureSize.height;
-        normalizedSamplingRect.size.width = 1.0;
-    }
-    
-    // Center crop
-    normalizedSamplingRect.origin.x = (1.0 - normalizedSamplingRect.size.width) / 2.0;
-    normalizedSamplingRect.origin.y = (1.0 - normalizedSamplingRect.size.height) / 2.0;
-    
-    return normalizedSamplingRect;
 }
 
 #pragma mark 

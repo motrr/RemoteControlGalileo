@@ -12,6 +12,7 @@
 #include "Buffer.h"
 #include "Shader.h"
 #include "GLConstants.h"
+#include "GLUtils.h"
 
 /*
 static unsigned int alignPower2(unsigned int value)
@@ -210,18 +211,19 @@ static unsigned int alignPower2(unsigned int value)
             
             if(i == 0)
             {
-                // generate UVs
-                float nw = ww < aw ? ww / (float)(aw + 1) : ww / (float)aw;
-                float nh = h < ah ? h / (float)(ah + 1) : h / (float)ah;
+                CGSize size = self.bounds.size;
                 
-                textureUvs[0] = 0.f;
-                textureUvs[1] = 0.f;
-                textureUvs[2] = nw;
-                textureUvs[3] = 0.f;
-                textureUvs[4] = 0.f;
-                textureUvs[5] = nh;
-                textureUvs[6] = nw;
-                textureUvs[7] = nh;
+                // calculate normalized dimensions
+                float nw = ww / (float)aw;
+                float nh = h / (float)ah;
+                
+                // source video is landscape right, so taking this into account when calculating UVs
+                GL::calculateUVs(GL::CM_SCALE_ASPECT_TO_FILL, ww / (float)h,
+                                 size.height / size.width, 1.f, textureUvs, nw, nh);//*/
+                
+                // rotate UVs
+                GL::rotateUVs90(textureUvs);
+                //GL::flipHorizontally(textureUvs); // use this to imitate ios front camera look
             }
         }
         

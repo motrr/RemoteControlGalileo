@@ -80,9 +80,6 @@ enum TextureType
 
 // Secondary initialisation, on first render call
 - (Boolean)createPixelBuffer:(CVPixelBufferRef*)pixelBufferPtr width:(size_t)width height:(size_t)height;
-- (void)generateTextureVertices:(GLfloat*)textureVertices;
-- (CGRect)textureSamplingRectForCroppingTextureWithAspectRatio:(CGSize)textureAspectRatio
-                                                 toAspectRatio:(CGSize)croppingAspectRatio;
 
 // Texture creation (used for input and output texture)
 - (CVOpenGLESTextureRef)createTextureLinkedToBuffer:(CVPixelBufferRef)pixelBuffer

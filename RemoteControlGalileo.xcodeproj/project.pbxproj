@@ -22,6 +22,7 @@
 		690EE76C1772FAC4005C4451 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 690EE76B1772FAC3005C4451 /* AudioToolbox.framework */; };
 		693E8F71176234FB007FD105 /* libilbc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 693E8F70176234FB007FD105 /* libilbc.a */; };
 		693E8F7317623506007FD105 /* libvpx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 693E8F7217623506007FD105 /* libvpx.a */; };
+		6942650F18A190DD0044697D /* GLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6942650D18A190DD0044697D /* GLUtils.cpp */; };
 		69C1A3A817858B8B00E284F7 /* GLConstants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 69C1A39317858B8B00E284F7 /* GLConstants.cpp */; };
 		69C1A3A917858B8B00E284F7 /* OffscreenFBO.m in Sources */ = {isa = PBXBuildFile; fileRef = 69C1A39617858B8B00E284F7 /* OffscreenFBO.m */; };
 		69C1A3AA17858B8B00E284F7 /* OnscreenFBO.m in Sources */ = {isa = PBXBuildFile; fileRef = 69C1A39817858B8B00E284F7 /* OnscreenFBO.m */; };
@@ -91,6 +92,8 @@
 		690EE76B1772FAC3005C4451 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		693E8F70176234FB007FD105 /* libilbc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libilbc.a; path = ilbc/lib/libilbc.a; sourceTree = "<group>"; };
 		693E8F7217623506007FD105 /* libvpx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvpx.a; path = vpx/lib/libvpx.a; sourceTree = "<group>"; };
+		6942650D18A190DD0044697D /* GLUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLUtils.cpp; sourceTree = "<group>"; };
+		6942650E18A190DD0044697D /* GLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLUtils.h; sourceTree = "<group>"; };
 		69C1A39317858B8B00E284F7 /* GLConstants.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLConstants.cpp; sourceTree = "<group>"; };
 		69C1A39417858B8B00E284F7 /* GLConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLConstants.h; sourceTree = "<group>"; };
 		69C1A39517858B8B00E284F7 /* OffscreenFBO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OffscreenFBO.h; sourceTree = "<group>"; };
@@ -419,6 +422,8 @@
 				69C1A39B17858B8B00E284F7 /* Shaders */,
 				69C1A39317858B8B00E284F7 /* GLConstants.cpp */,
 				69C1A39417858B8B00E284F7 /* GLConstants.h */,
+				6942650D18A190DD0044697D /* GLUtils.cpp */,
+				6942650E18A190DD0044697D /* GLUtils.h */,
 				69C1A39517858B8B00E284F7 /* OffscreenFBO.h */,
 				69C1A39617858B8B00E284F7 /* OffscreenFBO.m */,
 				69C1A39717858B8B00E284F7 /* OnscreenFBO.h */,
@@ -505,6 +510,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6942650F18A190DD0044697D /* GLUtils.cpp in Sources */,
 				302362E5158A8FEE00B2DF09 /* main.m in Sources */,
 				69C1A3A817858B8B00E284F7 /* GLConstants.cpp in Sources */,
 				69C1A3A917858B8B00E284F7 /* OffscreenFBO.m in Sources */,
@@ -565,7 +571,6 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -584,6 +589,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				ONLY_ACTIVE_ARCH = NO;
+				PROVISIONING_PROFILE = "185DDAFA-186B-4781-A31A-1F9EB45804DB";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = armv7;
@@ -602,7 +608,6 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -614,6 +619,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PROVISIONING_PROFILE = "185DDAFA-186B-4781-A31A-1F9EB45804DB";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -625,7 +631,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Chris Harding (X37VD5V6Q9)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Galileo-iOS-SDK/frameworks\"",
@@ -645,7 +650,6 @@
 					"\"$(SRCROOT)/vpx/lib\"",
 				);
 				PRODUCT_NAME = RemoteControlGalileo;
-				PROVISIONING_PROFILE = "B13E7A9B-9E13-4EC9-9C34-4E27D220F941";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
@@ -655,7 +659,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Motrr, LLC (B4TTX87949)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Galileo-iOS-SDK/frameworks\"",
@@ -675,7 +678,6 @@
 					"\"$(SRCROOT)/vpx/lib\"",
 				);
 				PRODUCT_NAME = RemoteControlGalileo;
-				PROVISIONING_PROFILE = "0A0B0BA4-873B-496C-B85F-54297C3486E2";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};

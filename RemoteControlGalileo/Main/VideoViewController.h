@@ -11,6 +11,7 @@
     // Keep track of local and remote orientation
     UIDeviceOrientation currentLocalOrientation;
     UIDeviceOrientation currentRemoteOrientation;
+    BOOL isRotated180;
     
     // Lock when busy
     BOOL isLocked;
