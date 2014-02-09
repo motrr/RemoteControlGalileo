@@ -6,4 +6,4 @@
 	url = http://git.chromium.org/webm/libvpx.git
 [submodule "Galileo-iOS-SDK"]
 	path = Galileo-iOS-SDK
-	url = git@github.com:motrr/Galileo-iOS-SDK.git
+	url = https://github.com/motrr/Galileo-iOS-SDK.git
