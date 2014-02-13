@@ -66,6 +66,15 @@
     [videoViewController localOrientationDidChange:orientation];
     
     // Also send to remote
+    if(FORCE_REAR_CAMERA)
+    {
+        // swap left/right landscape orientation when using rear camera, to prevent sending additional data
+        if(orientation == UIDeviceOrientationLandscapeLeft)
+            orientation = UIDeviceOrientationLandscapeRight;
+        else if(orientation == UIDeviceOrientationLandscapeRight)
+            orientation = UIDeviceOrientationLandscapeLeft;
+    }
+    
     [networkController sendOrientationUpdate:orientation];
     
     // Send IP address for video broadcasting

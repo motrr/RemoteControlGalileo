@@ -52,28 +52,36 @@
     
     if ([[GCGalileo sharedGalileo] isConnected]) {
         
-        double panVelocity = [panAmount doubleValue] * (-1);
-        double tiltVelocity = [tiltAmount doubleValue] * (-1);
-        
-        int tiltModifier = ([UIApplication sharedApplication].statusBarOrientation == UIInterfaceOrientationLandscapeLeft ? -1 : 1);
-        
-        // Invert direction for rear camera
-        tiltModifier *= (FORCE_REAR_CAMERA == YES) ? 1 : -1;
-        
+        double panVelocity = [panAmount doubleValue];
+        double tiltVelocity = [tiltAmount doubleValue];
+
+        int tiltModifier = 1;
+        int panModifier = 1;
+
+        UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
+
+        if (FORCE_REAR_CAMERA)
+        {
+            tiltModifier = 1;
+            panModifier = deviceOrientation == UIDeviceOrientationLandscapeLeft ? -1 : 1;
+        }
+        else
+        {
+            tiltModifier = 1;
+            panModifier = deviceOrientation == UIDeviceOrientationLandscapeLeft ? 1 : -1;
+        }
+
+
         GCGalileo *galileo = [GCGalileo sharedGalileo];
         
         // Pan
-        [[galileo velocityControlForAxis:GCControlAxisPan] setTargetVelocity:panVelocity];
-        
+        [[galileo velocityControlForAxis:GCControlAxisPan] setTargetVelocity:panVelocity * panModifier];
+
         // Move tilt panel only if is in landscape
-        BOOL isLandscape = UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
+        BOOL isLandscape = !UIDeviceOrientationIsPortrait(deviceOrientation);
         if (isLandscape)
             [[galileo velocityControlForAxis:GCControlAxisTilt] setTargetVelocity:tiltVelocity * tiltModifier];
-        
 
-        [[[GCGalileo sharedGalileo] velocityControlForAxis:GCControlAxisPan] setTargetVelocity:[panAmount floatValue]];
-        [[[GCGalileo sharedGalileo] velocityControlForAxis:GCControlAxisTilt] setTargetVelocity:[tiltAmount floatValue]];
-        
     }
 }
 

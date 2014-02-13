@@ -3,10 +3,11 @@
 //
 
 #import "UserInputHandler.h"
-#include <Accelerate/Accelerate.h>
 #import "MoveRecogniser.h"
-#include <GLKit/GLKMath.h>
+#include "VideoTxRxCommon.h"
 
+#include <Accelerate/Accelerate.h>
+#include <GLKit/GLKMath.h>
 #include <sys/sysctl.h>
 
 
@@ -189,8 +190,17 @@
     
     // Call orientation changed responder, notify remote over network and remember new orientation for next time
     [_orientationUpdateResponder localOrientationDidChange:orientation];
-    [_networkControllerDelegate sendOrientationUpdate:orientation];
     previousLocalOrientation = orientation;
+    
+    if(FORCE_REAR_CAMERA)
+    {
+        // swap left/right landscape orientation when using rear camera, to prevent sending additional data
+        if(orientation == UIDeviceOrientationLandscapeLeft)
+            orientation = UIDeviceOrientationLandscapeRight;
+        else if(orientation == UIDeviceOrientationLandscapeRight)
+            orientation = UIDeviceOrientationLandscapeLeft;
+    }
+    [_networkControllerDelegate sendOrientationUpdate:orientation];
 
 }
 

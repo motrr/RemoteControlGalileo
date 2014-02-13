@@ -656,6 +656,7 @@
 					"\"$(SRCROOT)/vpx/lib\"",
 				);
 				PRODUCT_NAME = RemoteControlGalileo;
+				PROVISIONING_PROFILE = "06875505-BA04-42C0-9C6D-9F6362C44695";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
@@ -684,6 +685,7 @@
 					"\"$(SRCROOT)/vpx/lib\"",
 				);
 				PRODUCT_NAME = RemoteControlGalileo;
+				PROVISIONING_PROFILE = "06875505-BA04-42C0-9C6D-9F6362C44695";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
