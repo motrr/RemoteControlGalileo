@@ -131,10 +131,10 @@
 
 // Clear the connection states in the event of leaving a call or error.
 -(void) disconnectCurrentCall
-{	
+{
     [gameDelegate willDisconnect:self];
     if (sessionState != ConnectionStateDisconnected) {
-        if(sessionState == ConnectionStateConnected) {		
+        if(sessionState == ConnectionStateConnected) {
             [[GKVoiceChatService defaultVoiceChatService] stopVoiceChatWithParticipantID:currentConfPeerID];
         }
         // Don't leave a peer hangin'

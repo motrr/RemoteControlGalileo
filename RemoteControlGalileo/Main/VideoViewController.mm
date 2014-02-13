@@ -41,6 +41,21 @@
     [self.view setBackgroundColor:[UIColor blackColor]];
 }
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return interfaceOrientation == UIInterfaceOrientationPortrait;
+}
+
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
     return NO;
@@ -71,17 +86,17 @@
 // Helper method run when either changes
 - (void)localOrRemoteOrientationDidChange
 {
-    //[self logOrientation:currentLocalOrientation message:@"local"];
-    //[self logOrientation:currentRemoteOrientation message:@"remote"];
+    [self logOrientation:currentLocalOrientation message:@"local"];
+    [self logOrientation:currentRemoteOrientation message:@"remote"];
     
     if (!isRotated180)
     {
         // Only do anything if 180 disparity between local and remote
         if ((    currentLocalOrientation == UIDeviceOrientationLandscapeLeft
-             && currentRemoteOrientation == UIDeviceOrientationLandscapeRight)
+             && currentRemoteOrientation == UIDeviceOrientationLandscapeLeft)
             ||
             (    currentLocalOrientation == UIDeviceOrientationLandscapeRight
-             && currentRemoteOrientation == UIDeviceOrientationLandscapeLeft)
+             && currentRemoteOrientation == UIDeviceOrientationLandscapeRight)
             ||
             (    currentLocalOrientation == UIDeviceOrientationPortrait
              && currentRemoteOrientation == UIDeviceOrientationPortraitUpsideDown)
@@ -113,8 +128,18 @@
     }
     else if(isRotated180)
     {
-        // We dont want any jumping here, so lets just return back when 1 to 1 mapping
-        if (currentLocalOrientation == currentRemoteOrientation)
+        // We dont want any jumping here, so lets just return back only when needed
+        if ((    currentLocalOrientation == UIDeviceOrientationLandscapeLeft
+             && currentRemoteOrientation == UIDeviceOrientationLandscapeRight)
+            ||
+            (    currentLocalOrientation == UIDeviceOrientationLandscapeRight
+             && currentRemoteOrientation == UIDeviceOrientationLandscapeLeft)
+            ||
+            (    currentLocalOrientation == UIDeviceOrientationPortrait
+             && currentRemoteOrientation == UIDeviceOrientationPortrait)
+            ||
+            (    currentLocalOrientation == UIDeviceOrientationPortraitUpsideDown
+             && currentRemoteOrientation == UIDeviceOrientationPortraitUpsideDown))
         {
             isRotated180 = NO;
             [UIView animateWithDuration: ROTATION_ANIMATION_DURATION

@@ -66,6 +66,7 @@ enum TextureType
 @property(nonatomic) unsigned int cameraOrientation;
 @property(nonatomic) double zoomFactor;
 
+- (void)setOutputWidth:(int)width height:(int)height;
 - (void)processVideoFrameYuv:(CVPixelBufferRef)pixelBuffer;
 
 @end

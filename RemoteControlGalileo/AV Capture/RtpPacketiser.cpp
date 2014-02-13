@@ -1,7 +1,6 @@
 #include "RtpPacketiser.h"
 #include "Socket.h"
 
-
 RtpPacketiser::RtpPacketiser(unsigned char payloadType, size_t payloadDescriptorLength):
 mSocket(0)
 {
@@ -88,8 +87,8 @@ mSocket(0)
     mCurrentMarker = 0;
     mCurrentPartitionStart = 0;
     
-    // Initial sequence number should be random, for now we use 0 for debugging
-    mCurrentSequenceNumber = 0;
+    // Initial sequence number should be random, for now we use 1 for debugging
+    mCurrentSequenceNumber = 1;
     
     // This should be incremented correctly for each new frame
     mCurrentTimestamp = time(NULL);
@@ -145,22 +144,26 @@ void RtpPacketiser::sendFrameInOnePacket(void *buffer, size_t size, bool isKey)
     insertPacketHeader(packet, isKey);
     mSocket->sendPacket(packet, size + mPayloadHeaderLength);
     //printf("Sent packet %u\n", ntohs(((RtpPacketHeaderStruct*)packet)->sequence_num));
+    
+    // some smart sleeping
+    usleep(size > 1000 ? 20000 : 10000);
 }
 
 void RtpPacketiser::sendFrameInMultiplePackets(void *buffer, size_t size, bool isKey)
 {
     // The first packet requires copying to a temperary buffer so we can prepend the packet header
+    unsigned int firstPacketPayloadLength = FIRST_PACKET_PAYLOAD_LENGTH + mPayloadHeaderLength;
     char *firstPacketPayload = mFirstPacket + mPayloadHeaderLength;
     memcpy(firstPacketPayload, buffer, FIRST_PACKET_PAYLOAD_LENGTH);
-    unsigned int mFirstPacketPayloadLength = FIRST_PACKET_PAYLOAD_LENGTH + mPayloadHeaderLength;
     
     // This is the first packet in a frame so set state accordingly
     nextPacketIsFirstInFrame();
     
     // Insert a packet header and send
     insertPacketHeader(mFirstPacket, isKey);
-    mSocket->sendPacket(mFirstPacket, mFirstPacketPayloadLength);
+    mSocket->sendPacket(mFirstPacket, firstPacketPayloadLength);
     //printf("Sent packet %u\n", ntohs(((RtpPacketHeaderStruct*)mFirstPacket)->sequence_num));
+    usleep(firstPacketPayloadLength > 1000 ? 20000 : 10000);
     
     // For subsequent packets we write headers into the data as we go, so no copying needs to be done
     unsigned int bytesLeft = size - FIRST_PACKET_PAYLOAD_LENGTH;
@@ -193,11 +196,9 @@ void RtpPacketiser::sendFrameInMultiplePackets(void *buffer, size_t size, bool i
         nextPacketHeader += nextPacketPayloadLength;
         
         // Wait a while if we are sending a huge packet, this reduces packet loss (especially for the critical first frame)
-        if(bytesSent > 1000)
-        {
-            bytesSent = 0;
-            usleep(20000); // 20 ms, TODO - Investigate different intervals
-        }
+        // some smart sleeping
+        usleep(bytesSent > 1000 ? 20000 : 10000);
+        bytesSent = 0;
     }
 }
 

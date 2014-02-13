@@ -19,6 +19,7 @@
 		309AAC87158AF9EC007015A9 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309AAC86158AF9EC007015A9 /* OpenGLES.framework */; };
 		309AAC8B158AFA18007015A9 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309AAC8A158AFA18007015A9 /* CoreVideo.framework */; };
 		309AAC8D158AFA2F007015A9 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309AAC8C158AFA2F007015A9 /* GameKit.framework */; };
+		6907591318ABC42200BEF9B2 /* Hardware.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6907591118ABC42200BEF9B2 /* Hardware.cpp */; };
 		690EE76C1772FAC4005C4451 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 690EE76B1772FAC3005C4451 /* AudioToolbox.framework */; };
 		693E8F71176234FB007FD105 /* libilbc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 693E8F70176234FB007FD105 /* libilbc.a */; };
 		693E8F7317623506007FD105 /* libvpx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 693E8F7217623506007FD105 /* libvpx.a */; };
@@ -89,6 +90,8 @@
 		309AAC88158AFA04007015A9 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		309AAC8A158AFA18007015A9 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		309AAC8C158AFA2F007015A9 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		6907591118ABC42200BEF9B2 /* Hardware.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Hardware.cpp; sourceTree = "<group>"; };
+		6907591218ABC42200BEF9B2 /* Hardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Hardware.h; sourceTree = "<group>"; };
 		690EE76B1772FAC3005C4451 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		693E8F70176234FB007FD105 /* libilbc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libilbc.a; path = ilbc/lib/libilbc.a; sourceTree = "<group>"; };
 		693E8F7217623506007FD105 /* libvpx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvpx.a; path = vpx/lib/libvpx.a; sourceTree = "<group>"; };
@@ -364,6 +367,8 @@
 				69C1A3DC17858BE900E284F7 /* FIFOBufferImpl.h */,
 				69C1A3DD17858BE900E284F7 /* Function.h */,
 				69C1A3DE17858BE900E284F7 /* FunctionTemplate.h */,
+				6907591118ABC42200BEF9B2 /* Hardware.cpp */,
+				6907591218ABC42200BEF9B2 /* Hardware.h */,
 				69C1A3DF17858BE900E284F7 /* IpAddress.cpp */,
 				69C1A3E017858BE900E284F7 /* IpAddress.h */,
 				69C1A3E117858BE900E284F7 /* Socket.cpp */,
@@ -514,6 +519,7 @@
 				302362E5158A8FEE00B2DF09 /* main.m in Sources */,
 				69C1A3A817858B8B00E284F7 /* GLConstants.cpp in Sources */,
 				69C1A3A917858B8B00E284F7 /* OffscreenFBO.m in Sources */,
+				6907591318ABC42200BEF9B2 /* Hardware.cpp in Sources */,
 				69C1A3AA17858B8B00E284F7 /* OnscreenFBO.m in Sources */,
 				69C1A3AB17858B8B00E284F7 /* Shader.cpp in Sources */,
 				69C1A3BC17858B9A00E284F7 /* MoveRecogniser.m in Sources */,

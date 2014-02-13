@@ -86,6 +86,7 @@
 
 - (void)ipAddressRecieved:(NSString *)addressString
 {
+#ifdef HAS_AUDIO_STREAMING
     // Check if socket is already open
     if(audioDevice->isRunning()) return;
 
@@ -103,6 +104,7 @@
     [NSThread detachNewThreadSelector:@selector(startListening)
                              toTarget:audioDepacketiser
                            withObject:nil];
+#endif
 }
 
 #pragma mark -

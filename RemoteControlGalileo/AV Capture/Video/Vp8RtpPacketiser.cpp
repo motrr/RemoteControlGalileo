@@ -51,6 +51,6 @@ void Vp8RtpPacketiser::insertCustomPacketHeader(char *buffer, bool isKey)
     memcpy(vp8PayloadDescriptor, &mSkeletonPayloadDescriptor, sizeof(mSkeletonPayloadDescriptor));
     
     //
-    vp8PayloadDescriptor->nonReferenceFrame = isKey; // TODO - actually set this for keyframes
+    vp8PayloadDescriptor->nonReferenceFrame = isKey; // actually set this for keyframes
     vp8PayloadDescriptor->partiotionStart = mCurrentPartitionStart;
 }

@@ -48,11 +48,26 @@
     
 }
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return interfaceOrientation == UIInterfaceOrientationPortrait;
+}
+
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 #pragma mark -
 #pragma mark ConnectionStateResponderDelegate methods
 
 // Peer has been chosen, create Galileo object
-- (void) peerSelected
+- (void)peerSelected
 {
     NSLog(@"Connection state changed - peerSelected");
     
@@ -67,7 +82,7 @@
 }
 
 // Connection is now live (send and recieve successful), perform some initialisation
-- (void) connectionIsNowAlive
+- (void)connectionIsNowAlive
 {
      NSLog(@"Connection state changed - connectionIsNowAlive");
     
@@ -75,7 +90,7 @@
     [rcGalileo networkControllerIsReady];
     
     // Push video view controller on to navigation stack
-    [self.navigationController pushViewController: (UIViewController*)rcGalileo.videoViewController animated:YES];
+    [self.navigationController pushViewController:(UIViewController*)rcGalileo.videoViewController animated:YES];
     
     // Hide status bar
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
@@ -86,7 +101,7 @@
 }
 
 // Disconnected for some reason, kill galileo object
-- (void) connectionIsDead
+- (void)connectionIsDead
 {
      NSLog(@"Connection state changed - connectionIsDead");
     // Turn screen saving back on

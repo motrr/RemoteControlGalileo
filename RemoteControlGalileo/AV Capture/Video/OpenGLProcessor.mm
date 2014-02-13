@@ -20,7 +20,7 @@
 
 @synthesize zoomFactor;
 
-- (id) init
+- (id)init
 {
     if(self = [super init])
     {
@@ -48,7 +48,7 @@
     return self;
 }
 
--(void)dealloc
+- (void)dealloc
 {
     NSLog(@"VideoProcessor exiting");
     
@@ -58,6 +58,14 @@
     delete uPlanarProgram;
     delete vPlanarProgram;
 #endif 
+}
+
+- (void)setOutputWidth:(int)width height:(int)height
+{
+    // We set the output dimensions at a nice iPhone/iPad friendly aspect ratio
+    outputPixelBufferWidth = width;
+    outputPixelBufferHeight = height;
+    NSLog(@"Output pixel buffer dimensions %zu x %zu", outputPixelBufferWidth, outputPixelBufferHeight);
 }
 
 - (void)processVideoFrameYuv:(CVPixelBufferRef)inputPixelBuffer
@@ -72,11 +80,6 @@
         inputPixelBufferWidth = CVPixelBufferGetWidth(inputPixelBuffer);
         inputPixelBufferHeight = CVPixelBufferGetHeight(inputPixelBuffer);
         NSLog(@"Input pixel buffer dimensions %zu x %zu", inputPixelBufferWidth, inputPixelBufferHeight);
-        
-        // We set the output dimensions at a nice iPhone/iPad friendly aspect ratio
-        outputPixelBufferWidth = VIDEO_WIDTH;
-        outputPixelBufferHeight = VIDEO_HEIGHT;
-        NSLog(@"Output pixel buffer dimensions %zu x %zu", outputPixelBufferWidth, outputPixelBufferHeight);
         
         // These calls use the pixel buffer dimensions
         [self createPixelBuffer:&outputPixelBuffer width:outputPixelBufferWidth height:outputPixelBufferHeight];

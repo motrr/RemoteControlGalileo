@@ -12,6 +12,29 @@
 // Colour of the iDevice, blackColor or whiteColor
 #define DEVICE_COLOUR blackColor
 
+// custom navigation controller with portrait orientation only
+@interface MyNavigationController : UINavigationController
+@end
+
+@implementation MyNavigationController
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return interfaceOrientation == UIInterfaceOrientationPortrait;
+}
+
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+@end
+
 @implementation AppDelegate
 
 @synthesize window;
@@ -21,8 +44,8 @@
 #pragma mark -
 #pragma mark Application lifecycle
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {    
-    
+- (void)applicationDidFinishLaunching:(UIApplication *)application
+{
     // Get bounding frames
     CGRect screenBounds = [[UIScreen mainScreen] applicationFrame];
     CGRect visibleScreenBounds = CGRectMake(0, 0,
@@ -34,7 +57,7 @@
     self.viewController = [[RootViewController alloc] init];
     
     // Initialise a navigation controller using the controller as the root
-    self.navigationController = [[UINavigationController alloc] initWithRootViewController: self.viewController];
+    self.navigationController = [[MyNavigationController alloc] initWithRootViewController: self.viewController];
     [self.navigationController setNavigationBarHidden:YES];
     
     // Initialise the window, matching the background to the device's colour since it is visible when rotating
@@ -42,13 +65,17 @@
     [window setBackgroundColor:[UIColor DEVICE_COLOUR]];
     
     // Make status bar content light on iOS 7
-    if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
+    double iOSVersion = [[[UIDevice currentDevice] systemVersion] doubleValue];
+    if(iOSVersion >= 7.0)
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
     // Add the navigation controller's view to window and make window visible
-    [self.window addSubview:self.navigationController.view];
-    [self.window makeKeyAndVisible];
+    if(iOSVersion < 4.0)
+        [self.window addSubview:self.navigationController.view];
+    else
+        self.window.rootViewController = self.navigationController;
     
+    [self.window makeKeyAndVisible];
 }
 
 

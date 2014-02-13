@@ -4,6 +4,10 @@
 #import <sys/socket.h>
 #import <netinet/in.h>
 
+// PACKET_SEQUENCE_DIFF - minimal difference between seq. numbers from last inserted packet 
+// and minimal seq. number from packet list when we will discart packets to the next keyframe
+// invalid/old packets.
+#define PACKET_SEQUENCE_DIFF 5
 #define PACKET_BUFFER_SIZE 25
 #define FRAME_BUFFER_SIZE 20
 
@@ -20,14 +24,10 @@
     
     // We keep a buffer of packets to deal with out of order packets
     char *packetBuffer[PACKET_BUFFER_SIZE];
+    int packetBufferLength[PACKET_BUFFER_SIZE];
     unsigned int nextPacketIndex;
-    
     unsigned int nextSequenceNum;
-    unsigned int incomingSequenceNum;
-    
     unsigned int byteInFrameSoFar;
-    
-    Boolean skipThisFrame;
 }
 
 @end
@@ -86,7 +86,8 @@
     struct sockaddr_in si_me;
     
     // Create a server socket
-    if((rxSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
+    rxSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if(rxSocket == -1)
         NSLog(@"Failed to create video Rx socket.");
     
     // Create the address
@@ -94,6 +95,14 @@
     si_me.sin_family = AF_INET;
     si_me.sin_port = htons(port);
     si_me.sin_addr.s_addr = htonl(INADDR_ANY);
+    
+    // Get or set the send buffer size
+    /*unsigned int x = 32768;//maxPacketLength * 64;
+    unsigned int y = sizeof(x);
+    printf("Attempting to set socket recieve buffer to %u bytes\n", x);
+    setsockopt(rxSocket, SOL_SOCKET, SO_RCVBUF, &x, y);
+    getsockopt(rxSocket, SOL_SOCKET, SO_RCVBUF, &x, &y);
+    printf("Socket recieve buffer is %u bytes\n", x);*/
     
     // Bind address to socket
     if(bind(rxSocket, (struct sockaddr *) &si_me, sizeof(si_me)) == -1)
@@ -107,23 +116,16 @@
 
 - (void)startListening
 {
-    int amountRead;
-    
-    RtpPacketHeaderStruct *packetHeader;
-    char *payloadDescriptor;
-    
-    char *payload;
-    unsigned int payloadLength;
-    
     // Create a fixed size buffer for reading packets into
     for(int i = 0; i < PACKET_BUFFER_SIZE; i++)
     {
+        packetBufferLength[i] = 0;
         packetBuffer[i] = malloc(MAX_PACKET_TOTAL_LENGTH);
         memset(packetBuffer[i], 0, MAX_PACKET_TOTAL_LENGTH);
     }
     
     nextPacketIndex = 0;
-    nextSequenceNum = 0;
+    nextSequenceNum = 1;
     byteInFrameSoFar = 0;
     
     // Create fixed size buffer fro reading frames into
@@ -134,10 +136,9 @@
     currentFrame = frameBuffer[currentFrameIndex];
     
     // We skip displaying any frame that has one or more packets missing
-    skipThisFrame = NO;
-    
     int notInsertedCounter = 0;
-        
+    int lastInsertedSequenceNum = 0;
+    
     // Begin listening for data
     for(;;)
     {
@@ -145,33 +146,37 @@
         @autoreleasepool
         {
             // 1. Read packet
-            amountRead = recv(rxSocket, packetBuffer[nextPacketIndex], MAX_PACKET_TOTAL_LENGTH, 0);
-            if (amountRead < 0)
+            packetBufferLength[nextPacketIndex] = recv(rxSocket, packetBuffer[nextPacketIndex], MAX_PACKET_TOTAL_LENGTH, 0);
+            if (packetBufferLength[nextPacketIndex] < 0)
             {
                 NSLog(@"Bad return value from server socket recvrom().");
+                perror("recv");
                 return;
             }
-                        
+            
             // 2. Insert packets to frame
             int lastInsertedIndex = -1;
             
+            //NSLog(@"incomingSequenceNum #%u:", ntohs(((RtpPacketHeaderStruct*)packetBuffer[nextPacketIndex])->sequenceNum));
+            
             for(int i = 0; i < PACKET_BUFFER_SIZE; i++)
             {
-                packetHeader = (RtpPacketHeaderStruct*)packetBuffer[i];
-                payloadDescriptor = (char*)(packetBuffer[i] + sizeof(RtpPacketHeaderStruct));
-                payload = packetBuffer[i] + payloadHeaderLength;
-                payloadLength = amountRead - payloadHeaderLength;
-                incomingSequenceNum = ntohs(packetHeader->sequenceNum);
-            
+                RtpPacketHeaderStruct *packetHeader = (RtpPacketHeaderStruct*)packetBuffer[i];
+                char *payloadDescriptor = (char*)(packetBuffer[i] + sizeof(RtpPacketHeaderStruct));
+                char *payload = packetBuffer[i] + payloadHeaderLength;
+                unsigned int payloadLength = packetBufferLength[i] - payloadHeaderLength;
+                unsigned int incomingSequenceNum = ntohs(packetHeader->sequenceNum);
+                
                 // Check sequence
                 if(incomingSequenceNum == nextSequenceNum)
-                {                    
+                {
                     [self insertPacketIntoFrame:payload payloadDescriptor:payloadDescriptor
                                   payloadLength:payloadLength markerSet:packetHeader->marker];
                     
                     // Save last inserted index 
                     lastInsertedIndex = i;
-                                        
+                    lastInsertedSequenceNum = incomingSequenceNum;
+                    
                     // Iterate one more time to check other packets
                     // to be inserted after current
                     i = -1;
@@ -181,59 +186,69 @@
             // 3. If no packets was inserted
             if(lastInsertedIndex == -1)
             {
+                RtpPacketHeaderStruct *packetHeader = (RtpPacketHeaderStruct*)packetBuffer[nextPacketIndex];
+                Vp8PayloadDescriptorStruct *payloadDescriptor = (Vp8PayloadDescriptorStruct*)(packetHeader + sizeof(RtpPacketHeaderStruct));
+                char *payload = packetBuffer[nextPacketIndex] + payloadHeaderLength;
+                unsigned int payloadLength = packetBufferLength[nextPacketIndex] - payloadHeaderLength;
+                unsigned int nextPacketSequenceNum = ntohs(packetHeader->sequenceNum);
+                
                 // Increase not inserted packets counter
                 notInsertedCounter++;
                 
                 // Check unsended packets counter for overflow
-                if(notInsertedCounter > PACKET_BUFFER_SIZE)
+                if(notInsertedCounter > PACKET_BUFFER_SIZE || nextPacketSequenceNum - lastInsertedSequenceNum >= PACKET_SEQUENCE_DIFF)
                 {
-                    NSLog(@"Searching #%u:", nextSequenceNum);                   
-                    
-                    RtpPacketHeaderStruct *header = (RtpPacketHeaderStruct*)packetBuffer[nextPacketIndex];
-                    Vp8PayloadDescriptorStruct *desc = (Vp8PayloadDescriptorStruct *)(header + sizeof(RtpPacketHeaderStruct));
+                    //NSLog(@"Searching #%u:", nextSequenceNum);
                     
                     if(![self hasKeyframes])
                     {
-                        if(header->marker)
+                        if(packetHeader->marker)
                         {
                             notInsertedCounter = 0;
                             byteInFrameSoFar   = 0;
                             
-                            nextSequenceNum = ntohs(header->sequenceNum) + 1;
+                            nextSequenceNum = nextPacketSequenceNum + 1;
                             
                             NSLog(@"Skipping to the next packet #%u", nextSequenceNum);
                         }
                     }
                     else
                     {
-                        if([self isKeyframe:(char*)desc])
+                        if([self isKeyframe:(char*)payloadDescriptor])
                         {
                             notInsertedCounter = 0;
                             byteInFrameSoFar   = 0;
-                            
-                            nextSequenceNum = ntohs(header->sequenceNum);
+                            nextSequenceNum    = nextPacketSequenceNum;
+                            lastInsertedSequenceNum = nextSequenceNum;
+                            lastInsertedIndex = nextPacketIndex;
                             
                             NSLog(@"Skipping to the next key frame packet #%u", nextSequenceNum);
+                            
+                            [self insertPacketIntoFrame:payload payloadDescriptor:(char*)payloadDescriptor
+                                  payloadLength:payloadLength markerSet:packetHeader->marker];
                         }
                     }
                 }
                 
-                // Reuse buffer's packet slot with minimum sequence value
-                int minSeqIndex = 0;
-                unsigned int minSeq = -1;
-                
-                for(int i = 0; i < PACKET_BUFFER_SIZE; i++)
-                {                    
-                    int seq = ntohs(((RtpPacketHeaderStruct*)packetBuffer[i])->sequenceNum);
+                if(lastInsertedIndex < 0)
+                {
+                    // Reuse buffer's packet slot with minimum sequence value
+                    int minSeqIndex = 0;
+                    unsigned int minSeq = -1;
                     
-                    if(minSeq > seq)
+                    for(int i = 0; i < PACKET_BUFFER_SIZE; i++)
                     {
-                        minSeqIndex = i;
-                        minSeq = seq;
+                        int seq = ntohs(((RtpPacketHeaderStruct*)packetBuffer[i])->sequenceNum);
+                        
+                        if(minSeq > seq)
+                        {
+                            minSeqIndex = i;
+                            minSeq = seq;
+                        }
                     }
+                    
+                    nextPacketIndex = minSeqIndex;
                 }
-                
-                nextPacketIndex = minSeqIndex;
             }
             else
             {

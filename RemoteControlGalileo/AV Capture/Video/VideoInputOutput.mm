@@ -5,6 +5,7 @@
 #include "Vp8RtpPacketiser.h"
 #include "Vp8RtpDepacketiser.h"
 #include "VideoTxRxCommon.h"
+#include "Hardware.h"
 
 @implementation VideoInputOutput
 
@@ -14,8 +15,37 @@
     {
         sendQueue = dispatch_queue_create("Video send queue", DISPATCH_QUEUE_SERIAL);
         
+        int width, height, bitrate;
+#   ifdef FORCE_LOW_QUALITY
+        bool lowPerformanceDevice = true;
+#   else 
+        // get performance based on device model
+        bool lowPerformanceDevice = true;
+        Hardware::Model model = Hardware::getModel();
+        if(model == Hardware::HM_iPod_5g || (model >= Hardware::HM_iPhone_4s && model <= Hardware::HM_iPhone_5) ||
+           (model >= Hardware::HM_iPad_2 && model <= Hardware::HM_iPadMini))
+        {
+            // high performance device
+            lowPerformanceDevice = false;
+        }
+        
+#   endif 
+        if(lowPerformanceDevice)
+        {
+            width = VIDEO_WIDTH_LOW;
+            height = VIDEO_HEIGHT_LOW;
+            bitrate = TARGET_BITRATE_PER_PIXEL_LOW;
+        }
+        else
+        {
+            width = VIDEO_WIDTH;
+            height = VIDEO_HEIGHT;
+            bitrate = TARGET_BITRATE_PER_PIXEL;
+        }
+        
         // The video proccessor crops, scales and performs pixel format transforms. The result is passed asynchronously back here, to its delegate
         videoProcessor = [[OpenGLProcessor alloc] init];
+        [videoProcessor setOutputWidth:width height:height];
         videoProcessor.delegate = self;
         
         cameraInput = [[CameraInput alloc] init];
@@ -25,7 +55,7 @@
         videoPacketiser = new Vp8RtpPacketiser(96);
         
         videoEncoder = new Vp8VideoEncoder();
-        videoEncoder->setup(VIDEO_WIDTH, VIDEO_HEIGHT, TARGET_BITRATE_PER_PIXEL, MAX_KEYFRAME_INTERVAL);
+        videoEncoder->setup(width, height, bitrate, MAX_KEYFRAME_INTERVAL);
         
         // Add the view to the depacketiser so it can display completed frames upon it
         videoDepacketiser = [[Vp8RtpDepacketiser alloc] initWithPort:VIDEO_UDP_PORT];
@@ -95,7 +125,7 @@
 - (void)didProcessFrame:(CVPixelBufferRef)pixelBuffer
 {
     // Wait for any packet sending to finish
-    dispatch_sync(sendQueue, ^{});
+    //dispatch_sync(sendQueue, ^{});
     
     // Get access to raw pixel data
     CVPixelBufferLockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
@@ -114,8 +144,12 @@
     
     if(buffer.get())
     {
+        // Wait for any packet sending to finish
+        dispatch_sync(sendQueue, ^{});
+    
         // Ensure frame isn't too big
         assert(buffer->getSize() <= MAX_FRAME_LENGTH);
+        //printf("Encoded video frame size: %lu\n", buffer->getSize());
         
         void *data = buffer->getData();
         size_t size = buffer->getSize();

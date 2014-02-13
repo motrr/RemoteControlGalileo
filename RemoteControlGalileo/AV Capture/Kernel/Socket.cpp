@@ -40,6 +40,7 @@ bool Socket::openSocket(const std::string &ipAddress, u_short port, size_t maxPa
     }
     
     // Get or set the send buffer size
+    //unsigned int x = 32768;
     unsigned int x = maxPacketLength;
     unsigned int y = sizeof(x);
     printf("Attempting to set socket send buffer to %u bytes\n", x);
