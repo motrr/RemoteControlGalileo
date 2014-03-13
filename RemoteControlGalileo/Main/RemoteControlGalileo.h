@@ -13,13 +13,17 @@
 @class VideoViewController;
 @class UserInputHandler;
 @class DockConnectorController;
+@class MediaOutput;
+@class CameraInput;
 
 @interface RemoteControlGalileo : UIViewController
 {
     NSTimer *pingPingTimer;
     
     id<NetworkControllerDelegate> networkController;
-    
+
+    MediaOutput *mediaOutput;
+    CameraInput *cameraInput;
     VideoInputOutput *videoInputOutput;
     AudioInputOutput *audioInputOutput;
     VideoViewController *videoViewController;

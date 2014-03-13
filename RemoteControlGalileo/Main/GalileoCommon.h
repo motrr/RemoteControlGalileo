@@ -11,7 +11,7 @@
 @protocol AudioConfigResponderDelegate;
 @protocol OrientationUpdateResponderDelegate;
 @protocol GalileoControlResponderDelegate;
-
+@protocol RecordStatusResponderDelegate;
 
 #pragma mark -
 #pragma mark Network controller delegate protocol
@@ -26,7 +26,7 @@
 @property (nonatomic, weak) id <AudioConfigResponderDelegate> audioConfigResponder;
 @property (nonatomic, weak) id <OrientationUpdateResponderDelegate> orientationUpdateResponder;
 @property (nonatomic, weak) id <GalileoControlResponderDelegate> galileoControlResponder;
-
+@property (nonatomic, weak) id <RecordStatusResponderDelegate> recordStatusResponderDelegate;
 
 /*
  To send messages, objects can use the controller's send methods
@@ -45,6 +45,7 @@
                           momentum:(bool)momentum;
 // Send a command to zoom in on the remote Galileo
 - (void) sendZoomFactor: (NSNumber*) scale;
+- (void) sendSetRecording: (bool) value isResponse: (bool)isReponse;
 
 @end
 
@@ -90,3 +91,9 @@
 
 @end
 
+@protocol RecordStatusResponderDelegate <NSObject>
+
+- (void)remoteRecordStarted:(bool)value;
+- (void)startRecord:(bool)value;
+
+@end

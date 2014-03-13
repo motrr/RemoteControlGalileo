@@ -73,10 +73,10 @@ Model getModel()
     sysctlbyname("hw.machine", &machine[0], &size, NULL, 0);
     //printf("Device type: %s\n", machine());
     
-    for(Model i = HM_Simulator; i < HM_Unknown; i++)
+    for(int i = HM_Simulator; i < HM_Unknown; i++)
     {
         if(std::equal(names[i].begin(), names[i].end(), machine.begin()))
-            return i;
+            return (Model)i;
     }
     
     // device type unknown

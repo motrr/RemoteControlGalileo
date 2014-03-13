@@ -1,8 +1,10 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#include <set>
 
 @protocol CameraInputDelegate
 
+@required
 - (void)didCaptureFrame:(CVPixelBufferRef)pixelBuffer; 
 
 @end
@@ -21,9 +23,12 @@
     
    // Queues on which video frames are proccessed
     dispatch_queue_t captureAndEncodingQueue;
+
+    std::set<__weak id<CameraInputDelegate> > mNotifiers;
 }
 
-@property(nonatomic, weak) id delegate;
+- (void)addNotifier:(id<CameraInputDelegate>)notifier;
+- (void)removeNotifier:(id<CameraInputDelegate>)notifier;
 
 - (void)startCapture;
 - (bool)isRunning;

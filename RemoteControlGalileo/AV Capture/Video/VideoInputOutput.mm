@@ -9,6 +9,8 @@
 
 @implementation VideoInputOutput
 
+@synthesize cameraInput = cameraInput;
+
 - (id)init
 {
     if(self = [super init])
@@ -47,10 +49,7 @@
         videoProcessor = [[OpenGLProcessor alloc] init];
         [videoProcessor setOutputWidth:width height:height];
         videoProcessor.delegate = self;
-        
-        cameraInput = [[CameraInput alloc] init];
-        cameraInput.delegate = self;
-        
+                
         // The remainder of the video streaming pipeline objects
         videoPacketiser = new Vp8RtpPacketiser(96);
         
@@ -71,7 +70,7 @@
 - (void)dealloc
 {
     videoDepacketiser.delegate = nil;
-    cameraInput.delegate = nil;
+    [cameraInput removeNotifier:self];
     videoProcessor.delegate = nil;
     
     [videoDepacketiser closeSocket];
@@ -79,7 +78,7 @@
     
     delete videoDecoder;
     delete videoEncoder;
-    if(sendQueue) dispatch_release(sendQueue);
+    if(sendQueue) sendQueue = nil;//dispatch_release(sendQueue);
 }
 
 #pragma mark -
@@ -96,7 +95,7 @@
     
     // Begin video capture and transmission
     [cameraInput startCapture];
-    
+
     // Create socket to listen out for video transmission
     [videoDepacketiser openSocket];
 

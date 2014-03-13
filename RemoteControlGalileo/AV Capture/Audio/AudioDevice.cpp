@@ -24,6 +24,8 @@ AudioDevice::AudioDevice(int sampleRate, int channels, int bitsPerChannel):
     mStreamDescription.mBitsPerChannel = 16;
     mStreamDescription.mBytesPerPacket = 2;
     mStreamDescription.mBytesPerFrame = 2;
+
+    mRecordBuffer.resize(mStreamDescription.mBytesPerFrame * 4096); // lets have reserved size for 4k frames
 }
 
 AudioDevice::~AudioDevice()
@@ -245,14 +247,24 @@ OSStatus AudioDevice::recordCallback(void *inRefCon, AudioUnitRenderActionFlags 
     bufferList.mNumberBuffers = 1;
     bufferList.mBuffers[0].mDataByteSize = inNumberFrames * audioDevice->mStreamDescription.mBytesPerFrame;
     bufferList.mBuffers[0].mNumberChannels = audioDevice->mStreamDescription.mChannelsPerFrame;
-    bufferList.mBuffers[0].mData = audioDevice->mRecordBufferCallback(bufferList.mBuffers[0].mDataByteSize);
-    
+
+    void *buffer = audioDevice->mRecordBufferCallback(bufferList.mBuffers[0].mDataByteSize);
+    if(!buffer)
+    {
+        audioDevice->mRecordBuffer.resize(bufferList.mBuffers[0].mDataByteSize);
+        buffer = (void*)&audioDevice->mRecordBuffer[0];
+        //printf("num samples %d, buffer size %d\n", inNumberFrames, bufferList.mBuffers[0].mDataByteSize);
+    }
+    bufferList.mBuffers[0].mData = buffer;
+
     // obtain record samples
     OSStatus error;
     error = AudioUnitRender(audioDevice->mAudioUnit, ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, &bufferList);
     if(error != noErr) printf("error - can't get audio data from input\n");
     
-    audioDevice->mRecordStatusCallback(error == noErr ? 0 : bufferList.mBuffers[0].mDataByteSize); // notify the user
+    size_t length = (error == noErr) ? bufferList.mBuffers[0].mDataByteSize : 0;
+    size_t unusedLength = (error == noErr) ? 0 : bufferList.mBuffers[0].mDataByteSize;
+    audioDevice->mRecordStatusCallback(buffer, length, unusedLength); // notify the user
     return noErr;
 }
 

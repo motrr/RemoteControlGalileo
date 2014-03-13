@@ -42,6 +42,11 @@ typedef struct {
     float_t scale;
 } GalileoZoomPacket;
 
+// Packet to send record start/stop commands
+typedef struct {
+    bool start;
+    bool response;
+} GalileoRecordPacket;
 
 
 @implementation GKNetController
@@ -51,6 +56,7 @@ typedef struct {
 @synthesize audioConfigResponder;
 @synthesize orientationUpdateResponder;
 @synthesize galileoControlResponder;
+@synthesize recordStatusResponderDelegate;
 
 #pragma mark -
 #pragma mark NSObject initialisation
@@ -187,6 +193,28 @@ typedef struct {
     }
 }
 
+- (void) parseRecordPacket: (NSData*) data
+{
+    GalileoRecordPacket incoming;
+
+    if ([data length] == sizeof(GalileoRecordPacket))
+    {
+
+        NSLog(@"Zoom update packet recieved");
+
+        [data getBytes:&incoming length:sizeof(GalileoRecordPacket)];
+
+        if (incoming.response)
+        {
+            // notify user
+            [recordStatusResponderDelegate remoteRecordStarted:incoming.start];
+        }
+        else
+        {
+            [recordStatusResponderDelegate startRecord:incoming.start];
+        }
+    }
+}
 
 // The GKSession got a packet so parse it and update state.
 - (void) session:(GKSessionManager *)session didReceivePacket:(NSData *)data ofType:(PacketType)packetType
@@ -205,14 +233,15 @@ typedef struct {
         case PacketTypeZoom:
             [self parseZoomPacket:data];
             break;
-            break;
         case PacketTypePing:
             [self parsePingPacket:data];
             break;
         case PacketTypePong:
             [self parsePongPacket:data];
             break;
-
+        case PacketTypeRecord:
+            [self parseRecordPacket:data];
+            break;
         default:
             break;
     }
@@ -299,6 +328,19 @@ typedef struct {
     
     NSData* packet = [[NSData alloc] initWithBytes: &outgoing length:sizeof(GalileoZoomPacket)];
     [manager sendPacket:packet ofType:PacketTypeZoom reliable:YES];
+}
+
+
+- (void) sendSetRecording: (bool) value isResponse: (bool)isReponse
+{
+    NSLog( @"Going to send Galileo zoom packet");
+    GalileoRecordPacket outgoing;
+
+    outgoing.response = isReponse; // we send command, not response
+    outgoing.start = value;
+
+    NSData* packet = [[NSData alloc] initWithBytes: &outgoing length:sizeof(GalileoRecordPacket)];
+    [manager sendPacket:packet ofType:PacketTypeRecord reliable:YES];
 }
 
 

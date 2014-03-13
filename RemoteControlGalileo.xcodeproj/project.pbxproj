@@ -71,6 +71,7 @@
 		830C56BB177934230058015E /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 830C56BA177934230058015E /* ExternalAccessory.framework */; };
 		832FD5C416D5B379001CDF65 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 832FD5C316D5B379001CDF65 /* Default-568h@2x.png */; };
 		83619CC9178ABFBF00B9EB20 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83619CC8178ABFBF00B9EB20 /* CoreBluetooth.framework */; };
+		FA99DAD318CCF45300C15898 /* MediaOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA99DAD218CCF45300C15898 /* MediaOutput.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -187,6 +188,11 @@
 		830C56BA177934230058015E /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 		832FD5C316D5B379001CDF65 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "en.lproj/Default-568h@2x.png"; sourceTree = "<group>"; };
 		83619CC8178ABFBF00B9EB20 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		FA99DAD118CCF45300C15898 /* MediaOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaOutput.h; sourceTree = "<group>"; };
+		FA99DAD218CCF45300C15898 /* MediaOutput.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MediaOutput.mm; sourceTree = "<group>"; };
+		FAAA341918D24FE600ECF869 /* Atomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atomic.h; sourceTree = "<group>"; };
+		FAAA341A18D24FE600ECF869 /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
+		FAAA341B18D24FE600ECF869 /* RingBufferImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBufferImpl.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -362,6 +368,9 @@
 		69C1A3D917858BE900E284F7 /* Kernel */ = {
 			isa = PBXGroup;
 			children = (
+				FAAA341918D24FE600ECF869 /* Atomic.h */,
+				FAAA341A18D24FE600ECF869 /* RingBuffer.h */,
+				FAAA341B18D24FE600ECF869 /* RingBufferImpl.h */,
 				69C1A3DA17858BE900E284F7 /* Buffer.h */,
 				69C1A3DB17858BE900E284F7 /* FIFOBuffer.h */,
 				69C1A3DC17858BE900E284F7 /* FIFOBufferImpl.h */,
@@ -384,6 +393,8 @@
 			children = (
 				69C1A3E917858BE900E284F7 /* CameraInput.h */,
 				69C1A3EA17858BE900E284F7 /* CameraInput.mm */,
+				FA99DAD118CCF45300C15898 /* MediaOutput.h */,
+				FA99DAD218CCF45300C15898 /* MediaOutput.mm */,
 				69C1A3EB17858BE900E284F7 /* OpenGLProcessor.h */,
 				69C1A3EC17858BE900E284F7 /* OpenGLProcessor.mm */,
 				69C1A3ED17858BE900E284F7 /* VideoDecoder.h */,
@@ -518,6 +529,7 @@
 				6942650F18A190DD0044697D /* GLUtils.cpp in Sources */,
 				302362E5158A8FEE00B2DF09 /* main.m in Sources */,
 				69C1A3A817858B8B00E284F7 /* GLConstants.cpp in Sources */,
+				FA99DAD318CCF45300C15898 /* MediaOutput.mm in Sources */,
 				69C1A3A917858B8B00E284F7 /* OffscreenFBO.m in Sources */,
 				6907591318ABC42200BEF9B2 /* Hardware.cpp in Sources */,
 				69C1A3AA17858B8B00E284F7 /* OnscreenFBO.m in Sources */,
@@ -648,7 +660,7 @@
 					ilbc/include,
 				);
 				INFOPLIST_FILE = "RemoteControlGalileo/RemoteControlGalileo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					vpx/lib,
 					ilbc/lib,
@@ -656,7 +668,7 @@
 					"\"$(SRCROOT)/vpx/lib\"",
 				);
 				PRODUCT_NAME = RemoteControlGalileo;
-				PROVISIONING_PROFILE = "06875505-BA04-42C0-9C6D-9F6362C44695";
+				PROVISIONING_PROFILE = "970506EA-9D09-4AA9-A883-BD607EF8141C";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
@@ -677,7 +689,7 @@
 					ilbc/include,
 				);
 				INFOPLIST_FILE = "RemoteControlGalileo/RemoteControlGalileo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					vpx/lib,
 					ilbc/lib,
@@ -685,7 +697,7 @@
 					"\"$(SRCROOT)/vpx/lib\"",
 				);
 				PRODUCT_NAME = RemoteControlGalileo;
-				PROVISIONING_PROFILE = "06875505-BA04-42C0-9C6D-9F6362C44695";
+				PROVISIONING_PROFILE = "970506EA-9D09-4AA9-A883-BD607EF8141C";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};

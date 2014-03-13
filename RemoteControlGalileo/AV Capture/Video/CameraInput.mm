@@ -28,13 +28,29 @@
         // Stop capture
         [captureSession stopRunning];
     }
-    
-    dispatch_release(captureAndEncodingQueue);
+
+    captureAndEncodingQueue = nil;
+    //dispatch_release(captureAndEncodingQueue);
 }
 
 - (bool)isRunning
 {
     return hasBeganCapture;
+}
+
+#pragma mark -
+#pragma mark AV capture and transmission
+
+- (void)addNotifier:(id<CameraInputDelegate>)notifier
+{
+    if(mNotifiers.find(notifier) == mNotifiers.end())
+        mNotifiers.insert(notifier);
+}
+
+- (void)removeNotifier:(id<CameraInputDelegate>)notifier
+{
+    if(mNotifiers.find(notifier) == mNotifiers.end())
+        mNotifiers.erase(notifier);
 }
 
 #pragma mark -
@@ -143,7 +159,14 @@
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
        fromConnection:(AVCaptureConnection *)connection 
 {
-    [self.delegate didCaptureFrame:CMSampleBufferGetImageBuffer(sampleBuffer)];
+    CVImageBufferRef buffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    std::set<__weak id<CameraInputDelegate> >::iterator it = mNotifiers.begin();
+    std::set<__weak id<CameraInputDelegate> >::iterator iend = mNotifiers.end();
+    for(; it != iend; ++it)
+    {
+        id<CameraInputDelegate> notifier = (*it);
+        [notifier didCaptureFrame:buffer];
+    }
 }
 
 @end

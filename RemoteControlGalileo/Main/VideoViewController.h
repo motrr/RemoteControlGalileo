@@ -5,8 +5,11 @@
 
 #import <UIKit/UIKit.h>
 #import "GalileoCommon.h"
+#import "MediaOutput.h"
 
-@interface VideoViewController : UIViewController <OrientationUpdateResponderDelegate>
+#define NOTIFICATION_TOGGLE_RECORDING_MODE @"NOTIFICATION_TOGGLE_RECORDING_MODE"
+
+@interface VideoViewController : UIViewController <OrientationUpdateResponderDelegate, RecordStatusResponderDelegate>
 {
     // Keep track of local and remote orientation
     UIDeviceOrientation currentLocalOrientation;
@@ -18,9 +21,11 @@
     
     // Button for recording
     UIButton *recordButton;
+    UILabel *labelRecordStatus;
     BOOL isRecording;
 }
 
-@property(nonatomic, weak) id<NetworkControllerDelegate> networkControllerDelegate;
+@property (nonatomic, weak) id<NetworkControllerDelegate> networkControllerDelegate;
+@property (nonatomic, weak) MediaOutput *mediaOutput;
 
 @end

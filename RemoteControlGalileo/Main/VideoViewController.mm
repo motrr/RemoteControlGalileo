@@ -29,6 +29,7 @@
 
 - (void)dealloc
 {
+    labelRecordStatus = nil;
     NSLog(@"VideoViewController exiting");
 }
 
@@ -37,8 +38,21 @@
     // Create the view which will show the received video
     self.wantsFullScreenLayout = YES;
     self.view = [[VideoView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+
     //[self.view.layer setMagnificationFilter:kCAFilterTrilinear];
     [self.view setBackgroundColor:[UIColor blackColor]];
+
+    //
+    labelRecordStatus = [[UILabel alloc] init];
+    labelRecordStatus.backgroundColor = [UIColor clearColor];
+    labelRecordStatus.textColor = [UIColor whiteColor];
+    labelRecordStatus.shadowColor = [UIColor blackColor];
+    labelRecordStatus.shadowOffset = CGSizeMake(1, 1);
+    [self.view addSubview:labelRecordStatus];
+
+    UITapGestureRecognizer *doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onDoubleTap:)];
+    doubleTapGestureRecognizer.numberOfTapsRequired = 2;
+    [self.view addGestureRecognizer:doubleTapGestureRecognizer];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -64,6 +78,76 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+}
+
+#pragma mark -
+#pragma mark Workflow
+
+- (void)flashStatusText:(NSString *)text
+{
+    //
+    labelRecordStatus.text = text;
+    [labelRecordStatus sizeToFit];
+
+    //
+    labelRecordStatus.alpha = 1.f;
+
+    [UIView animateWithDuration:2.f animations:^{
+        labelRecordStatus.alpha = 0;
+    }];
+}
+
+- (void)onDoubleTap:(UITapGestureRecognizer*)gestureRecognizer
+{
+    [networkControllerDelegate sendSetRecording:!isRecording isResponse:false];
+}
+
+#pragma mark - RecordStatusResponderDelegate
+
+- (void)remoteRecordStarted:(bool)value
+{
+    //
+    isRecording = value;
+    [self flashStatusText:[NSString stringWithFormat:@"Remote record %@", value ? @"STARTED" : @"STOPPED"]];
+}
+
+- (void)startRecord:(bool)value
+{
+    //
+    isRecording = value;
+    if (!value)
+    {
+        BOOL val =[_mediaOutput stopRecord];
+        NSLog(@"Stop %@", val ? @"OK" : @"FAIL");
+
+        [self flashStatusText:@"Recording stopped"];
+        [networkControllerDelegate sendSetRecording:isRecording isResponse:true];
+    }
+    else
+    {
+        //
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"yyyyMMdd_HHmmss"];
+        NSString *stringFromDate = [formatter stringFromDate:[NSDate date]];
+
+        //
+        NSString *documentsDirectory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[stringFromDate stringByAppendingPathExtension:@"m4v"]];
+
+        //
+        int width = [UIScreen mainScreen].bounds.size.height; // landscape
+        int height = [UIScreen mainScreen].bounds.size.width; // landscape
+        NSLog(@"Start with file %@", stringFromDate);
+
+        BOOL val = [_mediaOutput setupWithFilePath:filePath width:width height:height hasAudio:true sampleRate:8000 /*mStreamDescription.mSampleRate*/ channels:1/*mStreamDescription.mChannelsPerFrame*/ bitsPerChannel:16];
+        NSLog(@"Setup %@", val ? @"OK" : @"FAIL");
+        val = [_mediaOutput startRecord];
+        NSLog(@"Start record %@", val ? @"OK" : @"FAIL");
+
+        [self flashStatusText:@"Recording started"];
+        [networkControllerDelegate sendSetRecording:isRecording isResponse:true];
+
+    }
 }
 
 #pragma mark -

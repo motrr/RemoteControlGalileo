@@ -77,7 +77,8 @@ static unsigned int alignPower2(unsigned int value)
         [self renderYuvBuffer:yuvBuffer];
     });
     dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
-    dispatch_release(group);
+    group = nil;
+    //dispatch_release(group);
 }
 
 - (void)renderYuvBuffer:(YuvBuffer*)yuvBuffer

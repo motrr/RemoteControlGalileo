@@ -7,8 +7,10 @@
 #include "iLBCAudioEncoder.h"
 #include "iLBCAudioDecoder.h"
 
+#include "RingBuffer.h"
 #include "FIFOBuffer.h"
 #include "AudioDevice.h"
+#include <set>
 
 @interface AudioInputOutput ()
 {
@@ -18,11 +20,18 @@
     AudioEncoder *audioEncoder;
     AudioDecoder *audioDecoder;
     dispatch_queue_t sendQueue;
-    
+    dispatch_queue_t encodeQueue;
+
+    RingBuffer *recordRingBuffer;
     FIFOBuffer<uint8_t> *playbackBuffer;
     FIFOBuffer<uint8_t> *recordBuffer;
     AudioDevice *audioDevice;
-    NSLock *lock;
+    NSLock *playbackLock;
+    NSLock *recordLock;
+
+    std::set<__weak id<AudioInputDelegate> > mNotifiers;
+    void *mBuffer;
+    size_t mLenght;
 }
 
 @end
@@ -34,41 +43,45 @@
     if(self = [super init])
     {
         sendQueue = dispatch_queue_create("Audio send queue", DISPATCH_QUEUE_SERIAL);
-        
+        encodeQueue = dispatch_queue_create("Audio encode queue", DISPATCH_QUEUE_SERIAL);
+
         audioDepacketiser = [[RtpDepacketiser alloc] initWithPort:AUDIO_UDP_PORT payloadDescriptorLength:0];
         audioDepacketiser.delegate = self;
-        
+
         audioDecoder = new iLBCAudioDecoder();
         audioDecoder->setup();
-        
+
         // The remainder of the audio streaming pipeline objects
         audioPacketiser = new RtpPacketiser(103);
-        
+
+        int sampleRate = 8000;
         audioEncoder = new iLBCAudioEncoder();
-        audioEncoder->setup(8000, 1, 16);
-        
+        audioEncoder->setup(sampleRate, 1, 16);
+
         //
-        lock = [[NSLock alloc] init];
+        playbackLock = [[NSLock alloc] init];
+        recordLock = [[NSLock alloc] init];
         playbackBuffer = new FIFOBuffer<uint8_t>();
         recordBuffer = new FIFOBuffer<uint8_t>();
-        
+        recordRingBuffer = new RingBuffer(65536, 1); // lets have 64k ring buffer
+
         AudioDevice::PlaybackCallback playbackCallback(self, @selector(getPlaybackData: length:));
         AudioDevice::RecordBufferCallback recordBufferCallback(self, @selector(getRecordBuffer:));
-        AudioDevice::RecordStatusCallback recordStatusCallback(self, @selector(finishRecordingBuffer:));
-        
-        audioDevice = new AudioDevice(8000, 1, 16);
+        AudioDevice::RecordStatusCallback recordStatusCallback(self, @selector(finishRecordingBuffer: length: unusedLength:));
+
+        audioDevice = new AudioDevice(sampleRate, 1, 16);
         audioDevice->initialize();
         audioDevice->initializePlayback(playbackCallback, true);
         audioDevice->initializeRecord(recordStatusCallback, recordBufferCallback);
     }
-    
+
     return self;
 }
 
 - (void)dealloc
 {
     audioDepacketiser.delegate = nil;
-    
+
     [audioDepacketiser closeSocket];
     delete audioPacketiser;
     
@@ -76,9 +89,11 @@
     delete audioDecoder;
     
     delete audioDevice;
+    delete recordRingBuffer;
     delete recordBuffer;
     delete playbackBuffer;
-    if(sendQueue) dispatch_release(sendQueue);
+    if(sendQueue) sendQueue = 0;//dispatch_release(sendQueue);
+    if(encodeQueue) encodeQueue = 0;//dispatch_release(encodeQueue);
 }
 
 #pragma mark -
@@ -108,46 +123,92 @@
 }
 
 #pragma mark -
+#pragma mark AV capture and transmission
+
+- (void)addNotifier:(id<AudioInputDelegate>)notifier
+{
+    if(mNotifiers.find(notifier) == mNotifiers.end())
+        mNotifiers.insert(notifier);
+}
+
+- (void)removeNotifier:(id<AudioInputDelegate>)notifier
+{
+    if(mNotifiers.find(notifier) == mNotifiers.end())
+        mNotifiers.erase(notifier);
+}
+
+#pragma mark -
 
 - (size_t)getPlaybackData:(void*)data length:(size_t)length
 {
-    [lock lock];
+    [playbackLock lock];
     size_t size = playbackBuffer->pop((uint8_t*)data, length);
-    [lock unlock];
+    [playbackLock unlock];
     
     return size;
 }
 
 - (void*)getRecordBuffer:(size_t)length
 {
+//    return 0;
+    [recordLock lock];
     size_t position = recordBuffer->size();
     recordBuffer->push(length);
-    
-    return recordBuffer->begin() + position;
+
+    return recordBuffer->begin() + position;//*/
 }
 
-- (void)finishRecordingBuffer:(size_t)unusedLength
+
+- (void)finishRecordingBuffer:(void*)buffer length:(size_t)length unusedLength:(size_t)unusedLength
 {
-    recordBuffer->pop(unusedLength);
-    
-    // Wait for any packet sending to finish
-    dispatch_sync(sendQueue, ^{});
-    
-    size_t size = recordBuffer->size();
-    BufferPtr buffer = audioEncoder->encode(recordBuffer->begin(), size, true);
-    if(buffer.get())
+    // send buffer for recording
+    std::set<__weak id<AudioInputDelegate> >::iterator it = mNotifiers.begin();
+    std::set<__weak id<AudioInputDelegate> >::iterator iend = mNotifiers.end();
+    for(; it != iend; ++it)
     {
-        // clear processed bytes
-        recordBuffer->pop(size);
-        
-        // Send the packet
-        void *data = buffer->getData();
-        size = buffer->getSize();
-        
-        dispatch_async(sendQueue, ^{
-            audioPacketiser->sendFrame(data, size, true);
-        });
+        id<AudioInputDelegate> notifier = (*it);
+        [notifier didReceiveAudioBuffer:buffer length:length];
     }
+
+    // buffer will discard new samples when full
+    //recordRingBuffer->push(buffer, length);
+
+    // encode
+    /*size_t size = length;
+     BufferPtr buffer = audioEncoder->encode(buffer, size, true);
+     if(buffer.get())
+     {
+     }*/
+
+    //
+    recordBuffer->pop(unusedLength);
+    [recordLock unlock];
+
+    dispatch_async(encodeQueue, ^{
+
+        // Wait for any packet sending to finish
+        dispatch_sync(sendQueue, ^{});
+
+        [recordLock lock];
+        size_t size = recordBuffer->size();
+        BufferPtr buffer = audioEncoder->encode(recordBuffer->begin(), size, true);
+
+        if(buffer.get())
+        {
+            // Send the packet
+            void *data = buffer->getData();
+            size = buffer->getSize();
+
+            dispatch_async(sendQueue, ^{
+                audioPacketiser->sendFrame(data, size, true);
+            });
+
+            // clear processed bytes
+            recordBuffer->pop(size);
+        }
+
+        [recordLock unlock];
+    });
 }
 
 #pragma mark -
@@ -159,9 +220,9 @@
     
     if(buffer.get())
     {
-        [lock lock];
+        [playbackLock lock];
         playbackBuffer->push((uint8_t*)buffer->getData(), buffer->getSize());
-        [lock unlock];
+        [playbackLock unlock];
     }
 }
 

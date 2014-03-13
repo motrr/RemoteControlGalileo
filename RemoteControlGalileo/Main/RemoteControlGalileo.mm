@@ -13,6 +13,7 @@
 #import "UserInputHandler.h"
 #import "DockConnectorController.h"
 #import "VideoView.h"
+#import "MediaOutput.h"
 
 @implementation RemoteControlGalileo
 
@@ -27,18 +28,32 @@
         networkController = initNetworkController;
         
         // Create subcomponents
+        cameraInput         = [[CameraInput alloc] init];
+        mediaOutput         = [[MediaOutput alloc] init];
         videoInputOutput    = [[VideoInputOutput alloc] init];
         audioInputOutput    = [[AudioInputOutput alloc] init];
         videoViewController = [[VideoViewController alloc] init];
         userInputHandler    = [[UserInputHandler alloc] init];
         serialController    = [[DockConnectorController alloc] init];
-        
+
+        //
+        videoInputOutput.cameraInput = cameraInput;
+
+        //
+        [cameraInput addNotifier:videoInputOutput];
+        [cameraInput addNotifier:mediaOutput];
+        [audioInputOutput addNotifier:mediaOutput];
+
+        //
+        videoViewController.mediaOutput = mediaOutput;
+
         // Set delegates for responding to recieved packets
         [networkController setVideoConfigResponder:videoInputOutput];
         [networkController setAudioConfigResponder:audioInputOutput];
         [networkController setOrientationUpdateResponder:videoViewController];
         [networkController setGalileoControlResponder:serialController];
-        
+        [networkController setRecordStatusResponderDelegate:videoViewController];
+
         // Delegate packet sending to the network module
         [videoViewController setNetworkControllerDelegate:networkController];
         [userInputHandler    setNetworkControllerDelegate:networkController];
@@ -54,6 +69,7 @@
         
         // Start pinging
         //timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:networkModule selector:@selector(sendPing) userInfo:nil repeats:YES];
+
     }
     
     return self;

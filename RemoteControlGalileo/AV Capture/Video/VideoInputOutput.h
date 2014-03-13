@@ -5,6 +5,8 @@
 
 #include "Buffer.h"
 
+@class CameraInput;
+
 @protocol VideoInputOutputDelegate
 
 - (void)didDecodeYuvBuffer:(YuvBuffer*)yuvBuffer;
@@ -15,10 +17,11 @@ class VideoEncoder;
 class VideoDecoder;
 class RtpPacketiser;
 @class RtpDepacketiser;
+
 @interface VideoInputOutput : NSObject <VideoConfigResponderDelegate, OpenGLProcessorDelegate, CameraInputDelegate>
 {
     // Video pipeline objects
-    CameraInput *cameraInput;
+    __weak CameraInput *cameraInput;
     OpenGLProcessor *videoProcessor;
     VideoEncoder *videoEncoder;
     VideoDecoder *videoDecoder;
@@ -28,6 +31,7 @@ class RtpPacketiser;
     dispatch_queue_t sendQueue;
 }
 
-@property(nonatomic, weak) id delegate;
+@property (nonatomic, weak) id delegate;
+@property (nonatomic, weak) CameraInput *cameraInput;
 
 @end

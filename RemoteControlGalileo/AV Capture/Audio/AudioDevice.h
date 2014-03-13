@@ -3,6 +3,7 @@
 
 #include <AudioToolbox/AudioToolbox.h>
 #include "Function.h"
+#include <vector>
 
 // Usage: 
 // AudioDevice *device = new AudioDevice(11025, 1);
@@ -22,8 +23,8 @@
 // }
 //
 // Record callbacks:
-// RecordBufferCallback - used to get a data buffer for recording
-// RecordStatusCallback - is notification that last created buffer by buffer callback 
+// RecordBufferCallback - used to get a data buffer for recording, return 0 if you want audio device to use internal buffer
+// RecordStatusCallback - is notification that last created buffer by buffer callback
 // was filled, and in case of error, it specified what size of the buffer from the end wasn't used
 // so you can discard that data
 // void *AudioHandler::getRecordBuffer(size_t length)
@@ -45,7 +46,7 @@ public:
     // length == length in bytes!
     // todo: rename callbacks to something more suitable
     typedef Function<size_t(void *data, size_t length)> PlaybackCallback; // fill buffer, return size actualy filled
-    typedef Function<void(size_t unusedLength)> RecordStatusCallback; // notify about unused buffer part
+    typedef Function<void(void *data, size_t length, size_t unusedLength)> RecordStatusCallback; // notify about unused buffer part
     typedef Function<void*(size_t length)> RecordBufferCallback; // get buffer
 
 public:
@@ -75,6 +76,7 @@ protected:
     RecordBufferCallback mRecordBufferCallback;
     RecordStatusCallback mRecordStatusCallback;
     PlaybackCallback mPlaybackCallback;
+    std::vector<char> mRecordBuffer; // internal record buffer
 };
 
 #endif
