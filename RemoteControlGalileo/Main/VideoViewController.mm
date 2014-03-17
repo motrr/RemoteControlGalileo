@@ -30,6 +30,8 @@
 - (void)dealloc
 {
     labelRecordStatus = nil;
+    [timer invalidate];
+    timer = nil;
     NSLog(@"VideoViewController exiting");
 }
 
@@ -48,6 +50,8 @@
     labelRecordStatus.textColor = [UIColor whiteColor];
     labelRecordStatus.shadowColor = [UIColor blackColor];
     labelRecordStatus.shadowOffset = CGSizeMake(1, 1);
+    labelRecordStatus.userInteractionEnabled = NO;
+    labelRecordStatus.transform = CGAffineTransformMakeRotation(M_PI_2);
     [self.view addSubview:labelRecordStatus];
 
     UITapGestureRecognizer *doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onDoubleTap:)];
@@ -88,18 +92,58 @@
     //
     labelRecordStatus.text = text;
     [labelRecordStatus sizeToFit];
-
+    labelRecordStatus.center = CGPointMake(self.view.bounds.size.width - labelRecordStatus.frame.size.width * 0.5, labelRecordStatus.frame.size.height * 0.5);
     //
     labelRecordStatus.alpha = 1.f;
 
     [UIView animateWithDuration:2.f animations:^{
-        labelRecordStatus.alpha = 0;
+        labelRecordStatus.alpha = 0.5;
+    } completion:^(BOOL finished) {
+        labelRecordStatus.alpha = 0.f;
     }];
 }
 
 - (void)onDoubleTap:(UITapGestureRecognizer*)gestureRecognizer
 {
     [networkControllerDelegate sendSetRecording:!isRecording isResponse:false];
+}
+
+- (void)startOSDTimer
+{
+    if (timer)
+    {
+        [timer invalidate];
+    }
+
+    timer = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(onTimerTick:) userInfo:nil repeats:YES];
+    timerStartTime = [NSDate date];
+    calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    [timer fire];
+    [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+}
+
+- (void)stopOSDTimer
+{
+    [timer invalidate];
+    timer = nil;
+    timerStartTime = nil;
+    calendar = nil;
+}
+
+- (void)onTimerTick:(NSTimer *)timer
+{
+    NSDate *currentTime = [NSDate date];
+    showTimerColon = !showTimerColon;
+
+    NSDateComponents *components = [calendar components:NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond
+                                               fromDate:timerStartTime
+                                                 toDate:currentTime
+                                                options:0];
+    NSString *colon = showTimerColon ? @":" : @" ";
+    NSString *secondsFormat = components.second > 9 ? @"%i" : @"0%i";
+
+    NSString *timerText = [NSString stringWithFormat:@"Recording %i%@%@", components.minute, colon, [NSString stringWithFormat:secondsFormat,components.second]];
+    [self flashStatusText:timerText];
 }
 
 #pragma mark - RecordStatusResponderDelegate
@@ -109,6 +153,15 @@
     //
     isRecording = value;
     [self flashStatusText:[NSString stringWithFormat:@"Remote record %@", value ? @"STARTED" : @"STOPPED"]];
+
+    if (value)
+    {
+        [self startOSDTimer];
+    }
+    else
+    {
+        [self stopOSDTimer];
+    }
 }
 
 - (void)startRecord:(bool)value

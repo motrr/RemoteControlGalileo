@@ -479,6 +479,11 @@
 			attributes = {
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Swift Navigation";
+				TargetAttributes = {
+					302362D3158A8FEE00B2DF09 = {
+						DevelopmentTeam = 797Z2AUN37;
+					};
+				};
 			};
 			buildConfigurationList = 302362CE158A8FEE00B2DF09 /* Build configuration list for PBXProject "RemoteControlGalileo" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -649,6 +654,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Galileo-iOS-SDK/frameworks\"",
@@ -677,6 +683,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Galileo-iOS-SDK/frameworks\"",

@@ -1,7 +1,7 @@
 #ifndef VideoTxRxCommon_h
 #define VideoTxRxCommon_h
 
-#define FORCE_REAR_CAMERA YES
+#define FORCE_REAR_CAMERA NO
 //#define FORCE_LOW_QUALITY
 #define HAS_AUDIO_STREAMING
 

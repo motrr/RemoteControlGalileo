@@ -195,6 +195,9 @@
 
         if(buffer.get())
         {
+            // clear processed bytes
+            recordBuffer->pop(size);
+
             // Send the packet
             void *data = buffer->getData();
             size = buffer->getSize();
@@ -203,8 +206,6 @@
                 audioPacketiser->sendFrame(data, size, true);
             });
 
-            // clear processed bytes
-            recordBuffer->pop(size);
         }
 
         [recordLock unlock];

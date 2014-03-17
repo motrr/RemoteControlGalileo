@@ -23,6 +23,11 @@
     UIButton *recordButton;
     UILabel *labelRecordStatus;
     BOOL isRecording;
+
+    NSTimer *timer;
+    NSDate *timerStartTime;
+    NSCalendar *calendar;
+    BOOL showTimerColon;
 }
 
 @property (nonatomic, weak) id<NetworkControllerDelegate> networkControllerDelegate;

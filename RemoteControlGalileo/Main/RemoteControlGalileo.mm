@@ -99,6 +99,18 @@
 
 - (void)dealloc
 {
+    videoInputOutput.cameraInput = nil;
+    videoViewController.mediaOutput = nil;
+
+    networkController = nil;
+    cameraInput = nil;
+    mediaOutput = nil;
+    videoInputOutput = nil;
+    audioInputOutput = nil;
+    videoViewController = nil;
+    userInputHandler = nil;
+    serialController = nil;
+
     NSLog(@"Galileo exiting");
 }
 
