@@ -58,7 +58,8 @@
     
     // Initialise a navigation controller using the controller as the root
     self.navigationController = [[MyNavigationController alloc] initWithRootViewController: self.viewController];
-    [self.navigationController setNavigationBarHidden:YES];
+    [self.navigationController setNavigationBarHidden:NO];
+    self.navigationController.navigationBar.translucent = NO;
     
     // Initialise the window, matching the background to the device's colour since it is visible when rotating
     self.window = [[UIWindow alloc] initWithFrame:visibleScreenBounds];
@@ -67,7 +68,7 @@
     // Make status bar content light on iOS 7
     double iOSVersion = [[[UIDevice currentDevice] systemVersion] doubleValue];
     if(iOSVersion >= 7.0)
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     
     // Add the navigation controller's view to window and make window visible
     if(iOSVersion < 4.0)

@@ -33,37 +33,34 @@
     // Create the view for notifying the user of status, and possibly presenting a list of peers
     self.view = [[UIView alloc] init];
     CGRect viewFrame = [UIScreen mainScreen].applicationFrame;
-    CGPoint viewCenter = CGPointMake(viewFrame.size.width / 2.0,
-                                 viewFrame.size.height / 2.0);
-    
+//    CGPoint viewCenter = CGPointMake(viewFrame.size.width / 2.0,
+//                                 viewFrame.size.height / 2.0);
+
     // Get frame depending on format
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        viewFrame = CGRectMake(0,0, IPAD_SIZE_FRACTION*viewFrame.size.width,
-                                    IPAD_SIZE_FRACTION*viewFrame.size.height);
-        [self.view.layer setMasksToBounds:YES];
-        [self.view.layer setCornerRadius:5.0f];
+//    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+//        viewFrame = CGRectMake(0,0, IPAD_SIZE_FRACTION*viewFrame.size.width,
+//                                    IPAD_SIZE_FRACTION*viewFrame.size.height);
+//        [self.view.layer setMasksToBounds:YES];
+//        [self.view.layer setCornerRadius:5.0f];
+//        self.view.frame = viewFrame;
+//        self.view.center = viewCenter;
+//    }
+//    else {
         self.view.frame = viewFrame;
-        self.view.center = viewCenter;
-    }
-    else {
-        self.view.frame = viewFrame;
-    }
-    
+//    }
+
     // Create title bar
-    UINavigationBar* navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0,
-                                                                                      viewFrame.size.width,
-                                                                                      TITLE_BAR_HEIGHT )];
-    UINavigationItem* title = [[UINavigationItem alloc] initWithTitle:@"Galileo Peer List"];
-    [navigationBar setItems: [NSArray arrayWithObject:title]];
-    [self.view addSubview:navigationBar];
-    
+//    UINavigationBar* navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0,
+//                                                                                      viewFrame.size.width,
+//                                                                                      TITLE_BAR_HEIGHT )];
+//    UINavigationItem* title = [[UINavigationItem alloc] initWithTitle:@"Galileo Peer List"];
+//    [navigationBar setItems: [NSArray arrayWithObject:title]];
+//    [self.view addSubview:navigationBar];
+
     
     // Create table with list of peers
-    tableView = [[UITableView alloc] initWithFrame:CGRectMake(
-                                        0,
-                                        TITLE_BAR_HEIGHT,
-                                        viewFrame.size.width,
-                                        viewFrame.size.height - TITLE_BAR_HEIGHT - TOOLBAR_HEIGHT )];
+    tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
+    tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [tableView setDataSource:self];
     [tableView setDelegate:self];
     [self.view addSubview: tableView];

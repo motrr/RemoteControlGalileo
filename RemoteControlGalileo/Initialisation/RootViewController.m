@@ -26,6 +26,7 @@
 - (void)loadView
 {
     // Create the view which will contain the lobby view
+    self.title = @"Galileo Peer List";
     self.wantsFullScreenLayout = YES;
     self.view = [[UIImageView alloc]
                  initWithFrame:[UIScreen mainScreen].applicationFrame];
@@ -44,8 +45,16 @@
     lobby = [[GKLobbyViewController alloc] initWithSessionManager:manager connectionStateResponder:self];
     
     // Add lobby as subview
+    lobby.view.frame = self.view.bounds;
+    lobby.view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview: lobby.view];
     
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
