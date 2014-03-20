@@ -22,6 +22,8 @@
     {
         isLocked = NO;
         isRotated180 = NO;
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDeviceOrientationChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
     }
     
     return self;
@@ -29,6 +31,7 @@
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     labelRecordStatus = nil;
     [timer invalidate];
     timer = nil;
@@ -39,10 +42,14 @@
 {
     // Create the view which will show the received video
     self.wantsFullScreenLayout = YES;
-    self.view = [[VideoView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    videoView = [[VideoView alloc] initWithFrame:self.view.bounds];
+    videoView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    videoView.layer.magnificationFilter = kCAFilterTrilinear;
+    [self.view addSubview:videoView];
 
-    //[self.view.layer setMagnificationFilter:kCAFilterTrilinear];
-    [self.view setBackgroundColor:[UIColor blackColor]];
+    self.view.backgroundColor = [UIColor blackColor];
+    videoView.backgroundColor = [UIColor blackColor];
 
     //
     labelRecordStatus = [[UILabel alloc] init];
@@ -51,12 +58,21 @@
     labelRecordStatus.shadowColor = [UIColor blackColor];
     labelRecordStatus.shadowOffset = CGSizeMake(1, 1);
     labelRecordStatus.userInteractionEnabled = NO;
-    labelRecordStatus.transform = CGAffineTransformMakeRotation(M_PI_2);
     [self.view addSubview:labelRecordStatus];
+    [self adjustLabelTransform];
+    [self adjustLabelPosition];
 
     UITapGestureRecognizer *doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onDoubleTap:)];
     doubleTapGestureRecognizer.numberOfTapsRequired = 2;
     [self.view addGestureRecognizer:doubleTapGestureRecognizer];
+}
+
+- (VideoView *)videoView
+{
+    if (!self.isViewLoaded)
+        [self loadView];
+    
+    return videoView;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -98,7 +114,8 @@
     //
     labelRecordStatus.text = text;
     [labelRecordStatus sizeToFit];
-    labelRecordStatus.center = CGPointMake(self.view.bounds.size.width - labelRecordStatus.frame.size.width * 0.5, labelRecordStatus.frame.size.height * 0.5);
+    [self adjustLabelPosition];
+
     //
     labelRecordStatus.alpha = 1.f;
 
@@ -152,6 +169,69 @@
     [self flashStatusText:timerText];
 }
 
+- (void)adjustLabelTransform
+{
+    CGAffineTransform transform;
+
+    switch ([UIDevice currentDevice].orientation)
+    {
+        case UIDeviceOrientationLandscapeLeft:
+            transform = CGAffineTransformMakeRotation(M_PI_2);
+            break;
+
+        case UIDeviceOrientationLandscapeRight:
+            transform = CGAffineTransformMakeRotation(-M_PI_2);
+            break;
+
+        case UIDeviceOrientationPortraitUpsideDown:
+            transform = CGAffineTransformMakeRotation(M_PI);
+            break;
+
+        case UIDeviceOrientationPortrait:
+            transform = CGAffineTransformIdentity;
+            break;
+
+        default: return;//skip any update
+            
+    }
+
+    labelRecordStatus.transform = transform;
+}
+
+- (void)adjustLabelPosition
+{
+    CGPoint center;
+
+    switch ([UIDevice currentDevice].orientation)
+    {
+        case UIDeviceOrientationLandscapeLeft:
+            center = CGPointMake(self.view.bounds.size.width - labelRecordStatus.frame.size.width * 0.5, labelRecordStatus.frame.size.height * 0.5);
+            break;
+
+        case UIDeviceOrientationLandscapeRight:
+            center = CGPointMake(labelRecordStatus.frame.size.width * 0.5, self.view.bounds.size.height - labelRecordStatus.frame.size.height * 0.5);
+            break;
+
+        case UIDeviceOrientationPortraitUpsideDown:
+            center = CGPointMake(self.view.bounds.size.width - labelRecordStatus.frame.size.width * 0.5, self.view.bounds.size.height - labelRecordStatus.frame.size.height * 0.5);
+            break;
+
+        case UIDeviceOrientationPortrait:
+            center = CGPointMake(labelRecordStatus.frame.size.width * 0.5, labelRecordStatus.frame.size.height * 0.5);
+            break;
+
+        default: return;//skip any update
+
+    }
+    labelRecordStatus.center = center;
+}
+
+- (void)onDeviceOrientationChange:(NSNotification *)notification
+{
+    [self adjustLabelTransform];
+    [self adjustLabelPosition];
+}
+
 #pragma mark - RecordStatusResponderDelegate
 
 - (void)remoteRecordStarted:(bool)value
@@ -176,7 +256,7 @@
     isRecording = value;
     if (!value)
     {
-        BOOL val =[_mediaOutput stopRecord];
+        BOOL val = [_mediaOutput stopRecord];
         NSLog(@"Stop %@", val ? @"OK" : @"FAIL");
 
         [self flashStatusText:@"Recording stopped"];
@@ -250,7 +330,7 @@
             isRotated180 = YES;
             [UIView animateWithDuration: ROTATION_ANIMATION_DURATION
                              animations:^ {
-                                 self.view.transform = CGAffineTransformMakeRotation(M_PI);
+                                 videoView.transform = CGAffineTransformMakeRotation(M_PI);
                              }
              ];
         }
@@ -264,7 +344,7 @@
             isRotated180 = YES;
             [UIView animateWithDuration: ROTATION_ANIMATION_DURATION
                              animations:^ {
-                                 self.view.transform = CGAffineTransformMakeRotation(-M_PI);
+                                 videoView.transform = CGAffineTransformMakeRotation(-M_PI);
                              }
              ];
         }
@@ -287,7 +367,7 @@
             isRotated180 = NO;
             [UIView animateWithDuration: ROTATION_ANIMATION_DURATION
                              animations:^ {
-                                 self.view.transform = CGAffineTransformIdentity;
+                                 videoView.transform = CGAffineTransformIdentity;
                              }
              ];
         }

@@ -64,7 +64,7 @@
         // User input handler needs a view to get touch responses from
         [userInputHandler setViewForGestureInput:videoViewController.view];
         
-        VideoView *videoView = (VideoView*)videoViewController.view;
+        VideoView *videoView = videoViewController.videoView;
         videoInputOutput.delegate = videoView;
         
         // Start pinging

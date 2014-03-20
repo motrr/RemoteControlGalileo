@@ -9,6 +9,8 @@
 
 #define NOTIFICATION_TOGGLE_RECORDING_MODE @"NOTIFICATION_TOGGLE_RECORDING_MODE"
 
+@class VideoView;
+
 @interface VideoViewController : UIViewController <OrientationUpdateResponderDelegate, RecordStatusResponderDelegate>
 {
     // Keep track of local and remote orientation
@@ -28,9 +30,13 @@
     NSDate *timerStartTime;
     NSCalendar *calendar;
     BOOL showTimerColon;
+
+    VideoView *videoView;
 }
 
 @property (nonatomic, weak) id<NetworkControllerDelegate> networkControllerDelegate;
 @property (nonatomic, weak) MediaOutput *mediaOutput;
+
+- (VideoView *)videoView;
 
 @end
