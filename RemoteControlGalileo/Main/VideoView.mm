@@ -220,7 +220,7 @@ static unsigned int alignPower2(unsigned int value)
                 
                 // source video is landscape right, so taking this into account when calculating UVs
                 GL::calculateUVs(GL::CM_SCALE_ASPECT_TO_FILL, ww / (float)h,
-                                 size.height / size.width, 1.f, textureUvs, nw, nh);//*/
+                                 size.height / size.width, 1.0f, textureUvs, nw, nh);//*/
                 
                 // rotate UVs
                 GL::rotateUVs90(textureUvs);

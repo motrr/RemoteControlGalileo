@@ -107,7 +107,7 @@
 
 - (void)zoomLevelUpdateRecieved:(NSNumber *)scaleFactor
 {
-    videoProcessor.zoomFactor = 1.0 / [scaleFactor floatValue];
+    videoProcessor.zoomFactor = 1.f / [scaleFactor floatValue];
 }
 
 #pragma mark -

@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 #import "RootViewController.h"
+#import <AVFoundation/AVFoundation.h>
+#import <AssetsLibrary/AssetsLibrary.h>
 
 // Colour of the iDevice, blackColor or whiteColor
 #define DEVICE_COLOUR blackColor
@@ -77,7 +79,43 @@
         self.window.rootViewController = self.navigationController;
     
     [self.window makeKeyAndVisible];
+
+    // request permissions after ui appear
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self requestPermissions];
+    });
 }
 
+- (void)requestPermissions
+{
+    // camera
+    if([[AVCaptureDevice class] respondsToSelector:@selector(requestAccessForMediaType:completionHandler:)])
+    {
+        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+
+            if (!granted)
+                NSLog(@"User will not be able to use the camera!");
+        }];
+    }
+
+    // microphone
+    if([[AVCaptureDevice class] respondsToSelector:@selector(requestAccessForMediaType:completionHandler:)])
+    {
+        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
+
+            if (!granted)
+                NSLog(@"User will not be able to use the microphone!");
+        }];
+    }
+
+    // camera roll
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    [library enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+        // nothing
+        } failureBlock:^(NSError *error) {
+            NSLog(@"User will not be able to use the camera roll!");
+    }];
+    
+}
 
 @end

@@ -296,8 +296,9 @@
     else {
         newScale = scaleFromPreviousGesture * sender.scale;
     }
-    
-    [_networkControllerDelegate sendZoomFactor: [NSNumber numberWithFloat: newScale ]];
+
+    NSLog(@"New scale %f", newScale);
+    [_networkControllerDelegate sendZoomFactor: [NSNumber numberWithFloat: 1.f / newScale ]];
     
     // At the end of the gesture, store the scale
     if (sender.state == UIGestureRecognizerStateEnded) {
