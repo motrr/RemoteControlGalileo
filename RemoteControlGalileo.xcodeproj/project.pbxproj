@@ -200,6 +200,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				309AAC83158AF9CF007015A9 /* AssetsLibrary.framework in Frameworks */,
 				83619CC9178ABFBF00B9EB20 /* CoreBluetooth.framework in Frameworks */,
 				830C56BB177934230058015E /* ExternalAccessory.framework in Frameworks */,
 				830C56B91779341B0058015E /* libxml2.dylib in Frameworks */,
@@ -208,7 +209,6 @@
 				309AAC8B158AFA18007015A9 /* CoreVideo.framework in Frameworks */,
 				309AAC87158AF9EC007015A9 /* OpenGLES.framework in Frameworks */,
 				309AAC85158AF9D9007015A9 /* QuartzCore.framework in Frameworks */,
-				309AAC83158AF9CF007015A9 /* AssetsLibrary.framework in Frameworks */,
 				309AAC81158AF9C4007015A9 /* AVFoundation.framework in Frameworks */,
 				309AAC7F158AF9A9007015A9 /* CoreMedia.framework in Frameworks */,
 				302362DD158A8FEE00B2DF09 /* CoreGraphics.framework in Frameworks */,
@@ -654,7 +654,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Galileo-iOS-SDK/frameworks\"",
@@ -674,6 +674,7 @@
 					"\"$(SRCROOT)/vpx/lib\"",
 				);
 				PRODUCT_NAME = RemoteControlGalileo;
+				PROVISIONING_PROFILE = "970506EA-9D09-4AA9-A883-BD607EF8141C";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
@@ -683,7 +684,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Galileo-iOS-SDK/frameworks\"",
@@ -703,6 +704,7 @@
 					"\"$(SRCROOT)/vpx/lib\"",
 				);
 				PRODUCT_NAME = RemoteControlGalileo;
+				PROVISIONING_PROFILE = "970506EA-9D09-4AA9-A883-BD607EF8141C";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
