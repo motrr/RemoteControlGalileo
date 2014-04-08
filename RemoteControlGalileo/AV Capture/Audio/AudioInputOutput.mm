@@ -1,9 +1,6 @@
 #import "AudioInputOutput.h"
 #import "VideoTxRxCommon.h"
 
-#import "RtpDepacketiser.h"
-#include "RtpPacketiser.h"
-
 #include "iLBCAudioEncoder.h"
 #include "iLBCAudioDecoder.h"
 
@@ -12,11 +9,12 @@
 #include "AudioDevice.h"
 #include <set>
 
+#import "RTPSessionEx.h"
+
 @interface AudioInputOutput ()
 {
-    RtpDepacketiser *audioDepacketiser;
-    RtpPacketiser *audioPacketiser;
-    
+    RTPSessionEx *rtpSession;
+
     AudioEncoder *audioEncoder;
     AudioDecoder *audioDecoder;
     dispatch_queue_t sendQueue;
@@ -45,14 +43,10 @@
         sendQueue = dispatch_queue_create("Audio send queue", DISPATCH_QUEUE_SERIAL);
         encodeQueue = dispatch_queue_create("Audio encode queue", DISPATCH_QUEUE_SERIAL);
 
-        audioDepacketiser = [[RtpDepacketiser alloc] initWithPort:AUDIO_UDP_PORT payloadDescriptorLength:0];
-        audioDepacketiser.delegate = self;
-
         audioDecoder = new iLBCAudioDecoder();
         audioDecoder->setup();
 
         // The remainder of the audio streaming pipeline objects
-        audioPacketiser = new RtpPacketiser(103);
 
         int sampleRate = 8000;
         audioEncoder = new iLBCAudioEncoder();
@@ -80,11 +74,6 @@
 
 - (void)dealloc
 {
-    audioDepacketiser.delegate = nil;
-
-    [audioDepacketiser closeSocket];
-    delete audioPacketiser;
-    
     delete audioEncoder;
     delete audioDecoder;
     
@@ -107,18 +96,17 @@
 
     // Prepare the packetiser for sending
     std::string address([addressString UTF8String], [addressString length]);
-    audioPacketiser->configure(address, AUDIO_UDP_PORT);
-    
+
+    // Prepare RTP library
+    rtpSession = RTPSessionEx::CreateInstance(50, 20000, address, AUDIO_UDP_PORT);
+
+    RTPSessionEx::DepacketizerCallback depacketizerCallback(self, @selector(processEncodedData: length:));
+    rtpSession->SetDepacketizerCallback(depacketizerCallback);
+
+    // Begin video capture and transmission
+
     //
     audioDevice->start();
-    
-    // Create socket to listen out for video transmission
-    [audioDepacketiser openSocket];
-
-    // Start listening in the background
-    [NSThread detachNewThreadSelector:@selector(startListening)
-                             toTarget:audioDepacketiser
-                           withObject:nil];
 #endif
 }
 
@@ -170,16 +158,6 @@
         [notifier didReceiveAudioBuffer:buffer length:length];
     }
 
-    // buffer will discard new samples when full
-    //recordRingBuffer->push(buffer, length);
-
-    // encode
-    /*size_t size = length;
-     BufferPtr buffer = audioEncoder->encode(buffer, size, true);
-     if(buffer.get())
-     {
-     }*/
-
     //
     recordBuffer->pop(unusedLength);
     [recordLock unlock];
@@ -203,7 +181,7 @@
             size = buffer->getSize();
 
             dispatch_async(sendQueue, ^{
-                audioPacketiser->sendFrame(data, size, true);
+                rtpSession->SendMultiPacket(data, size,  1);
             });
 
         }
@@ -215,10 +193,10 @@
 #pragma mark -
 #pragma mark RtpDepacketiserDelegate methods
 
-- (void)processEncodedData:(NSData*)data
+- (void)processEncodedData:(void *)data length:(size_t)length
 {
-    BufferPtr buffer = audioDecoder->decode([data bytes], [data length]);
-    
+    BufferPtr buffer = audioDecoder->decode(data, length);
+
     if(buffer.get())
     {
         [playbackLock lock];

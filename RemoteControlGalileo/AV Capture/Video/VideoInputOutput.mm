@@ -2,10 +2,11 @@
 
 #include "Vp8VideoEncoder.h"
 #include "Vp8VideoDecoder.h"
-#include "Vp8RtpPacketiser.h"
-#include "Vp8RtpDepacketiser.h"
 #include "VideoTxRxCommon.h"
 #include "Hardware.h"
+
+#import "RTPSessionEx.h"
+#import "Vp8RTPExtension.h"
 
 @implementation VideoInputOutput
 
@@ -16,7 +17,7 @@
     if(self = [super init])
     {
         sendQueue = dispatch_queue_create("Video send queue", DISPATCH_QUEUE_SERIAL);
-        
+
         int width, height, bitrate;
 #   ifdef FORCE_LOW_QUALITY
         bool lowPerformanceDevice = true;
@@ -49,17 +50,10 @@
         videoProcessor = [[OpenGLProcessor alloc] init];
         [videoProcessor setOutputWidth:width height:height];
         videoProcessor.delegate = self;
-                
-        // The remainder of the video streaming pipeline objects
-        videoPacketiser = new Vp8RtpPacketiser(96);
         
         videoEncoder = new Vp8VideoEncoder();
         videoEncoder->setup(width, height, bitrate, MAX_KEYFRAME_INTERVAL);
-        
-        // Add the view to the depacketiser so it can display completed frames upon it
-        videoDepacketiser = [[Vp8RtpDepacketiser alloc] initWithPort:VIDEO_UDP_PORT];
-        videoDepacketiser.delegate = self;
-        
+
         videoDecoder = new Vp8VideoDecoder();
         videoDecoder->setup();
     }
@@ -69,16 +63,12 @@
 
 - (void)dealloc
 {
-    videoDepacketiser.delegate = nil;
     [cameraInput removeNotifier:self];
     videoProcessor.delegate = nil;
     
-    [videoDepacketiser closeSocket];
-    delete videoPacketiser;
-    
     delete videoDecoder;
     delete videoEncoder;
-    if(sendQueue) sendQueue = nil;//dispatch_release(sendQueue);
+    sendQueue = nil;//if(sendQueue) dispatch_release(sendQueue);
 }
 
 #pragma mark -
@@ -91,18 +81,16 @@
     
     // Prepare the packetiser for sending
     std::string address([addressString UTF8String], [addressString length]);
-    videoPacketiser->configure(address, VIDEO_UDP_PORT);
+
+    // Prepare RTP library
+    rtpSession = RTPSessionEx::CreateInstance(50, RTP_TIMEBASE * CAPTURE_FRAMES_PER_SECOND, address, VIDEO_UDP_PORT);
+    rtpSession->SetRTPExtensionHelper(new Vp8RTPExtensionHelper());
     
+    RTPSessionEx::DepacketizerCallback depacketizerCallback(self, @selector(processEncodedData: length:));
+    rtpSession->SetDepacketizerCallback(depacketizerCallback);
+
     // Begin video capture and transmission
     [cameraInput startCapture];
-
-    // Create socket to listen out for video transmission
-    [videoDepacketiser openSocket];
-
-    // Start listening in the background
-    [NSThread detachNewThreadSelector:@selector(startListening)
-                             toTarget:videoDepacketiser
-                           withObject:nil];
 }
 
 - (void)zoomLevelUpdateRecieved:(NSNumber *)scaleFactor
@@ -155,7 +143,7 @@
         
         // Send the packet
         dispatch_async(sendQueue, ^{
-            videoPacketiser->sendFrame(data, size, isKey);
+            rtpSession->SendMultiPacket(data, size, isKey ? FLAG_VP8_KEYFRAME : 0);
         });
     }
 }
@@ -163,10 +151,12 @@
 #pragma mark -
 #pragma mark RtpDepacketiserDelegate methods
 
-- (void)processEncodedData:(NSData*)data
+- (void)processEncodedData:(void *)data length:(size_t)length
 {
+    // todo: wrap with dispatch queue (check if its better)
+    
     // Decode data into a pixel buffer
-    YuvBufferPtr yuvBuffer = videoDecoder->decodeYUV((unsigned char*)[data bytes], [data length]);
+    YuvBufferPtr yuvBuffer = videoDecoder->decodeYUV((unsigned char*)data, length);
     YuvBuffer *buffer = yuvBuffer.get();
     
     if(buffer)

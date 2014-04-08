@@ -10,6 +10,7 @@
 
 class Shader;
 @class OnscreenFBO;
+
 @interface VideoView : UIView
 {
     // On screen frame buffer to display frames

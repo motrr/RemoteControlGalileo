@@ -6,8 +6,7 @@ BUILD_DIR="`pwd`/build"
 LIB_DIR="`pwd`/lib"
 INCLUDE_DIR="`pwd`/include"
 
-XCODE_DIR="/Applications/Xcode4.app/"
-SDK_DIR="${XCODE_DIR}Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/"
+SDK_DIR="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/"
 
 # Compile for each of the four architecures (i386 for simulator)
 
@@ -21,21 +20,21 @@ SDK_DIR="${XCODE_DIR}Contents/Developer/Platforms/iPhoneOS.platform/Developer/SD
 cd $ROOT_DIR
 mkdir -p $BUILD_DIR/armv7
 cd $BUILD_DIR/armv7
-$SRC_DIR/configure --target=armv7-darwin-gcc  --sdk-path=${XCODE_DIR}/Contents/Developer/Platforms/iPhoneOS.platform/Developer --libc=$SDK_DIR
+$SRC_DIR/configure --target=armv7-darwin-gcc  --sdk-path=/Applications/Xcode4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer --libc=$SDK_DIR
 make 
 
 # We skip armv7s because it isn't supported yet by vp8
 #cd $ROOT_DIR
 #mkdir -p $BUILD_DIR/armv7s
 #cd $BUILD_DIR/armv7s
-#$SRC_DIR/configure --target=armv7s-darwin-gcc  --sdk-path=${XCODE_DIR}Contents/Developer/Platforms/iPhoneOS.platform/Developer --libc=$SDK_DIR
+#$SRC_DIR/configure --target=armv7s-darwin-gcc  --sdk-path=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer --libc=$SDK_DIR
 #make 
 
 #We skip this becuase it doesn't seem to build - complains about optimisation level
 #cd $ROOT_DIR
 #mkdir -p $BUILD_DIR/i386 
 #cd $BUILD_DIR/i386
-#$SRC_DIR/configure --target=x86-darwin9-gcc  --sdk-path=${XCODE_DIR}Contents/Developer/Platforms/iPhoneOS.platform/Developer --libc=$SDK_DIR
+#$SRC_DIR/configure --target=x86-darwin9-gcc  --sdk-path=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer --libc=$SDK_DIR
 #make
 
 # Combine into universal binary

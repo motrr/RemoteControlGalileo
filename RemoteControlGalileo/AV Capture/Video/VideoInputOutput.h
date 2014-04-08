@@ -13,9 +13,9 @@
 
 @end
 
+class RTPSessionEx;
 class VideoEncoder;
 class VideoDecoder;
-class RtpPacketiser;
 @class RtpDepacketiser;
 
 @interface VideoInputOutput : NSObject <VideoConfigResponderDelegate, OpenGLProcessorDelegate, CameraInputDelegate>
@@ -25,9 +25,9 @@ class RtpPacketiser;
     OpenGLProcessor *videoProcessor;
     VideoEncoder *videoEncoder;
     VideoDecoder *videoDecoder;
-    RtpPacketiser *videoPacketiser;
-    RtpDepacketiser *videoDepacketiser;
-    
+
+    RTPSessionEx *rtpSession;
+
     dispatch_queue_t sendQueue;
 }
 
