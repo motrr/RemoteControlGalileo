@@ -24,6 +24,7 @@
     // Button for recording
     UIButton *recordButton;
     UILabel *labelRecordStatus;
+    UILabel *labelRTCPStatus;
     BOOL isRecording;
 
     NSTimer *timer;
@@ -32,6 +33,9 @@
     BOOL showTimerColon;
 
     VideoView *videoView;
+
+    NSString *osdVideoDescription;
+    NSString *osdAudioDescription;
 }
 
 @property (nonatomic, weak) id<NetworkControllerDelegate> networkControllerDelegate;

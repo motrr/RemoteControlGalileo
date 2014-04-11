@@ -40,14 +40,16 @@ class RTPSessionEx : public jrtplib::RTPSession
 {
 public:
     typedef Function<void(void *data, size_t length)> DepacketizerCallback;
-    
+    typedef Function<void(jrtplib::RTCPPacket *packet)> RTCPHandleCallback;
+
     //
     ~RTPSessionEx();
 
     static RTPSessionEx *CreateInstance(unsigned char payloadType, int timestampIncrement, 
                                                const std::string &destAddress, int portBase);
     
-    void SetDepacketizerCallback(DepacketizerCallback callback);
+    void SetDepacketizerCallback(DepacketizerCallback callback) { mDepacketizerCallback = callback; }
+    void SetRTCPHandleCallback(RTCPHandleCallback callback) { mRTCPHandleCallback = callback; }
     void SetRTPExtensionHelper(RTPExtensionHelper *helper); // will take over helper
     int SendMultiPacket(void *data, size_t size, unsigned int flags);
     
@@ -57,6 +59,7 @@ protected:
     virtual void OnPollThreadStep();
     void ProcessRTPPacket(jrtplib::RTPSourceData *srcdat, jrtplib::RTPPacket *rtppack);
     void InsertPacketIntoFrame(jrtplib::RTPPacket *rtppack);
+	virtual void OnAPPPacket(jrtplib::RTCPAPPPacket *apppacket, const jrtplib::RTPTime &receivetime, const jrtplib::RTPAddress *senderaddress);
 
     RTPExtensionHelper *mRTPExtensionHelper;
     unsigned char mPayloadType;
@@ -81,6 +84,7 @@ protected:
     
     //
     DepacketizerCallback mDepacketizerCallback;
+    RTCPHandleCallback mRTCPHandleCallback;
 };
 
 #endif

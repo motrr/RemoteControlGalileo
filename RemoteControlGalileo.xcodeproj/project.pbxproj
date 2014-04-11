@@ -18,7 +18,6 @@
 		309AAC85158AF9D9007015A9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309AAC84158AF9D9007015A9 /* QuartzCore.framework */; };
 		309AAC87158AF9EC007015A9 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309AAC86158AF9EC007015A9 /* OpenGLES.framework */; };
 		309AAC8B158AFA18007015A9 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309AAC8A158AFA18007015A9 /* CoreVideo.framework */; };
-		309AAC8D158AFA2F007015A9 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309AAC8C158AFA2F007015A9 /* GameKit.framework */; };
 		6907591318ABC42200BEF9B2 /* Hardware.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6907591118ABC42200BEF9B2 /* Hardware.cpp */; };
 		690EE76C1772FAC4005C4451 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 690EE76B1772FAC3005C4451 /* AudioToolbox.framework */; };
 		693E8F71176234FB007FD105 /* libilbc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 693E8F70176234FB007FD105 /* libilbc.a */; };
@@ -110,6 +109,7 @@
 		FA0EDE9418E4A6C7008407B1 /* rtpudpv6transmitter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0EDE6B18E4A6C7008407B1 /* rtpudpv6transmitter.cpp */; };
 		FA4A801C18F3723F00E9DD37 /* RtpSessionEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA4A801B18F3723F00E9DD37 /* RtpSessionEx.cpp */; };
 		FA99DAD318CCF45300C15898 /* MediaOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA99DAD218CCF45300C15898 /* MediaOutput.mm */; };
+		FADA235218F7191900961C35 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADA235118F7191900961C35 /* GameKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -128,7 +128,6 @@
 		309AAC86158AF9EC007015A9 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		309AAC88158AFA04007015A9 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		309AAC8A158AFA18007015A9 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
-		309AAC8C158AFA2F007015A9 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		6907591118ABC42200BEF9B2 /* Hardware.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Hardware.cpp; sourceTree = "<group>"; };
 		6907591218ABC42200BEF9B2 /* Hardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Hardware.h; sourceTree = "<group>"; };
 		690EE76B1772FAC3005C4451 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -317,11 +316,14 @@
 		FA4A801B18F3723F00E9DD37 /* RtpSessionEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RtpSessionEx.cpp; path = "AV Capture/RtpSessionEx.cpp"; sourceTree = "<group>"; };
 		FA4A801D18F3930A00E9DD37 /* rtpconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rtpconfig.h; path = ../../../.Trash/jrtplib/include/rtpconfig.h; sourceTree = "<group>"; };
 		FA4A801E18F3930A00E9DD37 /* rtptypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rtptypes.h; path = ../../../.Trash/jrtplib/include/rtptypes.h; sourceTree = "<group>"; };
+		FA4A801F18F56D7600E9DD37 /* RTCPAPPVideoDescription.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RTCPAPPVideoDescription.h; path = "AV Capture/RTCPAPPVideoDescription.h"; sourceTree = "<group>"; };
+		FA4A802018F5E7A300E9DD37 /* RTCPAPPAudioDescription.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RTCPAPPAudioDescription.h; path = "AV Capture/RTCPAPPAudioDescription.h"; sourceTree = "<group>"; };
 		FA99DAD118CCF45300C15898 /* MediaOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaOutput.h; sourceTree = "<group>"; };
 		FA99DAD218CCF45300C15898 /* MediaOutput.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MediaOutput.mm; sourceTree = "<group>"; };
 		FAAA341918D24FE600ECF869 /* Atomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atomic.h; sourceTree = "<group>"; };
 		FAAA341A18D24FE600ECF869 /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
 		FAAA341B18D24FE600ECF869 /* RingBufferImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBufferImpl.h; sourceTree = "<group>"; };
+		FADA235118F7191900961C35 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -329,13 +331,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FADA235218F7191900961C35 /* GameKit.framework in Frameworks */,
 				FA0EDE1118E49EB7008407B1 /* libc++.dylib in Frameworks */,
 				309AAC83158AF9CF007015A9 /* AssetsLibrary.framework in Frameworks */,
 				83619CC9178ABFBF00B9EB20 /* CoreBluetooth.framework in Frameworks */,
 				830C56BB177934230058015E /* ExternalAccessory.framework in Frameworks */,
 				830C56B91779341B0058015E /* libxml2.dylib in Frameworks */,
 				690EE76C1772FAC4005C4451 /* AudioToolbox.framework in Frameworks */,
-				309AAC8D158AFA2F007015A9 /* GameKit.framework in Frameworks */,
 				309AAC8B158AFA18007015A9 /* CoreVideo.framework in Frameworks */,
 				309AAC87158AF9EC007015A9 /* OpenGLES.framework in Frameworks */,
 				309AAC85158AF9D9007015A9 /* QuartzCore.framework in Frameworks */,
@@ -380,6 +382,7 @@
 		302362D7158A8FEE00B2DF09 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FADA235118F7191900961C35 /* GameKit.framework */,
 				FA0EDE1018E49EB7008407B1 /* libc++.dylib */,
 				693E8F7217623506007FD105 /* libvpx.a */,
 				693E8F70176234FB007FD105 /* libilbc.a */,
@@ -388,7 +391,6 @@
 				830C56B6177932A90058015E /* GalileoControl.framework */,
 				830C56BA177934230058015E /* ExternalAccessory.framework */,
 				690EE76B1772FAC3005C4451 /* AudioToolbox.framework */,
-				309AAC8C158AFA2F007015A9 /* GameKit.framework */,
 				309AAC8A158AFA18007015A9 /* CoreVideo.framework */,
 				309AAC88158AFA04007015A9 /* GLKit.framework */,
 				309AAC86158AF9EC007015A9 /* OpenGLES.framework */,
@@ -444,6 +446,8 @@
 				69C1A3F917858BE900E284F7 /* VideoTxRxCommon.h */,
 				69AC29A618EB77DA006D3E65 /* RtpSessionEx.h */,
 				FA4A801B18F3723F00E9DD37 /* RtpSessionEx.cpp */,
+				FA4A801F18F56D7600E9DD37 /* RTCPAPPVideoDescription.h */,
+				FA4A802018F5E7A300E9DD37 /* RTCPAPPAudioDescription.h */,
 			);
 			name = "AV Capture";
 			path = RemoteControlGalileo;
@@ -900,7 +904,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "D0E2D897-5E97-43C5-9658-1595EA127537";
 				SDKROOT = iphoneos;
@@ -930,7 +934,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "D0E2D897-5E97-43C5-9658-1595EA127537";
 				SDKROOT = iphoneos;
@@ -963,11 +967,11 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/ilbc/lib",
 					"$(PROJECT_DIR)/vpx/lib",
-					"$(PROJECT_DIR)/jrtplib/lib",
 				);
 				PRODUCT_NAME = RemoteControlGalileo;
 				PROVISIONING_PROFILE = "970506EA-9D09-4AA9-A883-BD607EF8141C";
 				SDKROOT = iphoneos;
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -995,11 +999,11 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/ilbc/lib",
 					"$(PROJECT_DIR)/vpx/lib",
-					"$(PROJECT_DIR)/jrtplib/lib",
 				);
 				PRODUCT_NAME = RemoteControlGalileo;
 				PROVISIONING_PROFILE = "970506EA-9D09-4AA9-A883-BD607EF8141C";
 				SDKROOT = iphoneos;
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

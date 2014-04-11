@@ -24,6 +24,8 @@ public:
     virtual bool setup(int width, int height, int bitratePerPixel, int keyframeInterval);
     virtual BufferPtr encodeYUV(const void *buffer, size_t size, bool interleaved, bool &isKey);
 
+    unsigned int getBitrate() const { return mConfig.rc_target_bitrate; }
+
 private:
     const vpx_codec_cx_pkt_t *encodeImage(vpx_image_t *image);
     void printCodecError(vpx_codec_ctx_t *context, const char *message);

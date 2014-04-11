@@ -4,7 +4,7 @@
 
 #import "VideoViewController.h"
 #import "VideoView.h"
-
+#import "VideoInputOutput.h"
 #import <QuartzCore/CALayer.h>
 
 #define ROTATION_ANIMATION_DURATION 0.5
@@ -24,6 +24,8 @@
         isRotated180 = NO;
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDeviceOrientationChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onOSDVideoTextUpdate:) name:NOTIFICATION_VIDEO_RTCP_DATA_UPDATE object:nil];
+        //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onOSDAudioTextUpdate:) name:NOTIFICATION_AUDIO_RTCP_DATA_UPDATE object:nil];
     }
     
     return self;
@@ -33,6 +35,7 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     labelRecordStatus = nil;
+    labelRTCPStatus = nil;
     [timer invalidate];
     timer = nil;
     NSLog(@"VideoViewController exiting");
@@ -59,8 +62,20 @@
     labelRecordStatus.shadowOffset = CGSizeMake(1, 1);
     labelRecordStatus.userInteractionEnabled = NO;
     [self.view addSubview:labelRecordStatus];
-    [self adjustLabelTransform];
-    [self adjustLabelPosition];
+
+    //
+    labelRTCPStatus = [[UILabel alloc] init];
+    labelRTCPStatus.backgroundColor = [UIColor clearColor];
+    labelRTCPStatus.textColor = [UIColor whiteColor];
+    labelRTCPStatus.shadowColor = [UIColor blackColor];
+    labelRTCPStatus.shadowOffset = CGSizeMake(1, 1);
+    labelRTCPStatus.userInteractionEnabled = NO;
+    labelRTCPStatus.hidden = NO;
+    labelRTCPStatus.numberOfLines = 0;
+    [self.view addSubview:labelRTCPStatus];
+
+    [self adjustLabelsTransform];
+    [self adjustLabelsPosition];
 
     UITapGestureRecognizer *doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onDoubleTap:)];
     doubleTapGestureRecognizer.numberOfTapsRequired = 2;
@@ -109,12 +124,45 @@
 #pragma mark -
 #pragma mark Workflow
 
+- (void)onOSDVideoTextUpdate:(NSNotification *)notification
+{
+    id object = notification.object;
+    if ([object isKindOfClass:[NSString class]]) @autoreleasepool {
+        osdVideoDescription = object;
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateOSD];
+    });
+}
+
+- (void)onOSDAudioTextUpdate:(NSNotification *)notification
+{
+    id object = notification.object;
+    if ([object isKindOfClass:[NSString class]]) @autoreleasepool {
+        osdAudioDescription = object;
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateOSD];
+    });
+}
+
+- (void)updateOSD
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *osdText = [NSString stringWithFormat:@"%@\n%@", osdVideoDescription ? osdVideoDescription : @"", osdAudioDescription ? osdAudioDescription : @""];
+        labelRTCPStatus.text = osdText;
+        [self adjustLabelsPosition];
+    });
+}
+
 - (void)flashStatusText:(NSString *)text
 {
     //
     labelRecordStatus.text = text;
     [labelRecordStatus sizeToFit];
-    [self adjustLabelPosition];
+    [self adjustLabelsPosition];
 
     //
     labelRecordStatus.alpha = 1.f;
@@ -169,7 +217,7 @@
     [self flashStatusText:timerText];
 }
 
-- (void)adjustLabelTransform
+- (void)adjustLabelsTransform
 {
     CGAffineTransform transform;
 
@@ -196,40 +244,57 @@
     }
 
     labelRecordStatus.transform = transform;
+    labelRTCPStatus.transform = transform;
 }
 
-- (void)adjustLabelPosition
+- (void)adjustLabelsPosition
 {
-    CGPoint center;
+    CGPoint centerRecordStatus;
+    CGPoint centerRTCPStatus;
+    [labelRTCPStatus sizeToFit];
 
     switch ([UIDevice currentDevice].orientation)
     {
         case UIDeviceOrientationLandscapeLeft:
-            center = CGPointMake(self.view.bounds.size.width - labelRecordStatus.frame.size.width * 0.5, labelRecordStatus.frame.size.height * 0.5);
+        {
+            centerRecordStatus = CGPointMake(self.view.bounds.size.width - labelRecordStatus.frame.size.width * 0.5, labelRecordStatus.frame.size.height * 0.5);
+            centerRTCPStatus = CGPointMake(self.view.bounds.size.width - labelRTCPStatus.frame.size.width * 0.5, self.view.bounds.size.height - labelRTCPStatus.frame.size.height * 0.5);
             break;
+        }
 
         case UIDeviceOrientationLandscapeRight:
-            center = CGPointMake(labelRecordStatus.frame.size.width * 0.5, self.view.bounds.size.height - labelRecordStatus.frame.size.height * 0.5);
+        {
+            centerRecordStatus = CGPointMake(labelRecordStatus.frame.size.width * 0.5, self.view.bounds.size.height - labelRecordStatus.frame.size.height * 0.5);
+            centerRTCPStatus = CGPointMake(labelRTCPStatus.frame.size.width * 0.5, labelRTCPStatus.frame.size.height * 0.5);
             break;
+        }
 
         case UIDeviceOrientationPortraitUpsideDown:
-            center = CGPointMake(self.view.bounds.size.width - labelRecordStatus.frame.size.width * 0.5, self.view.bounds.size.height - labelRecordStatus.frame.size.height * 0.5);
+        {
+            centerRecordStatus = CGPointMake(self.view.bounds.size.width - labelRecordStatus.frame.size.width * 0.5, self.view.bounds.size.height - labelRecordStatus.frame.size.height * 0.5);
+            centerRTCPStatus = CGPointMake(self.view.bounds.size.width - labelRTCPStatus.frame.size.width * 0.5, labelRTCPStatus.frame.size.height * 0.5);
             break;
+        }
 
         case UIDeviceOrientationPortrait:
-            center = CGPointMake(labelRecordStatus.frame.size.width * 0.5, labelRecordStatus.frame.size.height * 0.5);
+        {
+            centerRecordStatus = CGPointMake(labelRecordStatus.frame.size.width * 0.5, labelRecordStatus.frame.size.height * 0.5);
+            centerRTCPStatus = CGPointMake(labelRTCPStatus.frame.size.width * 0.5, self.view.bounds.size.height - labelRTCPStatus.frame.size.height * 0.5);
             break;
+        }
 
         default: return;//skip any update
 
     }
-    labelRecordStatus.center = center;
+
+    labelRecordStatus.center = centerRecordStatus;
+    labelRTCPStatus.center = centerRTCPStatus;
 }
 
 - (void)onDeviceOrientationChange:(NSNotification *)notification
 {
-    [self adjustLabelTransform];
-    [self adjustLabelPosition];
+    [self adjustLabelsTransform];
+    [self adjustLabelsPosition];
 }
 
 #pragma mark - RecordStatusResponderDelegate

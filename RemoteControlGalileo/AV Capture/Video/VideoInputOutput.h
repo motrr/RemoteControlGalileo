@@ -2,8 +2,11 @@
 #import "GalileoCommon.h"
 #import "OpenGLProcessor.h"
 #import "CameraInput.h"
+#include "Vp8VideoEncoder.h"
 
 #include "Buffer.h"
+
+#define NOTIFICATION_VIDEO_RTCP_DATA_UPDATE @"NOTIFICATION_VIDEO_RTCP_DATA_UPDATE"
 
 @class CameraInput;
 
@@ -23,12 +26,20 @@ class VideoDecoder;
     // Video pipeline objects
     __weak CameraInput *cameraInput;
     OpenGLProcessor *videoProcessor;
-    VideoEncoder *videoEncoder;
+    Vp8VideoEncoder *videoEncoder;
     VideoDecoder *videoDecoder;
 
     RTPSessionEx *rtpSession;
 
     dispatch_queue_t sendQueue;
+    dispatch_queue_t videoProcessQueue;
+
+    uint32_t packetsSent;
+    uint32_t packetsReceived;
+    uint32_t packetsReceivedAll;
+    NSTimer *RTCPSendTimer;
+    size_t videoFrameWidth;
+    size_t videoFrameHeight;
 }
 
 @property (nonatomic, weak) id delegate;

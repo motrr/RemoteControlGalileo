@@ -1,4 +1,5 @@
 #include "RtpSessionEx.h"
+#include "rtcpapppacket.h"
 
 RTPSessionEx *RTPSessionEx::CreateInstance(unsigned char payloadType, int timestampIncrement,
                                            const std::string &destAddress, int portBase)
@@ -81,17 +82,19 @@ RTPSessionEx::~RTPSessionEx()
         free(mFrameBuffer[i]);
 }
 
-void RTPSessionEx::SetDepacketizerCallback(DepacketizerCallback callback)
-{
-    mDepacketizerCallback = callback;
-}
-
 void RTPSessionEx::SetRTPExtensionHelper(RTPExtensionHelper *helper)
 {
     delete mRTPExtensionHelper;
     mRTPExtensionHelper = helper;
     mMaxDataSize = MAX_PACKET_PAYLOAD_LENGTH - mRTPExtensionHelper->getSize() - sizeof(jrtplib::RTPHeader);
     mMaxDataSize -= sizeof(uint32_t) * ((size_t)1); // numcsrcs
+}
+
+void RTPSessionEx::OnAPPPacket(jrtplib::RTCPAPPPacket *apppacket, const jrtplib::RTPTime &receivetime, const jrtplib::RTPAddress *senderaddress)
+{
+    printf("RTCP packet received\n");
+    if (!mRTCPHandleCallback.empty())
+        mRTCPHandleCallback(apppacket);
 }
 
 void RTPSessionEx::OnPollThreadStep()

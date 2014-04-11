@@ -115,7 +115,7 @@
         } failureBlock:^(NSError *error) {
             NSLog(@"User will not be able to use the camera roll!");
     }];
-    
+
 }
 
 @end

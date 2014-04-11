@@ -1,12 +1,13 @@
 #import "VideoInputOutput.h"
 
-#include "Vp8VideoEncoder.h"
 #include "Vp8VideoDecoder.h"
 #include "VideoTxRxCommon.h"
 #include "Hardware.h"
 
 #import "RTPSessionEx.h"
 #import "Vp8RTPExtension.h"
+#import "RTCPAPPVideoDescription.h"
+#import "rtcpapppacket.h"
 
 @implementation VideoInputOutput
 
@@ -17,6 +18,8 @@
     if(self = [super init])
     {
         sendQueue = dispatch_queue_create("Video send queue", DISPATCH_QUEUE_SERIAL);
+        videoProcessQueue = dispatch_queue_create("Video process queue", DISPATCH_QUEUE_SERIAL);
+        RTCPSendTimer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(onRTCPSendTimer:) userInfo:nil repeats:YES];
 
         int width, height, bitrate;
 #   ifdef FORCE_LOW_QUALITY
@@ -63,16 +66,70 @@
 
 - (void)dealloc
 {
+    [RTCPSendTimer invalidate];
     [cameraInput removeNotifier:self];
     videoProcessor.delegate = nil;
     
     delete videoDecoder;
     delete videoEncoder;
     sendQueue = nil;//if(sendQueue) dispatch_release(sendQueue);
+    videoProcessQueue = nil;
 }
 
 #pragma mark -
-#pragma mark VideoConfigResponderDelegate Methods
+
+- (void)onRTCPSendTimer:(NSTimer *)timer
+{
+    RTCPAPPVideoDescription data;
+    memset(&data, 0, sizeof(RTCPAPPVideoDescription));
+
+    data.mPacketsSent = packetsSent;
+    data.mVideoHeight = videoFrameHeight;
+    data.mVideoWidth = videoFrameWidth;
+    data.mVideoBitrate = videoEncoder->getBitrate();
+
+    const uint8_t name[4] = {0, 0, 0, 0};
+    int status = rtpSession->SendRTCPAPPPacket(RTCP_APP_SUBTYPE_VIDEO, name, &data, sizeof(RTCPAPPVideoDescription));
+    if(status < 0)
+    {
+        printf("ERROR: %s\n", jrtplib::RTPGetErrorString(status).c_str());
+    }
+}
+
+- (void)onRTCPPacket:(jrtplib::RTCPPacket *)packet
+{
+    // we handle only APP typed packed
+    if (packet->GetPacketType() != jrtplib::RTCPPacket::APP)
+        return;
+    //
+    jrtplib::RTCPAPPPacket *appPacket = static_cast<jrtplib::RTCPAPPPacket *>(packet);
+
+    //
+    if (appPacket->GetAPPDataLength() == sizeof(RTCPAPPVideoDescription))
+    {
+        RTCPAPPVideoDescription description = *((RTCPAPPVideoDescription *)appPacket->GetAPPData());
+        dispatch_async(videoProcessQueue, ^{
+            //
+
+            size_t delivered = packetsReceived;
+            size_t shouldReceive = description.mPacketsSent;
+            float packetLoss = 0.f;
+            if (shouldReceive > 0)
+                packetLoss = 100.f * (float)delivered / shouldReceive;
+
+            @autoreleasepool {
+
+                NSString * stringToDisplay = [NSString stringWithFormat:@"Video: %ix%i\nBitrate: %u\nLoss: %0.1f%%", description.mVideoWidth, description.mVideoHeight, description.mVideoBitrate, packetLoss];
+                [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_VIDEO_RTCP_DATA_UPDATE object:stringToDisplay userInfo:nil];
+                
+            }
+
+            packetsReceived = 0;
+        });
+    }
+}
+
+#pragma mark - VideoConfigResponderDelegate Methods
 
 - (void)ipAddressRecieved:(NSString *)addressString
 {
@@ -89,8 +146,17 @@
     RTPSessionEx::DepacketizerCallback depacketizerCallback(self, @selector(processEncodedData: length:));
     rtpSession->SetDepacketizerCallback(depacketizerCallback);
 
+    RTPSessionEx::RTCPHandleCallback rtcpCallback(self, @selector(onRTCPPacket:));
+    rtpSession->SetRTCPHandleCallback(rtcpCallback);
+
     // Begin video capture and transmission
+    packetsSent = 0;
+    packetsReceived = 0;
+    packetsReceivedAll = 0;
     [cameraInput startCapture];
+
+    // Start sending RTCP packets
+    [[NSRunLoop mainRunLoop] addTimer:RTCPSendTimer forMode:NSRunLoopCommonModes];
 }
 
 - (void)zoomLevelUpdateRecieved:(NSNumber *)scaleFactor
@@ -103,6 +169,9 @@
 
 - (void)didCaptureFrame:(CVPixelBufferRef)pixelBuffer
 {
+    videoFrameWidth = CVPixelBufferGetWidth(pixelBuffer);
+    videoFrameHeight = CVPixelBufferGetHeight(pixelBuffer);
+
     [videoProcessor processVideoFrameYuv:pixelBuffer];
 }
 
@@ -144,6 +213,7 @@
         // Send the packet
         dispatch_async(sendQueue, ^{
             rtpSession->SendMultiPacket(data, size, isKey ? FLAG_VP8_KEYFRAME : 0);
+            ++packetsSent;
         });
     }
 }
@@ -153,16 +223,22 @@
 
 - (void)processEncodedData:(void *)data length:(size_t)length
 {
-    // todo: wrap with dispatch queue (check if its better)
-    
-    // Decode data into a pixel buffer
-    YuvBufferPtr yuvBuffer = videoDecoder->decodeYUV((unsigned char*)data, length);
-    YuvBuffer *buffer = yuvBuffer.get();
-    
-    if(buffer)
-    {
-        [self.delegate didDecodeYuvBuffer:buffer];
-    }
+    NSData *dataAutoreleased = [NSData dataWithBytes:data length:length];
+
+    dispatch_async(videoProcessQueue, ^{
+
+        ++packetsReceived;
+        ++packetsReceivedAll;
+
+        // Decode data into a pixel buffer
+        YuvBufferPtr yuvBuffer = videoDecoder->decodeYUV((unsigned char*)[dataAutoreleased bytes], [dataAutoreleased length]);
+        YuvBuffer *buffer = yuvBuffer.get();
+
+        if(buffer)
+        {
+            [self.delegate didDecodeYuvBuffer:buffer];
+        }
+    });
 }
 
 @end

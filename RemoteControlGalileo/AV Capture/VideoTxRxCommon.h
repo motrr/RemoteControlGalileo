@@ -22,7 +22,11 @@
 
 // UDP port used for transmitting audio/video
 #define AUDIO_UDP_PORT 1234
-#define VIDEO_UDP_PORT 1235
+#define VIDEO_UDP_PORT 1236
+
+// RTCP APP packet subtypes
+#define RTCP_APP_SUBTYPE_VIDEO 1
+#define RTCP_APP_SUBTYPE_AUDIO 2
 
 // Maximum size of a video frame
 #define MAX_FRAME_LENGTH 250000
