@@ -7,7 +7,12 @@
 #import "RTPSessionEx.h"
 #import "Vp8RTPExtension.h"
 #import "RTCPAPPVideoDescription.h"
+#import "RTCPPingDescription.h"
 #import "rtcpapppacket.h"
+
+#define RTCP_APP_NAME_STAT_VIDEO {0, 0, 0, 0}
+#define RTCP_APP_NAME_PING {0, 0, 0, 1}
+#define RTCP_APP_NAME_PONG {0, 0, 0, 2}
 
 @implementation VideoInputOutput
 
@@ -80,6 +85,7 @@
 
 - (void)onRTCPSendTimer:(NSTimer *)timer
 {
+    // Send stat
     RTCPAPPVideoDescription data;
     memset(&data, 0, sizeof(RTCPAPPVideoDescription));
 
@@ -88,12 +94,15 @@
     data.mVideoWidth = videoFrameWidth;
     data.mVideoBitrate = videoEncoder->getBitrate();
 
-    const uint8_t name[4] = {0, 0, 0, 0};
+    const uint8_t name[4] = RTCP_APP_NAME_STAT_VIDEO;
     int status = rtpSession->SendRTCPAPPPacket(RTCP_APP_SUBTYPE_VIDEO, name, &data, sizeof(RTCPAPPVideoDescription));
     if(status < 0)
     {
         printf("ERROR: %s\n", jrtplib::RTPGetErrorString(status).c_str());
     }
+
+    // Ping
+    [self sendPing];
 }
 
 - (void)onRTCPPacket:(jrtplib::RTCPPacket *)packet
@@ -103,9 +112,15 @@
         return;
     //
     jrtplib::RTCPAPPPacket *appPacket = static_cast<jrtplib::RTCPAPPPacket *>(packet);
+    if (!appPacket) return;
 
     //
-    if (appPacket->GetAPPDataLength() == sizeof(RTCPAPPVideoDescription))
+    if (appPacket->GetSubType() != RTCP_APP_SUBTYPE_VIDEO)
+        return;
+
+    // Is stat packet
+    uint8_t name[4] = RTCP_APP_NAME_STAT_VIDEO;
+    if (memcmp(appPacket->GetName(), name, 4) == 0 && appPacket->GetAPPDataLength() == sizeof(RTCPAPPVideoDescription))
     {
         RTCPAPPVideoDescription description = *((RTCPAPPVideoDescription *)appPacket->GetAPPData());
         dispatch_async(videoProcessQueue, ^{
@@ -118,15 +133,85 @@
                 packetLoss = 100.f * (float)delivered / shouldReceive;
 
             @autoreleasepool {
-
                 NSString * stringToDisplay = [NSString stringWithFormat:@"Video: %ix%i\nBitrate: %u\nLoss: %0.1f%%", description.mVideoWidth, description.mVideoHeight, description.mVideoBitrate, packetLoss];
                 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_VIDEO_RTCP_DATA_UPDATE object:stringToDisplay userInfo:nil];
-                
             }
 
             packetsReceived = 0;
         });
     }
+
+    // Is ping packet
+    uint8_t namePing[4] = RTCP_APP_NAME_PING;
+    if (memcmp(appPacket->GetName(), namePing, 4) == 0 && appPacket->GetAPPDataLength() == sizeof(RTCPPingDescription))
+    {
+        [self onPing:appPacket];
+    }
+
+    // Is pong packet
+    uint8_t namePong[4] = RTCP_APP_NAME_PONG;
+    if (memcmp(appPacket->GetName(), namePong, 4) == 0  && appPacket->GetAPPDataLength() == sizeof(RTCPPingDescription))
+    {
+        [self onPong:appPacket];
+    }
+}
+
+- (void)sendPing
+{
+    //
+    pingSendTime = [NSDate date];
+
+    // send latency test packet
+    RTCPPingDescription data;
+    memset(&data, 0, sizeof(RTCPPingDescription));
+    data.mUID = ++pingPacketUID;
+
+    const uint8_t name[4] = RTCP_APP_NAME_PING;
+    int status = rtpSession->SendRTCPAPPPacket(RTCP_APP_SUBTYPE_VIDEO, name, &data, sizeof(RTCPPingDescription));
+    if(status < 0)
+    {
+        printf("ERROR: %s\n", jrtplib::RTPGetErrorString(status).c_str());
+    }
+    else
+    {
+        printf("sent ping\n");
+    }
+}
+
+- (void)onPing:(jrtplib::RTCPAPPPacket *)packet
+{
+    printf("got ping\n");
+    // got latency test packet
+    // just send it back
+    const uint8_t name[4] = RTCP_APP_NAME_PONG;
+    int status = rtpSession->SendRTCPAPPPacket(RTCP_APP_SUBTYPE_VIDEO, name, packet->GetAPPData(), packet->GetAPPDataLength());
+    if(status < 0)
+    {
+        printf("ERROR: %s\n", jrtplib::RTPGetErrorString(status).c_str());
+    }
+}
+
+- (void)onPong:(jrtplib::RTCPAPPPacket *)packet
+{
+    printf("got pong\n");
+    // got latency test packet response
+    RTCPPingDescription description = *((RTCPPingDescription *)packet->GetAPPData());
+    uint32_t pingPacketUIDBack = description.mUID;
+    if (pingPacketUIDBack != pingPacketUID)
+    {
+        printf("Pong packet is outdated\n");
+    }
+    else
+    {
+        NSDate *now = [NSDate date];
+        NSTimeInterval latency = [now timeIntervalSinceDate:pingSendTime];
+
+        @autoreleasepool {
+            NSString * stringToDisplay = [NSString stringWithFormat:@"Latency: %0.3fsec", latency * 0.5];
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_LATENCY_RTCP_DATA_UPDATE object:stringToDisplay userInfo:nil];
+        }
+    }
+
 }
 
 #pragma mark - VideoConfigResponderDelegate Methods

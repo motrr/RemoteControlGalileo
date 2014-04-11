@@ -36,6 +36,7 @@
 
     NSString *osdVideoDescription;
     NSString *osdAudioDescription;
+    NSString *osdLatencyText;
 }
 
 @property (nonatomic, weak) id<NetworkControllerDelegate> networkControllerDelegate;

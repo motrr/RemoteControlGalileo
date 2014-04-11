@@ -7,6 +7,7 @@
 #include "Buffer.h"
 
 #define NOTIFICATION_VIDEO_RTCP_DATA_UPDATE @"NOTIFICATION_VIDEO_RTCP_DATA_UPDATE"
+#define NOTIFICATION_LATENCY_RTCP_DATA_UPDATE @"NOTIFICATION_LATENCY_RTCP_DATA_UPDATE"
 
 @class CameraInput;
 
@@ -37,6 +38,10 @@ class VideoDecoder;
     uint32_t packetsSent;
     uint32_t packetsReceived;
     uint32_t packetsReceivedAll;
+
+    uint32_t pingPacketUID;
+    NSDate *pingSendTime;
+
     NSTimer *RTCPSendTimer;
     size_t videoFrameWidth;
     size_t videoFrameHeight;

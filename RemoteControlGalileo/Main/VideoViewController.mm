@@ -26,6 +26,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDeviceOrientationChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onOSDVideoTextUpdate:) name:NOTIFICATION_VIDEO_RTCP_DATA_UPDATE object:nil];
         //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onOSDAudioTextUpdate:) name:NOTIFICATION_AUDIO_RTCP_DATA_UPDATE object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onOSDLatencyUpdate:) name:NOTIFICATION_LATENCY_RTCP_DATA_UPDATE object:nil];
     }
     
     return self;
@@ -148,10 +149,22 @@
     });
 }
 
+- (void)onOSDLatencyUpdate:(NSNotification *)notification
+{
+    id object = notification.object;
+    if ([object isKindOfClass:[NSString class]]) @autoreleasepool {
+        osdLatencyText = object;
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateOSD];
+    });
+}
+
 - (void)updateOSD
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSString *osdText = [NSString stringWithFormat:@"%@\n%@", osdVideoDescription ? osdVideoDescription : @"", osdAudioDescription ? osdAudioDescription : @""];
+        NSString *osdText = [NSString stringWithFormat:@"%@\n%@\n%@", osdVideoDescription ? osdVideoDescription : @"", osdAudioDescription ? osdAudioDescription : @"", osdLatencyText ? osdLatencyText : @""];
         labelRTCPStatus.text = osdText;
         [self adjustLabelsPosition];
     });

@@ -324,6 +324,7 @@
 		FAAA341A18D24FE600ECF869 /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
 		FAAA341B18D24FE600ECF869 /* RingBufferImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBufferImpl.h; sourceTree = "<group>"; };
 		FADA235118F7191900961C35 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		FADA235518F8450C00961C35 /* RTCPPingDescription.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RTCPPingDescription.h; path = "AV Capture/RTCPPingDescription.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -448,6 +449,7 @@
 				FA4A801B18F3723F00E9DD37 /* RtpSessionEx.cpp */,
 				FA4A801F18F56D7600E9DD37 /* RTCPAPPVideoDescription.h */,
 				FA4A802018F5E7A300E9DD37 /* RTCPAPPAudioDescription.h */,
+				FADA235518F8450C00961C35 /* RTCPPingDescription.h */,
 			);
 			name = "AV Capture";
 			path = RemoteControlGalileo;
@@ -971,7 +973,7 @@
 				PRODUCT_NAME = RemoteControlGalileo;
 				PROVISIONING_PROFILE = "970506EA-9D09-4AA9-A883-BD607EF8141C";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1003,7 +1005,7 @@
 				PRODUCT_NAME = RemoteControlGalileo;
 				PROVISIONING_PROFILE = "970506EA-9D09-4AA9-A883-BD607EF8141C";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
