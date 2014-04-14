@@ -78,9 +78,16 @@
     [self adjustLabelsTransform];
     [self adjustLabelsPosition];
 
+    UITapGestureRecognizer *tripleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onTripleTap:)];
+    tripleTapGestureRecognizer.numberOfTapsRequired = 3;
+    [self.view addGestureRecognizer:tripleTapGestureRecognizer];
+
+
     UITapGestureRecognizer *doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onDoubleTap:)];
     doubleTapGestureRecognizer.numberOfTapsRequired = 2;
     [self.view addGestureRecognizer:doubleTapGestureRecognizer];
+
+    [doubleTapGestureRecognizer requireGestureRecognizerToFail:tripleTapGestureRecognizer];
 }
 
 - (VideoView *)videoView
@@ -187,9 +194,14 @@
     }];
 }
 
-- (void)onDoubleTap:(UITapGestureRecognizer*)gestureRecognizer
+- (void)onTripleTap:(UITapGestureRecognizer*)gestureRecognizer
 {
     [networkControllerDelegate sendSetRecording:!isRecording isResponse:false];
+}
+
+- (void)onDoubleTap:(UITapGestureRecognizer*)gestureRecognizer
+{
+    labelRTCPStatus.hidden = !labelRTCPStatus.hidden;
 }
 
 - (void)startOSDTimer
