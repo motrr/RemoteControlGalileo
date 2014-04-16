@@ -2,7 +2,7 @@
 #import "GalileoCommon.h"
 #import "OpenGLProcessor.h"
 #import "CameraInput.h"
-#include "Vp8VideoEncoder.h"
+#include "Vp9VideoEncoder.h"
 
 #include "Buffer.h"
 
@@ -27,7 +27,7 @@ class VideoDecoder;
     // Video pipeline objects
     __weak CameraInput *cameraInput;
     OpenGLProcessor *videoProcessor;
-    Vp8VideoEncoder *videoEncoder;
+    Vp9VideoEncoder *videoEncoder;
     VideoDecoder *videoDecoder;
 
     RTPSessionEx *rtpSession;

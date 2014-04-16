@@ -21,7 +21,6 @@
 		6907591318ABC42200BEF9B2 /* Hardware.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6907591118ABC42200BEF9B2 /* Hardware.cpp */; };
 		690EE76C1772FAC4005C4451 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 690EE76B1772FAC3005C4451 /* AudioToolbox.framework */; };
 		693E8F71176234FB007FD105 /* libilbc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 693E8F70176234FB007FD105 /* libilbc.a */; };
-		693E8F7317623506007FD105 /* libvpx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 693E8F7217623506007FD105 /* libvpx.a */; };
 		6942650F18A190DD0044697D /* GLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6942650D18A190DD0044697D /* GLUtils.cpp */; };
 		69AC29A218EAF9B9006D3E65 /* jmutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 69AC29A018EAF9B9006D3E65 /* jmutex.cpp */; };
 		69AC29A318EAF9B9006D3E65 /* jthread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 69AC29A118EAF9B9006D3E65 /* jthread.cpp */; };
@@ -109,6 +108,9 @@
 		FA0EDE9418E4A6C7008407B1 /* rtpudpv6transmitter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0EDE6B18E4A6C7008407B1 /* rtpudpv6transmitter.cpp */; };
 		FA4A801C18F3723F00E9DD37 /* RtpSessionEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA4A801B18F3723F00E9DD37 /* RtpSessionEx.cpp */; };
 		FA99DAD318CCF45300C15898 /* MediaOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA99DAD218CCF45300C15898 /* MediaOutput.mm */; };
+		FAC5602018FDCA3F009CCDFA /* libvpx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC5601F18FDCA3F009CCDFA /* libvpx.a */; };
+		FAC5602618FDD410009CCDFA /* Vp9VideoDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAC5602218FDD410009CCDFA /* Vp9VideoDecoder.cpp */; };
+		FAC5602718FDD410009CCDFA /* Vp9VideoEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAC5602418FDD410009CCDFA /* Vp9VideoEncoder.cpp */; };
 		FADA235218F7191900961C35 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADA235118F7191900961C35 /* GameKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -132,7 +134,6 @@
 		6907591218ABC42200BEF9B2 /* Hardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Hardware.h; sourceTree = "<group>"; };
 		690EE76B1772FAC3005C4451 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		693E8F70176234FB007FD105 /* libilbc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libilbc.a; path = ilbc/lib/libilbc.a; sourceTree = "<group>"; };
-		693E8F7217623506007FD105 /* libvpx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvpx.a; path = vpx/lib/libvpx.a; sourceTree = "<group>"; };
 		6942650D18A190DD0044697D /* GLUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLUtils.cpp; sourceTree = "<group>"; };
 		6942650E18A190DD0044697D /* GLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLUtils.h; sourceTree = "<group>"; };
 		69AC299B18EAF9B9006D3E65 /* jmutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jmutex.h; sourceTree = "<group>"; };
@@ -323,6 +324,12 @@
 		FAAA341918D24FE600ECF869 /* Atomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atomic.h; sourceTree = "<group>"; };
 		FAAA341A18D24FE600ECF869 /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
 		FAAA341B18D24FE600ECF869 /* RingBufferImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBufferImpl.h; sourceTree = "<group>"; };
+		FAC5601F18FDCA3F009CCDFA /* libvpx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvpx.a; path = vp9/lib/libvpx.a; sourceTree = "<group>"; };
+		FAC5602118FDD40F009CCDFA /* Vp9RTPExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vp9RTPExtension.h; sourceTree = "<group>"; };
+		FAC5602218FDD410009CCDFA /* Vp9VideoDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vp9VideoDecoder.cpp; sourceTree = "<group>"; };
+		FAC5602318FDD410009CCDFA /* Vp9VideoDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vp9VideoDecoder.h; sourceTree = "<group>"; };
+		FAC5602418FDD410009CCDFA /* Vp9VideoEncoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vp9VideoEncoder.cpp; sourceTree = "<group>"; };
+		FAC5602518FDD410009CCDFA /* Vp9VideoEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vp9VideoEncoder.h; sourceTree = "<group>"; };
 		FADA235118F7191900961C35 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		FADA235518F8450C00961C35 /* RTCPPingDescription.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RTCPPingDescription.h; path = "AV Capture/RTCPPingDescription.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -346,9 +353,9 @@
 				309AAC7F158AF9A9007015A9 /* CoreMedia.framework in Frameworks */,
 				302362DD158A8FEE00B2DF09 /* CoreGraphics.framework in Frameworks */,
 				302362D9158A8FEE00B2DF09 /* UIKit.framework in Frameworks */,
+				FAC5602018FDCA3F009CCDFA /* libvpx.a in Frameworks */,
 				302362DB158A8FEE00B2DF09 /* Foundation.framework in Frameworks */,
 				693E8F71176234FB007FD105 /* libilbc.a in Frameworks */,
-				693E8F7317623506007FD105 /* libvpx.a in Frameworks */,
 				830C56B7177932A90058015E /* GalileoControl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -383,9 +390,9 @@
 		302362D7158A8FEE00B2DF09 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FAC5601F18FDCA3F009CCDFA /* libvpx.a */,
 				FADA235118F7191900961C35 /* GameKit.framework */,
 				FA0EDE1018E49EB7008407B1 /* libc++.dylib */,
-				693E8F7217623506007FD105 /* libvpx.a */,
 				693E8F70176234FB007FD105 /* libilbc.a */,
 				830C56B81779341B0058015E /* libxml2.dylib */,
 				83619CC8178ABFBF00B9EB20 /* CoreBluetooth.framework */,
@@ -564,6 +571,11 @@
 				69C1A3F617858BE900E284F7 /* Vp8VideoDecoder.h */,
 				69C1A3F717858BE900E284F7 /* Vp8VideoEncoder.cpp */,
 				69C1A3F817858BE900E284F7 /* Vp8VideoEncoder.h */,
+				FAC5602118FDD40F009CCDFA /* Vp9RTPExtension.h */,
+				FAC5602218FDD410009CCDFA /* Vp9VideoDecoder.cpp */,
+				FAC5602318FDD410009CCDFA /* Vp9VideoDecoder.h */,
+				FAC5602418FDD410009CCDFA /* Vp9VideoEncoder.cpp */,
+				FAC5602518FDD410009CCDFA /* Vp9VideoEncoder.h */,
 			);
 			name = Video;
 			path = "AV Capture/Video";
@@ -814,6 +826,7 @@
 				FA0EDE7B18E4A6C7008407B1 /* rtpbyteaddress.cpp in Sources */,
 				69C1A3AB17858B8B00E284F7 /* Shader.cpp in Sources */,
 				FA0EDE8818E4A6C7008407B1 /* rtprandom.cpp in Sources */,
+				FAC5602618FDD410009CCDFA /* Vp9VideoDecoder.cpp in Sources */,
 				69C1A3BC17858B9A00E284F7 /* MoveRecogniser.m in Sources */,
 				FA0EDE8518E4A6C7008407B1 /* rtppacket.cpp in Sources */,
 				FA0EDE9118E4A6C7008407B1 /* rtptimeutilities.cpp in Sources */,
@@ -851,6 +864,7 @@
 				FA0EDE8C18E4A6C7008407B1 /* rtpsession.cpp in Sources */,
 				FA0EDE6F18E4A6C7008407B1 /* rtpfaketransmitter.cpp in Sources */,
 				FA0EDE7918E4A6C7008407B1 /* rtcpsdespacket.cpp in Sources */,
+				FAC5602718FDD410009CCDFA /* Vp9VideoEncoder.cpp in Sources */,
 				FA0EDE7018E4A6C7008407B1 /* rtcpapppacket.cpp in Sources */,
 				69C1A40717858BE900E284F7 /* Vp8VideoDecoder.cpp in Sources */,
 				FA0EDE8418E4A6C7008407B1 /* rtplibraryversion.cpp in Sources */,
@@ -951,6 +965,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LIBRARY = "compiler-default";
+				CODE_SIGN_IDENTITY = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Galileo-iOS-SDK/frameworks\"",
@@ -959,7 +974,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RemoteControlGalileo/RemoteControlGalileo-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
-					vpx/include,
+					vp9/include,
 					ilbc/include,
 					jrtplib/include,
 					"$(SRCROOT)",
@@ -968,9 +983,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/ilbc/lib",
-					"$(PROJECT_DIR)/vpx/lib",
+					"$(PROJECT_DIR)/vp9/lib",
 				);
 				PRODUCT_NAME = RemoteControlGalileo;
+				PROVISIONING_PROFILE = "970506EA-9D09-4AA9-A883-BD607EF8141C";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
@@ -982,6 +998,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LIBRARY = "compiler-default";
+				CODE_SIGN_IDENTITY = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Galileo-iOS-SDK/frameworks\"",
@@ -990,7 +1007,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RemoteControlGalileo/RemoteControlGalileo-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
-					vpx/include,
+					vp9/include,
 					ilbc/include,
 					jrtplib/include,
 					"$(SRCROOT)",
@@ -999,9 +1016,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/ilbc/lib",
-					"$(PROJECT_DIR)/vpx/lib",
+					"$(PROJECT_DIR)/vp9/lib",
 				);
 				PRODUCT_NAME = RemoteControlGalileo;
+				PROVISIONING_PROFILE = "970506EA-9D09-4AA9-A883-BD607EF8141C";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;

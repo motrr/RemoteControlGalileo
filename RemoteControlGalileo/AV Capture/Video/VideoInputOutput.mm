@@ -1,6 +1,6 @@
 #import "VideoInputOutput.h"
 
-#include "Vp8VideoDecoder.h"
+#include "Vp9VideoDecoder.h"
 #include "VideoTxRxCommon.h"
 #include "Hardware.h"
 
@@ -59,10 +59,10 @@
         [videoProcessor setOutputWidth:width height:height];
         videoProcessor.delegate = self;
         
-        videoEncoder = new Vp8VideoEncoder();
+        videoEncoder = new Vp9VideoEncoder();
         videoEncoder->setup(width, height, bitrate, MAX_KEYFRAME_INTERVAL);
 
-        videoDecoder = new Vp8VideoDecoder();
+        videoDecoder = new Vp9VideoDecoder();
         videoDecoder->setup();
     }
     
