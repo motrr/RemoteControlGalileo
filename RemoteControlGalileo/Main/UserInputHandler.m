@@ -82,20 +82,29 @@
         else if(strcmp(machine, "iPad2,2") == 0) [self setSizeiPad];
         else if(strcmp(machine, "iPad2,3") == 0) [self setSizeiPad];
         else if(strcmp(machine, "iPad2,4") == 0) [self setSizeiPad];
+        //
         else if(strcmp(machine, "iPad3,1") == 0) [self setSizeiPad];
         else if(strcmp(machine, "iPad3,2") == 0) [self setSizeiPad];
         else if(strcmp(machine, "iPad3,3") == 0) [self setSizeiPad];
         else if(strcmp(machine, "iPad3,4") == 0) [self setSizeiPad];
         else if(strcmp(machine, "iPad3,5") == 0) [self setSizeiPad];
         else if(strcmp(machine, "iPad3,6") == 0) [self setSizeiPad];
+        //
+        else if(strcmp(machine, "iPad4,1") == 0) [self setSizeiPad];
+        else if(strcmp(machine, "iPad4,2") == 0) [self setSizeiPad];
+        else if(strcmp(machine, "iPad4,3") == 0) [self setSizeiPad];
         
         // iPad mini (known models)
         else if(strcmp(machine, "iPad2,5") == 0) [self setSizeiPadMini];
         else if(strcmp(machine, "iPad2,6") == 0) [self setSizeiPadMini];
         else if(strcmp(machine, "iPad2,7") == 0) [self setSizeiPadMini];
+        //
+        else if(strcmp(machine, "iPad4,4") == 0) [self setSizeiPadMini];
+        else if(strcmp(machine, "iPad4,5") == 0) [self setSizeiPadMini];
+        else if(strcmp(machine, "iPad4,6") == 0) [self setSizeiPadMini];
         
         // iPad mini (possible future models)
-        else if(strncmp(machine, "iPad2,", 6) == 0) ;
+        //else if(strncmp(machine, "iPad2,", 6) == 0) [self setSizeiPadMini];
         
         // iPad (possible future models)
         else if(strncmp(machine, "iPad", 4) == 0) [self setSizeiPad];

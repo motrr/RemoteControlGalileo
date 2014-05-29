@@ -42,7 +42,7 @@
 // Send a command to control remote Galileo
 - (void) sendGalileoControlWithPan: (NSNumber*) panAmount ignore: (Boolean) ignorePan
                              tilt : (NSNumber*) tiltAmount ignore: (Boolean) ignoreTilt
-                          momentum:(bool)momentum;
+                          momentum: (bool) momentum;
 // Send a command to zoom in on the remote Galileo
 - (void) sendZoomFactor: (NSNumber*) scale;
 - (void) sendSetRecording: (bool) value isResponse: (bool)isReponse;
@@ -93,7 +93,7 @@
 
 @protocol RecordStatusResponderDelegate <NSObject>
 
-- (void)remoteRecordStarted:(bool)value;
-- (void)startRecord:(bool)value;
+- (void) remoteRecordStarted:(bool)value;
+- (void) startRecord:(bool)value;
 
 @end
